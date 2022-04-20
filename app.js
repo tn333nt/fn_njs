@@ -11,4 +11,8 @@ app.use(bodyParser.urlencoded({extended: true}))
 app.use(adminRoute)
 app.use(shopRoute)
 
+app.use((req,res) => {
+    res.status(404).send('<h1>page not found</h1>')
+})
+
 app.listen(3000) 
