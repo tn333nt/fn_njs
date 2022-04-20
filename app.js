@@ -1,18 +1,22 @@
 
-const http = require('http')
 const express = require('express')
 const app = express() 
 
 app.use((req, res, next) => { 
     console.log('mw 1');
-    next(); // allow req to go to the next OF NEXT func/mw
+    next(); 
 })
 
 app.use((req, res, next) => {
     console.log('mw 2');
-    res.send('<h1>hello from expjs</h1>') // set default type of content = text/html
+    res.send('<h1>hello from expjs</h1>') 
 })
 
-const server = http.createServer(app)
+app.listen(3000) 
 
-server.listen(3000) 
+/* behind the scenes :
+    app.listen = function listen() {
+        const server = http.createServer(this) // pass app obj itself
+        return server.listen.apply(server, argument) // take the passed arg
+    }
+*/
