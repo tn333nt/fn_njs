@@ -1,9 +1,8 @@
 
 const http = require('http')
-const port = 3000
-const routes = require('./routes')
+const express = require('express')
+const app = express() // initialise a new obj that will be stored & managed by expjs
 
-// (1.2) create server obj
-const server = http.createServer(routes.handler)
+const server = http.createServer(app)
 
-server.listen(port) // listen for any icm req in port...
+server.listen(3000) 
