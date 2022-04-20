@@ -8,7 +8,7 @@ const shopRoute = require('./routes/shop')
 
 app.use(bodyParser.urlencoded({extended: true})) 
 
-app.use(adminRoute)
+app.use('/admin', adminRoute) // filter segment for paths in the same mod
 app.use(shopRoute)
 
 app.use((req,res) => {
