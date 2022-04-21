@@ -5,14 +5,14 @@ const bodyParser = require('body-parser')
 
 const app = express()
 
-const adminRoute = require('./routes/admin')
-const shopRoute = require('./routes/shop')
+const adminData = require('./routes/admin')
+const shopData = require('./routes/shop')
 
 app.use(bodyParser.urlencoded({extended: true})) 
-app.use(express.static(path.join(__dirname, 'public'))) // register for a not-dynamic (by routes) place
+app.use(express.static(path.join(__dirname, 'public'))) 
 
-app.use('/admin', adminRoute)
-app.use(shopRoute)
+app.use('/admin', adminData.router)
+app.use(shopData)
 
 app.use((req,res) => {
     res.status(404).sendFile(path.join(__dirname,'views', '404.html'))
