@@ -4,22 +4,24 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>shop</title>
+    <title>add product</title>
 </head>
 <body>
-    <!-- render products -->
+    <!-- submit product -->
     <header>
         <nav>
             <ul>
                 <li><a href="/">shop</a></li>
-                <li><a href="/">add product</a></li>
+                <li><a href="/add-product">add product</a></li>
             </ul>
         </nav>
     </header>
 
     <main>
-        <h1> products </h1>
-        <p> list of products </p>
+        <form action="/admin/product" method="post">
+            <input type="text" name="title"/>  
+            <button type="submit">add product</button>          
+        </form>
     </main>
 </body>
 </html>
