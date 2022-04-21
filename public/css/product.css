@@ -1,0 +1,35 @@
+.productFormContainer {
+    margin: auto;
+    width: 18rem;
+    max-width: 90%;
+}
+
+.formControl {
+    display : flex; 
+    flex-direction: column;
+    margin: 1rem 0;
+}
+
+.formControl input {
+    /* width: fit-content; */
+    width: 100%;
+    border: 3px solid #619dd6 ;
+    border-radius: 3px;
+}
+
+.productFormContainer button {
+    border: 3px solid #619dd6 ;
+    border-radius: 3px;
+    background : #619dd6;
+    color: white;
+    cursor: pointer;
+    padding: 3px;
+    margin-top: 1rem;
+}
+
+.productFormContainer button:hover,
+.productFormContainer button:active {
+    font-size: larger;
+    color : #619dd6;
+    background: white;
+}

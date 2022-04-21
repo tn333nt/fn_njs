@@ -9,6 +9,7 @@ const adminRoute = require('./routes/admin')
 const shopRoute = require('./routes/shop')
 
 app.use(bodyParser.urlencoded({extended: true})) 
+app.use(express.static(path.join(__dirname, 'public'))) // register for a not-dynamic (by routes) place
 
 app.use('/admin', adminRoute)
 app.use(shopRoute)

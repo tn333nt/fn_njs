@@ -5,14 +5,16 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>shop</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <!-- expjs -> check extension (.css/.js or not) of req that r finding files
+    -> auto forward it to the public folder -->
 </head>
 <body>
-    <!-- render products -->
-    <header>
-        <nav>
-            <ul>
-                <li><a href="/">shop</a></li>
-                <li><a href="/add-product">add product</a></li>
+    <header class="mainHeader">
+        <nav class="HeaderNav">
+            <ul class="navList">
+                <li class="navListItem"><a class="active" href="/">shop</a></li>
+                <li class="navListItem"><a href="/admin/add-product">add product</a></li>
             </ul>
         </nav>
     </header>
