@@ -1,6 +1,5 @@
 
 <%- include('./include/start.ejs') %>
-<!-- include part (through relative path) into current page -->
 
     <%- include('include/nav.ejs') %>
 
@@ -8,14 +7,3 @@
 
 <%- include('include/end.ejs') %>
 
-
-<!-- 
-    = : render RAW passed values
-        [to avoid cross-site scripting attacks?] (escape value concept)
-    - : render handled html code 
-        (real value unescapes from code=))
-
-    https://stackoverflow.com/questions/20727910/what-is-escaped-unescaped-output
--->
-<%# can not contain %>
-<%/* half of tags inside =) */%>
