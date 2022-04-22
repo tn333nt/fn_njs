@@ -18,7 +18,7 @@ app.use('/admin', adminData.router)
 app.use(shopData)
 
 app.use((req,res) => {
-    res.status(404).render('404')
+    res.status(404).render('404', { pageTitle : 404 })
 })
 
 app.listen(3000) 
