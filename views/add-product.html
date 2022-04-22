@@ -5,8 +5,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>add product</title>
-    <link rel="stylesheet" href="/css/product.css">
     <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/form.css">
 </head>
 <body>
     <header class="mainHeader">
@@ -19,13 +19,12 @@
     </header>
 
     <main>
-        <form class="productFormContainer"action="/admin/product" method="post">
+        <form class="formContainer" action="/admin/product" method="post">
             <div class="formControl">
                 <label for=""> title </label>
                 <input type="text" name="title"/>  
             </div>
-
-            <button type="submit">add product</button>          
+            <button class="btn" type="submit">add product</button>          
         </form>
     </main>
 </body>

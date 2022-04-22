@@ -1,0 +1,26 @@
+.formContainer {
+    margin: auto;
+    width: 21rem;
+    max-width: 90%;
+}
+
+.formControl {
+    display : flex; 
+    flex-direction: column;
+    row-gap: 1rem;
+    margin: 1rem 0;
+
+    color: blue;
+    font-size: larger;
+    font-family: inherit;
+}
+
+.formControl input {
+    width: 100%;
+    border: 3px solid #619dd6 ;
+    border-radius: 3px;
+}
+
+.formControl input:focus {
+    outline-color: blue;
+}
