@@ -13,32 +13,27 @@ module.exports = class Product {
             'data', 
             'products.json'
             )
-        fs.readFile(pathToStore, (err, fileContent) => {
-            const products = [] // store new data temporarily?
-            console.log(err, fileContent);
+        fs.readFile(pathToStore, (err, fileContent) => { // this fileContent is a buffer
+            let products = [] 
             if (!err) {
-                products = JSON.parse(fileContent) // parse data from file
+                products = JSON.parse(fileContent) 
             }
-            products.push(this) // append new data to file
+            products.push(this) 
             fs.writeFile(pathToStore, JSON.stringify(products), err => {
-                console.log(err); // no err
-            }) // parse data to save to file?
+                console.log(err); 
+                console.log(products.length);
+            })
         })
-        
     }
 
-    static fetchAll() { 
+    static fetchAll(cb) { 
         const pathToStore = path.join(
             path.dirname(require.main.filename), 
             'data', 
-            'products'
+            'products.json' // remember extension =))
             )
         fs.readFile(pathToStore, (err, fileContent) => {
-            return err ? [] : JSON.parse(fileContent); // return data from file
-            // if (err) {
-            //     return []
-            // }
-            // return JSON.parse(fileContent)
+            return err ? cb([]) : cb(JSON.parse(fileContent))
         })
     }
 }

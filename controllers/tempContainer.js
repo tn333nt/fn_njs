@@ -15,11 +15,12 @@ exports.postProduct = (req, res) => {
 } 
 
 exports.getShop = (req, res) => {
-    const products = Product.fetchAll() 
-    const url = req.url
-    res.render('shop', { 
-        products : products, 
-        pageTitle : 'shop', 
-        path : url
-    })
+    Product.fetchAll( products => {
+        const url = req.url
+        res.render('shop', { 
+            products : products, 
+            pageTitle : 'shop', 
+            path : url
+        })
+    }) 
 }
