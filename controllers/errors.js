@@ -7,8 +7,3 @@ exports.get404 = (req,res) => {
     })
 } 
 
-
-
-// why ? why it doesn't set to be 'unactive' but 'undefined' ?,
-// -- vi no chua co ca "path" de ma check luon va ejs co ve ko choi doan "path &&" inside =))
-
