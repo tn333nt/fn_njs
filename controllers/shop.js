@@ -31,6 +31,12 @@ exports.getIndex = (req, res, next) => {
   });
 };
 
+exports.postCart = (req, res) => {
+  const id = req.body.id
+  console.log(id);
+  res.redirect('/cart')
+}
+
 exports.getCart = (req, res, next) => {
   res.render('shop/cart', {
     path: '/cart',
