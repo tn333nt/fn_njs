@@ -1,5 +1,5 @@
-const res = require('express/lib/response');
 const Product = require('../models/product');
+const Cart = require('../models/cart');
 
 exports.getProducts = (req, res, next) => {
   Product.fetchAll(products => {
@@ -33,7 +33,9 @@ exports.getIndex = (req, res, next) => {
 
 exports.postCart = (req, res) => {
   const id = req.body.id
-  console.log(id);
+  Product.findById(id, product => {
+    Cart.addProduct(id, product.price)
+  })
   res.redirect('/cart')
 }
 

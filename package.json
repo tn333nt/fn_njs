@@ -13,6 +13,9 @@
   "devDependencies": {
     "nodemon": "^1.18.3"
   },
+  "nodemonConfig": {    
+    "ignore": [ "data/*"] 
+  },
   "dependencies": {
     "body-parser": "^1.18.3",
     "ejs": "^2.6.1",

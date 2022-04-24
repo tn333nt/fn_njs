@@ -29,7 +29,9 @@ module.exports = class Product {
   save() {
     getProductsFromFile(products => {
       products.push(this);
-      fs.writeFile(p, JSON.stringify(products), () => {});
+      fs.writeFile(p, JSON.stringify(products), (err) => {
+        console.log(err);
+      });
     });
   }
 
@@ -40,8 +42,8 @@ module.exports = class Product {
   static findById(id, cb) {
     getProductsFromFile( products => {
       const product = products.find(product => +product.id === +id)
-      console.log(product);
-      console.log(products);
+      // console.log(product);
+      // console.log(products);
       cb(product)
     })
   }
