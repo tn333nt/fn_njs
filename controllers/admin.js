@@ -29,3 +29,19 @@ exports.getProducts = (req, res, next) => {
     });
   });
 };
+
+exports.editProduct = (req, res, next) => {
+  // check if the action is for editing or adding
+  const editMode = req.query.edit
+  console.log(editMode);
+  console.log(req.query);
+  if (!editMode) {
+    res.redirect('/')
+    // Error [ERR_HTTP_HEADERS_SENT]: Cannot set headers after they are sent to the client
+  }
+  res.render('admin/add-product', {
+    pageTitle: 'edit Product',
+    path: '/admin/edit-product',
+    editing : editMode
+  });
+};

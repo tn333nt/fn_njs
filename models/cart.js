@@ -17,27 +17,22 @@ module.exports = class Cart {
             if (!err) {
                 cart = JSON.parse(fileContent)
             }
-            // after assign file's contents into a temp store
 
-            // consider or add or increase quan
             const productIndex = cart.products.findIndex(p => p.id === id) 
             const existingProduct = cart.products[productIndex]
 
             let updatedProduct;
 
             if (existingProduct) {
-                // increase quantity if existing
                 updatedProduct = { ...existingProduct }
 
                 updatedProduct.quantity += 1
 
-                // replace the old one
                 cart.products = [...cart.products] 
 
                 cart.products[productIndex] = updatedProduct
 
             } else {
-                // create new one if there is no data
                 updatedProduct = {
                     id: id,
                     quantity: 1
@@ -45,7 +40,6 @@ module.exports = class Cart {
 
                 cart.products = [...cart.products, updatedProduct]
             }
-            // incease total price
             cart.totalPrice += +productPrice
             fs.writeFile(p, JSON.stringify(cart), () => { })
         })
