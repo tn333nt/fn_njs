@@ -23,7 +23,7 @@ module.exports = class Product {
     this.imageUrl = imageUrl;
     this.description = description;
     this.price = price;
-    this.id = Math.random().toString() // why can't i convert it to str?
+    this.id = Math.random().toString() 
   }
   
   save() {
