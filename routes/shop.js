@@ -10,7 +10,7 @@ router.get('/', shopController.getIndex);
 
 router.get('/products', shopController.getProducts);
 
-router.get('/products/:productId', shopController.getProduct) // :... = everthing that come after /
+router.get('/products/:productId', shopController.getProduct) 
 
 router.get('/cart', shopController.getCart);
 

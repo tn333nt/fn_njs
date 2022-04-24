@@ -12,9 +12,10 @@ exports.getProducts = (req, res, next) => {
 };
 
 exports.getProduct = (req, res) => {
-  const id = req.params.productId; // extract data on params obj
-  console.log(id); // not from this?
-  res.redirect('/')
+  const id = req.params.productId; 
+  console.log(id);
+  Product.findById(id, product => console.log(product)) // receive p through cb
+  // res.redirect('/')
 }
 
 exports.getIndex = (req, res, next) => {

@@ -23,20 +23,26 @@ module.exports = class Product {
     this.imageUrl = imageUrl;
     this.description = description;
     this.price = price;
-    this.id = Math.random().toString()
-    }
+    this.id = Math.random().toString() // why can't i convert it to str?
+  }
   
   save() {
-    console.log(this.id);
     getProductsFromFile(products => {
       products.push(this);
-      fs.writeFile(p, JSON.stringify(products), err => {
-        console.log(err);
-      });
+      fs.writeFile(p, JSON.stringify(products), () => {});
     });
   }
 
   static fetchAll(cb) {
     getProductsFromFile(cb);
+  }
+
+  static findById(id, cb) {
+    getProductsFromFile( products => {
+      const product = products.find(product => +product.id === +id)
+      console.log(product);
+      console.log(products);
+      cb(product)
+    })
   }
 };
