@@ -17,7 +17,7 @@ module.exports = class Product {
       this.imageUrl,
       this.price,
       this.description
-    ]) // destruct each ? = this's data
+    ]) 
   }
 
   static fetchAll() {
@@ -25,7 +25,7 @@ module.exports = class Product {
   }
 
   static findById(id) {
-    
+    return db.execute('SELECT * FROM products WHERE products.id = ?', [id])
   }
 
   static deleteById(id) {
