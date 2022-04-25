@@ -40,11 +40,26 @@ exports.postCart = (req, res) => {
 }
 
 exports.getCart = (req, res, next) => {
-  res.render('shop/cart', {
-    path: '/cart',
-    pageTitle: 'Your Cart'
-  });
-};
+  Cart.getCart( cart => {
+    Product.fetchAll(products => {
+      const cartProducts = []
+      products.forEach(product => {
+        const cartProduct = cart.products.find(p => p.id === product.id)
+        if (cartProduct) {
+          cartProducts.push({
+            product: product,
+            quantity: cartProduct.quantity
+          })
+        }
+      })
+      res.render('shop/cart', {
+        path: '/cart',
+        pageTitle: 'Your Cart',
+        products : cartProducts
+      });
+    })
+  })
+}; // ko hiểu sao cùng 1 đoạn code nhưng nó vừa mới ko chạy đc mà ???
 
 exports.getOrders = (req, res, next) => {
   res.render('shop/orders', {

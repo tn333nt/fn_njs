@@ -42,9 +42,8 @@ module.exports = class Cart {
 
     static deleteProduct(id, productPrice) {
         fs.readFile(p, (err, fileContent) => {
-            let cart = {}
             if (!err) {
-                cart = JSON.parse(fileContent)
+                const cart = JSON.parse(fileContent)
                 const product = cart.products.find(p => p.id === id) 
                 cart.products = cart.products.filter(p => p.id !== id)
                 cart.totalPrice -= (+productPrice * +product.quantity)
@@ -52,28 +51,19 @@ module.exports = class Cart {
             }
         })
     }
+
+    static getCart(cb) {
+        fs.readFile(p, (err, fileContent) => {
+            const cart = JSON.parse(fileContent)
+            err ? cb(null) : cb(cart)
+        })
+    }
 }
 
+/* ?
+SyntaxError: Unexpected token u in JSON at position 0
+=>  your app is attempting to parse undefined, which is not valid JSON
 
-// ref
-/*
-static deleteProduct(id, productPrice) {
-    fs.readFile(p, (err, fileContent) => {
-      if (err) {
-        return;
-      }
-      const updatedCart = { ...JSON.parse(fileContent) }; // what does that mean
-      const product = updatedCart.products.find(prod => prod.id === id);
-      const productQty = product.qty;
-      updatedCart.products = updatedCart.products.filter(
-        prod => prod.id !== id
-      );
-      updatedCart.totalPrice =
-        updatedCart.totalPrice - productPrice * productQty;
-
-      fs.writeFile(p, JSON.stringify(updatedCart), err => {
-        console.log(err);
-      });
-    });
-  }
+SyntaxError: Malformed arrow function parameter list in ... while compiling ejs
+Or, if you meant to create an async function, pass `async: true` as an option.
 */
