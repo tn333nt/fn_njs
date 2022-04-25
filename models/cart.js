@@ -45,6 +45,9 @@ module.exports = class Cart {
             if (!err) {
                 const cart = JSON.parse(fileContent)
                 const product = cart.products.find(p => p.id === id) 
+                if (!product) {
+                    return; // comeback & not update if found p doesn't in cartList
+                }
                 cart.products = cart.products.filter(p => p.id !== id)
                 cart.totalPrice -= (+productPrice * +product.quantity)
                 fs.writeFile(p, JSON.stringify(cart), () => {})
@@ -59,11 +62,3 @@ module.exports = class Cart {
         })
     }
 }
-
-/* ?
-SyntaxError: Unexpected token u in JSON at position 0
-=>  your app is attempting to parse undefined, which is not valid JSON
-
-SyntaxError: Malformed arrow function parameter list in ... while compiling ejs
-Or, if you meant to create an async function, pass `async: true` as an option.
-*/

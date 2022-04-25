@@ -12,13 +12,13 @@ exports.getProducts = (req, res, next) => {
 };
 
 exports.getProduct = (req, res) => {
-  const id = req.params.productId; 
+  const id = req.params.productId;
   console.log(id);
-  Product.findById(id, product => res.render('shop/product-detail', { 
+  Product.findById(id, product => res.render('shop/product-detail', {
     product: product,
-    pageTitle : product.title,
-    path : '/products'
-  }))  
+    pageTitle: product.title,
+    path: '/products'
+  }))
 }
 
 exports.getIndex = (req, res, next) => {
@@ -40,7 +40,7 @@ exports.postCart = (req, res) => {
 }
 
 exports.getCart = (req, res, next) => {
-  Cart.getCart( cart => {
+  Cart.getCart(cart => {
     Product.fetchAll(products => {
       const cartProducts = []
       products.forEach(product => {
@@ -55,11 +55,21 @@ exports.getCart = (req, res, next) => {
       res.render('shop/cart', {
         path: '/cart',
         pageTitle: 'Your Cart',
-        products : cartProducts
+        products: cartProducts
       });
     })
   })
-}; // ko hiểu sao cùng 1 đoạn code nhưng nó vừa mới ko chạy đc mà ???
+}
+
+exports.deleteCart = (req, res) => {
+  const id = req.body.productId;
+  console.log(id);
+  Product.findById(id, product => {
+    Cart.deleteProduct(id, product.price)
+    res.redirect('/cart')
+  })
+} 
+
 
 exports.getOrders = (req, res, next) => {
   res.render('shop/orders', {
