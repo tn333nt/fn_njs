@@ -30,7 +30,6 @@ module.exports = class Product {
     getProductsFromFile(products => {
       if (this.id) {
         const productIndex = products.findIndex(p => p.id === this.id)
-        // products[productIndex] = this 
 
         const updatedProducts = [...products]
         updatedProducts[productIndex] = this
@@ -50,25 +49,15 @@ module.exports = class Product {
 
   static findById(id, cb) {
     getProductsFromFile(products => {
-      const product = products.find(product => product.id === id) // cuz of space , not dif type =)
-      console.log(typeof product.id);
-      console.log(typeof id);
-      console.log( product.id);
-      console.log( id);
+      const product = products.find(product => product.id === id) 
       cb(product)
     })
   }
+
+  static deleteById(id) {
+    getProductsFromFile(products => {
+      const updatedProducts = products.filter(product => product.id !== id) 
+      fs.writeFile(p, JSON.stringify(updatedProducts), () => {})
+    })
+  }
 };
-
-
-/* 
-  let updatedProduct = products[productIndex]
-  updatedProduct += this 
-
---->
-"[object Object][object Object]"
-
-// sao chỗ này log cái obj ra nó có data đc trong khi chỗ file lưu nó đang dạng ntn ??
-// sao data lưu dạng như này lại render đc 1 đống empty item nhỉ
-// nó lắp kiểu gì vậy ?
-*/
