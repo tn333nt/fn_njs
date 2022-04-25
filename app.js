@@ -8,15 +8,6 @@ const shopRoutes = require('./routes/shop');
 const errorController = require('./controllers/error');
 const db = require('./util/database')
 
-db.execute('SELECT * FROM `node-udemy`.products') // promise (given back data)
-.then( data => {
-    console.log(data);
-    console.log(data[0]);
-}) // get the cb to execute
-.catch( err => {
-    console.log(err);
-}) 
-
 const app = express();
 
 app.set('view engine', 'ejs');
