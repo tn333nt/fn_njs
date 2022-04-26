@@ -14,12 +14,12 @@ exports.getProducts = (req, res, next) => {
 
 exports.getProduct = (req, res) => {
   const id = req.params.productId
-  Product.findAll({where : {id : id}}) // config conditions
-  .then( products => {
-    console.log(products);
+  Product.findByPk(id)
+  .then( product => {
+    console.log(product.title);
     res.render('shop/product-detail', {
-      product: products[0],
-      pageTitle: products[0].title,
+      product: product,
+      pageTitle: product.title,
       path: '/products'
     })
   } )
