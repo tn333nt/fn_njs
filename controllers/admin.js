@@ -1,5 +1,18 @@
 const Product = require('../models/product');
 
+exports.getProducts = (req, res, next) => {
+  req.user
+    .getProducts() 
+    .then(products => {
+      console.log(products);
+      res.render('admin/products', {
+        prods: products,
+        pageTitle: 'Admin Products',
+        path: '/admin/products'
+      });
+    });
+};
+
 exports.getAddProduct = (req, res, next) => {
   res.render('admin/add-product', {
     pageTitle: 'Add Product',
@@ -14,7 +27,7 @@ exports.postAddProduct = (req, res, next) => {
   const price = req.body.price;
   const description = req.body.description;
   req.user
-    .createProduct({ // create Product for User?
+    .createProduct({ 
       title: title,
       imageUrl: imageUrl,
       price: price,
@@ -27,17 +40,6 @@ exports.postAddProduct = (req, res, next) => {
     })
 };
 
-exports.getProducts = (req, res, next) => {
-  Product.findAll()
-    .then(products => {
-      res.render('admin/products', {
-        prods: products,
-        pageTitle: 'Admin Products',
-        path: '/admin/products'
-      });
-    });
-};
-
 exports.postEditProduct = (req, res) => {
   const id = req.body.productId
   const updatedTitle = req.body.title
@@ -46,7 +48,7 @@ exports.postEditProduct = (req, res) => {
   const updatedDescription = req.body.description
   Product.findByPk(id)
     .then(product => {
-      product.title = updatedTitle,
+        product.title = updatedTitle,
         product.imageUrl = updatedImageUrl,
         product.price = updatedPrice,
         product.description = updatedDescription
@@ -58,19 +60,22 @@ exports.postEditProduct = (req, res) => {
     })
 }
 
-exports.editProduct = (req, res, next) => {
+exports.getEditProduct = (req, res, next) => {
   const editMode = req.query.edit
   const id = req.params.productId
   if (!editMode) {
     return res.redirect('/')
   }
-  Product.findByPk(id)
-    .then(product => {
+    req.user
+      .getProducts({
+        where: { id: id }
+      })
+    .then(products => {
       res.render('admin/add-product', {
         pageTitle: 'edit Product',
         path: '/admin/edit-product',
         editing: editMode,
-        product: product
+        product: products[0]
       });
     })
 };
@@ -86,3 +91,11 @@ exports.postDeleteProduct = (req, res) => {
       res.redirect('/admin/products')
     })
 }
+
+
+
+/**
+ * TypeError: req.user.getProducts is not a function
+ *
+ *  have not relate them yet => can not create this method between =)
+ */
