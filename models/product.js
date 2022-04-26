@@ -10,7 +10,7 @@ const Product = sequelize.define('product', {
     allowNull: false
   },
   title: {
-    type: Sequelize.STRING, // '' does not correspond to this version mb
+    type: Sequelize.STRING, 
     allowNull: false
   },
   imageUrl: Sequelize.STRING,

@@ -21,7 +21,7 @@ app.use(shopRoutes);
 
 app.use(errorController.get404);
 
-sequelize.sync() // sync all defined M to db
+sequelize.sync() 
     .then(data => {
         console.log(data);
         app.listen(3000);
