@@ -1,6 +1,6 @@
-const Sequelize = require('sequelize') // constructor f 
+const Sequelize = require('sequelize') 
 
-const sequelize = new Sequelize( // new instance 
+const sequelize = new Sequelize( 
     'node-udemy',
     'root',
     'thtltcbtst111',
@@ -8,6 +8,3 @@ const sequelize = new Sequelize( // new instance
 )
 
 module.exports = sequelize
-
-// execute all sql code behind the scenes 
-// map these code into objects
