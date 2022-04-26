@@ -10,7 +10,7 @@ const Product = sequelize.define('product', {
     allowNull: false
   },
   title: {
-    type: 'string',
+    type: Sequelize.STRING, // '' does not correspond to this version mb
     allowNull: false
   },
   imageUrl: Sequelize.STRING,
@@ -19,6 +19,6 @@ const Product = sequelize.define('product', {
     allowNull: false
   },
   description: Sequelize.TEXT
-}) // config each field as obj
+}) 
 
 module.exports = Product
