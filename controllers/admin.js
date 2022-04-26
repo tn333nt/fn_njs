@@ -38,28 +38,30 @@ exports.postEditProduct = (req, res) => {
   const id = req.body.productId
   const updatedTitle = req.body.title
   const updatedImageUrl = req.body.imageUrl
-  const updatedDescription = req.body.description
   const updatedPrice = req.body.price
-  const updatedProduct = new Product( 
-    id,
-    updatedTitle,
-    updatedImageUrl,
-    updatedPrice,
-    updatedDescription
-  )
-  updatedProduct.save()
-  res.redirect('/admin/products')
+  const updatedDescription = req.body.description
+  Product.findByPk(id)
+  .then( product => {
+    product.title = updatedTitle,
+    product.imageUrl = updatedImageUrl,
+    product.price = updatedPrice,
+    product.description = updatedDescription
+    return product.save() // provided () -> save back to db
+  })
+  .then( updatedProduct => {
+    console.log(updatedProduct);
+    res.redirect('/admin/products')
+  })
 }
 
 exports.editProduct = (req, res, next) => {
   const editMode = req.query.edit
   const id = req.params.productId
-  console.log(id)
   if (!editMode) {
     return res.redirect('/')
   }
-  Product.findById(id, product => {
-    console.log(product);
+  Product.findByPk(id)
+  .then( product => {
     res.render('admin/add-product', {
       pageTitle: 'edit Product',
       path: '/admin/edit-product',
