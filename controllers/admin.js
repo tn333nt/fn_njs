@@ -20,6 +20,7 @@ exports.postAddProduct = (req, res, next) => {
     description: description
   }).then( products => {
     console.log(products);
+    res.redirect('/admin/products')
   })
 };
 
@@ -46,7 +47,7 @@ exports.postEditProduct = (req, res) => {
     product.imageUrl = updatedImageUrl,
     product.price = updatedPrice,
     product.description = updatedDescription
-    return product.save() // provided () -> save back to db
+    return product.save() 
   })
   .then( updatedProduct => {
     console.log(updatedProduct);
@@ -73,6 +74,12 @@ exports.editProduct = (req, res, next) => {
 
 exports.postDeleteProduct = (req, res) => {
   const id = req.body.productId
-  Product.deleteById(id)
-  res.redirect('/admin/products')
+  Product.findByPk(id)
+  .then( product => {
+    return product.destroy()
+  })
+  .then( deleteProduct => {
+    console.log(deleteProduct);
+    res.redirect('/admin/products')
+  })
 }
