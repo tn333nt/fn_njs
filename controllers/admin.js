@@ -13,13 +13,13 @@ exports.postAddProduct = (req, res, next) => {
   const imageUrl = req.body.imageUrl;
   const price = req.body.price;
   const description = req.body.description;
-  Product.create({ // immediately save new created values to db
+  Product.create({ 
     title: title,
     imageUrl: imageUrl,
     price: price,
     description: description
-  }).then( data => {
-    console.log(data);
+  }).then( products => {
+    console.log(products);
   })
 };
 

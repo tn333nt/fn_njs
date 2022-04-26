@@ -23,6 +23,6 @@ app.use(errorController.get404);
 
 sequelize.sync() 
     .then(data => {
-        console.log(data);
+        // console.log(data);
         app.listen(3000);
     })
