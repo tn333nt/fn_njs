@@ -13,19 +13,20 @@ exports.getProducts = (req, res, next) => {
 };
 
 exports.getProduct = (req, res) => {
-  const id = req.params.productId;
-  Product.findById(id)
-  .then( ([product]) => {
+  const id = req.params.productId
+  Product.findAll({where : {id : id}}) // config conditions
+  .then( products => {
+    console.log(products);
     res.render('shop/product-detail', {
-      product: product[0],
-      pageTitle: product[0].title,
+      product: products[0],
+      pageTitle: products[0].title,
       path: '/products'
     })
   } )
 }
 
 exports.getIndex = (req, res, next) => {
-  Product.findAll() // get all rec of this M
+  Product.findAll() 
   .then( products => {
     console.log(products) 
     res.render('shop/index', {
