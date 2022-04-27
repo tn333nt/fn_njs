@@ -37,18 +37,10 @@ exports.getIndex = (req, res, next) => {
   })
 };
 
-exports.postCart = (req, res) => {
-  const id = req.body.id
-  Product.findById(id, product => {
-    Cart.addProduct(id, product.price)
-  })
-  res.redirect('/cart')
-}
-
 exports.getCart = (req, res, next) => {
   req.user.getCart()
   .then( cart => {
-    return cart.getProducts() // s for m-m rel =)
+    return cart.getProducts() 
   })
   .then( cartProducts => {
     res.render('shop/cart', {
@@ -57,6 +49,33 @@ exports.getCart = (req, res, next) => {
       products: cartProducts
     });
   })
+}
+
+exports.postCart = (req, res) => {
+  const id = req.body.id
+  let fetchedCart // make data in block 1 is available for all then blocks
+  let newQuantity = 1
+  req.user
+  .getCart()
+  .then( cart => {
+    fetchedCart = cart
+    return cart.getProducts({where: {id: id}})
+  })
+  .then( products => {
+    console.log('products', products);
+    if (products[0]) {
+      const oldQuantity = products[0].cartItem.quantity // access to in-between table + entries in there
+      newQuantity = oldQuantity + 1
+      return products[0]
+    }
+    return Product.findByPk(id)
+  })
+  .then( product => { 
+    return fetchedCart.addProduct(product, {
+      through: { quantity: newQuantity } // set value (quantity) for an extra field 
+    })
+  })
+  .then( () => res.redirect('/cart') )
 }
 
 exports.deleteCart = (req, res) => {

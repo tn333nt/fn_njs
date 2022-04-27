@@ -39,9 +39,9 @@ Product.belongsTo(User, {
 User.hasMany(Product)
 User.hasOne(Cart)
 Cart.belongsTo(User)
-Cart.belongsToMany(Product, { through : CartItem })
+Cart.belongsToMany(Product, { through : CartItem }) 
 Product.belongsToMany(Cart, { through : CartItem })
-
+// 'cartItem' as extra field for an in-between table CartItem (auto add by s)
 
 sequelize
     // .sync({ force: true })
