@@ -36,10 +36,12 @@ app.use(errorController.get404);
 
 Product.belongsTo(User)
 User.hasMany(Product)
-Order.belongsTo(User)
-User.hasMany(Order)
+
 User.hasOne(Cart)
 Cart.belongsToMany(Product, { through : CartItem }) 
+
+Order.belongsTo(User)
+User.hasMany(Order)
 Order.belongsToMany(Product, { through : OrderItem }) 
 
 sequelize
