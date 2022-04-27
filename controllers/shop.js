@@ -46,27 +46,17 @@ exports.postCart = (req, res) => {
 }
 
 exports.getCart = (req, res, next) => {
-  Cart.getCart(cart => {
-    Product.fetchAll()
-    .then( ([records, fieldData]) => {
-      const cartProducts = []
-      records.forEach(rec => {
-        const cartProduct = cart.records.find(p => p.id === rec.id)
-        if (cartProduct) {
-          cartProducts.push({
-            product: rec,
-            quantity: cartProduct.quantity
-          })
-        }
-      })
-      res.render('shop/cart', {
-        path: '/cart',
-        pageTitle: 'Your Cart',
-        products: cartProducts
-      });
-    })
+  req.user.getCart()
+  .then( cart => {
+    return cart.getProducts() // s for m-m rel =)
   })
-  
+  .then( cartProducts => {
+    res.render('shop/cart', {
+      path: '/cart',
+      pageTitle: 'Your Cart',
+      products: cartProducts
+    });
+  })
 }
 
 exports.deleteCart = (req, res) => {

@@ -39,18 +39,17 @@ Product.belongsTo(User, {
 User.hasMany(Product)
 User.hasOne(Cart)
 Cart.belongsTo(User)
-Cart.belongsToMany(Product, { 
-    through : CartItem // where to store these connections
-})
+Cart.belongsToMany(Product, { through : CartItem })
 Product.belongsToMany(Cart, { through : CartItem })
 
 
 sequelize
-    .sync({ force: true })
-    // .sync()
+    // .sync({ force: true })
+    .sync()
     .then(() => User.findByPk(1))
     .then(user => user ? user : User.create({
         name: 'abc',
         email: 'abc@example.com'
     }))
+    .then( user => user.createCart())
     .then(() => app.listen(3000))
