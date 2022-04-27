@@ -82,7 +82,7 @@ exports.deleteCart = (req, res) => {
   const id = req.body.productId;
   req.user.getCart()
   .then( cart => {
-    // return cart.removeProduct({where: {id: id }}) // what is the problem when removing product with this id directly from cart
+    // return cart.removeProduct({where: {id: id }})
     return cart.getProducts({where: {id: id}})
   })
   .then( products => {
