@@ -38,10 +38,10 @@ Product.belongsTo(User, {
 })
 User.hasMany(Product)
 User.hasOne(Cart)
-Cart.belongsTo(User)
+// Cart.belongsTo(User)
 Cart.belongsToMany(Product, { through : CartItem }) 
-Product.belongsToMany(Cart, { through : CartItem })
-// 'cartItem' as extra field for an in-between table CartItem (auto add by s)
+// Product.belongsToMany(Cart, { through : CartItem })
+// the relation is same for both directions -> only need to define 1
 
 sequelize
     // .sync({ force: true })

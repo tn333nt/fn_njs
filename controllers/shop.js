@@ -53,7 +53,7 @@ exports.getCart = (req, res, next) => {
 
 exports.postCart = (req, res) => {
   const id = req.body.id
-  let fetchedCart // make data in block 1 is available for all then blocks
+  let fetchedCart 
   let newQuantity = 1
   req.user
   .getCart()
@@ -64,7 +64,7 @@ exports.postCart = (req, res) => {
   .then( products => {
     console.log('products', products);
     if (products[0]) {
-      const oldQuantity = products[0].cartItem.quantity // access to in-between table + entries in there
+      const oldQuantity = products[0].cartItem.quantity 
       newQuantity = oldQuantity + 1
       return products[0]
     }
@@ -72,7 +72,7 @@ exports.postCart = (req, res) => {
   })
   .then( product => { 
     return fetchedCart.addProduct(product, {
-      through: { quantity: newQuantity } // set value (quantity) for an extra field 
+      through: { quantity: newQuantity } 
     })
   })
   .then( () => res.redirect('/cart') )
@@ -80,11 +80,15 @@ exports.postCart = (req, res) => {
 
 exports.deleteCart = (req, res) => {
   const id = req.body.productId;
-  console.log(id);
-  Product.findById(id, product => {
-    Cart.deleteProduct(id, product.price)
-    res.redirect('/cart')
+  req.user.getCart()
+  .then( cart => {
+    // return cart.removeProduct({where: {id: id }}) // what is the problem when removing product with this id directly from cart
+    return cart.getProducts({where: {id: id}})
   })
+  .then( products => {
+    return products[0].cartItem.destroy()
+  })
+  .then( () => res.redirect('/cart'))
 } 
 
 
