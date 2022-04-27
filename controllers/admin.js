@@ -4,7 +4,7 @@ exports.getProducts = (req, res, next) => {
   req.user
     .getProducts() 
     .then(products => {
-      console.log(products);
+      // console.log(products);
       res.render('admin/products', {
         prods: products,
         pageTitle: 'Admin Products',
@@ -34,7 +34,7 @@ exports.postAddProduct = (req, res, next) => {
       description: description,
     })
     .then(products => {
-      console.log(products);
+      // console.log(products);
       res.redirect('/admin/products')
     })
 };
@@ -54,7 +54,7 @@ exports.postEditProduct = (req, res) => {
       return product.save()
     })
     .then(updatedProduct => {
-      console.log(updatedProduct);
+      // console.log(updatedProduct);
       res.redirect('/admin/products')
     })
 }
@@ -86,7 +86,7 @@ exports.postDeleteProduct = (req, res) => {
       return product.destroy()
     })
     .then(deleteProduct => {
-      console.log(deleteProduct);
+      // console.log(deleteProduct);
       res.redirect('/admin/products')
     })
 }
