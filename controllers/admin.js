@@ -32,7 +32,6 @@ exports.postAddProduct = (req, res, next) => {
       imageUrl: imageUrl,
       price: price,
       description: description,
-      // userId: req.user.id
     })
     .then(products => {
       console.log(products);
@@ -91,11 +90,3 @@ exports.postDeleteProduct = (req, res) => {
       res.redirect('/admin/products')
     })
 }
-
-
-
-/**
- * TypeError: req.user.getProducts is not a function
- *
- *  have not relate them yet => can not create this method between =)
- */

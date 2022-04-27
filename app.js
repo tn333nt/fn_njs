@@ -9,6 +9,8 @@ const errorController = require('./controllers/error');
 const sequelize = require('./util/database')
 const Product = require('./models/product');
 const User = require('./models/user');
+const Cart = require('./models/cart');
+const CartItem = require('./models/cart-item');
 
 const app = express();
 
@@ -21,7 +23,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use((req, res, next) => {
     User.findByPk(1)
         .then(user => {
-            console.log('look at this', user.createProduct);
             req.user = user
             next();
         })
@@ -31,17 +32,22 @@ app.use('/admin', adminRoutes);
 app.use(shopRoutes);
 app.use(errorController.get404);
 
-User.hasMany(Product, {
-    foreignKey: 'userId'
-})
 Product.belongsTo(User, {
     constraints: true,
     onDelete: 'CASCADE'
 })
+User.hasMany(Product)
+User.hasOne(Cart)
+Cart.belongsTo(User)
+Cart.belongsToMany(Product, { 
+    through : CartItem // where to store these connections
+})
+Product.belongsToMany(Cart, { through : CartItem })
+
 
 sequelize
-    // .sync( force: true })
-    .sync()
+    .sync({ force: true })
+    // .sync()
     .then(() => User.findByPk(1))
     .then(user => user ? user : User.create({
         name: 'abc',
