@@ -29,18 +29,11 @@ exports.postAddProduct = (req, res, next) => {
   const product = new Product(title, imageUrl, price, description)
   product.save()
     .then(products => {
-      console.log('from postAddProduct', products); // undefined?
+      console.log('from postAddProduct', products); 
       res.redirect('/admin/products')
     })
 };
 
-
-
-
-/*
-Failed to load resource: the server responded with a status of 404 (Not Found)
-à ừ làm gì có trang đó để mà redirect==
-*/
 
 // exports.postEditProduct = (req, res) => {
 //   const id = req.body.productId

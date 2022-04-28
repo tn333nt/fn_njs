@@ -8,7 +8,7 @@ const mongoConnect = callback => {
         .connect('mongodb+srv://test:bJYVI29LEAjl147U@cluster0.ti4jx.mongodb.net/myFirstDatabase?retryWrites=true&w=majority')
         .then(client => {
             _db = client.db() 
-            callback(client)
+            callback()
         })
 }
 
