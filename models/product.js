@@ -32,8 +32,7 @@ class Product {
     console.log(id);
     const db = getDb()
     return db.collection('products')
-    // .findOne({_id : new mongodb.ObjectId(id)})
-    .find({ _id : mongodb.ObjectId(id.trim())}) // mgdb uses _id & objectId() to store ids
+    .find({ _id : mongodb.ObjectId(id.trim())}) 
     .next()
     .then( product => {
       return product
