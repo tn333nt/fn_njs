@@ -35,30 +35,4 @@ app.use(express.static(path.join(__dirname, 'public')));
 // app.use(shopRoutes);
 // app.use(errorController.get404);
 
-mongoConnect( client => {
-    console.log(client);
-    app.listen(3000)
-})
-
-/* 
-MongoServerSelectionError: connect ETIMEDOUT 16.162.114.38:27017
-reason: TopologyDescription {
-    type: 'ReplicaSetNoPrimary',
-    servers: Map(3) {
-      'cluster0-shard-00-02.ti4jx.mongodb.net:27017' => [ServerDescription],
-      'cluster0-shard-00-00.ti4jx.mongodb.net:27017' => [ServerDescription],
-      'cluster0-shard-00-01.ti4jx.mongodb.net:27017' => [ServerDescription]
-    },
-    stale: false,
-    compatible: true,
-    heartbeatFrequencyMS: 10000,
-    localThresholdMS: 15,
-    setName: 'atlas-rztqr4-shard-0',
-    logicalSessionTimeoutMinutes: undefined
-  },
-  code: undefined,
-  [Symbol(errorLabels)]: Set(0) {}
-}
-
-ok=)) vpn =)
-*/
+mongoConnect(() => app.listen(3000))
