@@ -4,7 +4,7 @@ const getDb = require('../util/database').getDb;
 class User {
     constructor(name, email) {
         this.name = name,
-            this.email = email
+        this.email = email
     }
 
     save() {
@@ -12,10 +12,10 @@ class User {
         return db.collection('products').insertOne(this)
     }
 
-    static findByPk(id) {
+    static findByPk(userId) {
     const db = getDb()
     return db.collection('users')
-        .findOne({ _id: ObjectId(id.trim()) })
+        .findOne({ _id: ObjectId(userId.trim()) })
 }
 }
 

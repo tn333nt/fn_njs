@@ -24,7 +24,7 @@ exports.postAddProduct = (req, res, next) => {
   const imageUrl = req.body.imageUrl;
   const price = req.body.price;
   const description = req.body.description;
-  const product = new Product(null, title, imageUrl, price, description)
+  const product = new Product(null, title, imageUrl, price, description, req.user._id)
   product.save()
     .then(products => {
       console.log('from postAddProduct', products);
@@ -44,7 +44,8 @@ exports.postEditProduct = (req, res) => {
     updatedTitle, 
     updatedImageUrl, 
     updatedPrice, 
-    updatedDescription
+    updatedDescription,
+    req.user._id
     )
   product.save()
     .then(() => res.redirect('/admin/products'))
