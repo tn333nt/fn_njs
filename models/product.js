@@ -2,7 +2,8 @@ const mongodb = require('mongodb')
 const getDb = require('../util/database').getDb
 
 class Product {
-  constructor(title, imageUrl, price, description) {
+  constructor(title, imageUrl, price, description, _id) {
+    this._id = _id,
     this.title = title,
     this.imageUrl = imageUrl,
     this.price = price,
@@ -11,12 +12,25 @@ class Product {
 
   save() {
     const db = getDb()
-    return db.collection('products')
-    .insertOne(this) 
+    let dbOperation
+    if (!this._id) {
+      dbOperation = db.collection('products').insertOne(this) 
+    } else {
+      dbOperation = db.collection('products').updateOne({
+        _id : new mongodb.ObjectId(this._id)
+      }, {
+        $set : this // replaces the value of a field with the specified value
+      }) 
+    }
+    return dbOperation
     .then( data => {
-      console.log('from db1', data);
+      console.log('data', data);
     })
   }
+
+  /*
+  TypeError: db.collection(...).UpdateOne is not a function
+  */
 
   static fetchAll() {
     const db = getDb()
@@ -29,7 +43,6 @@ class Product {
   }
 
   static findByPk(id) {
-    console.log(id);
     const db = getDb()
     return db.collection('products')
     .find({ _id : mongodb.ObjectId(id.trim())}) 
@@ -41,20 +54,3 @@ class Product {
 }
 
 module.exports = Product
-
-
-
-/*
-https://mongodb.github.io/node-mongodb-native/3.6/api/AggregationCursor.html#next
-
-"You cannot return a cursor from a Function. 
-Instead, evaluate the cursor using cursor.next() or cursor.toArray() and return the result."
-
-*/
-
-/*
-BSONTypeError: Argument passed in must be a string of 12 bytes or a string of 24 hex characters or an integer
-
-format code
-https://stackoverflow.com/questions/30051236/argument-passed-in-must-be-a-string-of-24-hex-characters-i-think-it-is
-*/
