@@ -24,9 +24,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use((req, res, next) => {
-    User.findByPk('626a43572490d7e0255af82e')
+    User.findByPk('626a8db4a4275922b032d062')
         .then(user => {
-            req.user = user
+            req.user = new User(user.name, user.email, user.cart, user._id) // instance U in req
             next();
         })
 })

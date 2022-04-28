@@ -34,44 +34,51 @@ exports.getIndex = (req, res, next) => {
     })
 };
 
-// exports.getCart = (req, res, next) => {
-//   req.user.getCart()
-//     .then(cart => {
-//       return cart.getProducts()
-//     })
-//     .then(cartProducts => {
-//       res.render('shop/cart', {
-//         path: '/cart',
-//         pageTitle: 'Your Cart',
-//         products: cartProducts
-//       });
-//     })
-// }
+exports.getCart = (req, res, next) => {
+  // req.user.getCart()
+  //   .then(cart => {
+  //     return cart.getProducts()
+  //   })
+  //   .then(cartProducts => {
+  //     res.render('shop/cart', {
+  //       path: '/cart',
+  //       pageTitle: 'Your Cart',
+  //       products: cartProducts
+  //     });
+  //   })
+}
 
 exports.postCart = (req, res) => {
   const id = req.body.id
-  let fetchedCart
-  let newQuantity = 1
-  req.user
-    .getCart()
-    .then(cart => {
-      fetchedCart = cart
-      return cart.getProducts({ where: { id: id } })
-    })
-    .then(products => {
-      console.log('products', products);
-      if (products[0]) {
-        const oldQuantity = products[0].cartItem.quantity
-        newQuantity = oldQuantity + 1
-        return products[0]
-      }
-      return Product.findByPk(id)
-    })
-    .then(product => {
-      return fetchedCart.addProduct(product, {
-        through: { quantity: newQuantity }
-      })
-    })
+  Product.findByPk(id)
+  .then(product => {
+    return req.user.addToCart(product)
+  })
+  .then(product => {
+    console.log(product);
+  })
+  // let fetchedCart
+  // let newQuantity = 1
+  // req.user
+  //   .getCart()
+  //   .then(cart => {
+  //     fetchedCart = cart
+  //     return cart.getProducts({ where: { id: id } })
+  //   })
+  //   .then(products => {
+  //     console.log('products', products);
+  //     if (products[0]) {
+  //       const oldQuantity = products[0].cartItem.quantity
+  //       newQuantity = oldQuantity + 1
+  //       return products[0]
+  //     }
+  //     return Product.findByPk(id)
+  //   })
+  //   .then(product => {
+  //     return fetchedCart.addProduct(product, {
+  //       through: { quantity: newQuantity }
+  //     })
+  //   })
     .then(() => res.redirect('/cart'))
 }
 

@@ -4,9 +4,9 @@ const getDb = require('../util/database').getDb;
 class User {
     constructor(name, email, cart, id) {
         this.name = name,
-            this.email = email,
-            this.cart = cart, // {items : []}
-            this.id = id
+        this.email = email,
+        this.cart = cart, // {items : []}
+        this._id = id
     }
 
     save() {
@@ -16,8 +16,8 @@ class User {
 
     addToCart(product) { 
         const updatedCart = { 
-            items: [{ // set all of it on the fly
-                ...product,
+            items: [{ 
+                productId: ObjectId(product._id),
                 quantity: 1 
             }]
         }
@@ -25,14 +25,14 @@ class User {
         return db.collection('users')
             .updateOne(
                 { _id : ObjectId(this._id) }, 
-                { $set : { cart : updatedCart}} // set {} -> update which field in which way
+                { $set : { cart : updatedCart}} 
             )
     }
 
     static findByPk(userId) {
         const db = getDb()
         return db.collection('users')
-            .findOne({ _id: ObjectId(userId.trim()) })
+            .findOne({ _id: new ObjectId(userId) })
     }
 }
 
