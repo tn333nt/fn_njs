@@ -2,8 +2,8 @@ const ObjectId = require('mongodb').ObjectId
 const getDb = require('../util/database').getDb
 
 class Product {
-  constructor(_id, title, imageUrl, price, description) {
-    this._id = ObjectId(_id),
+  constructor(id, title, imageUrl, price, description) {
+    this._id = id ? ObjectId(id.trim()) : null ,
     this.title = title,
     this.imageUrl = imageUrl,
     this.price = price,
@@ -41,11 +41,16 @@ class Product {
   static findByPk(id) {
     const db = getDb()
     return db.collection('products')
-    .find({ _id : ObjectId(id.trim())}) 
-    .next()
+    .findOne({ _id : ObjectId(id.trim())}) 
     .then( product => {
       return product
     }) 
+  }
+
+  static deleteByPk(id) {
+    const db = getDb()
+    return db.collection('products')
+    .deleteOne({ _id : ObjectId(id.trim())}) 
   }
 }
 
