@@ -23,9 +23,6 @@ class Product {
       }) 
     }
     return dbOperation
-    .then( data => {
-      console.log('data', data);
-    })
   }
 
   static fetchAll() {
