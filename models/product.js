@@ -1,9 +1,9 @@
-const mongodb = require('mongodb')
+const ObjectId = require('mongodb').ObjectId
 const getDb = require('../util/database').getDb
 
 class Product {
-  constructor(title, imageUrl, price, description, _id) {
-    this._id = _id,
+  constructor(_id, title, imageUrl, price, description) {
+    this._id = ObjectId(_id),
     this.title = title,
     this.imageUrl = imageUrl,
     this.price = price,
@@ -17,9 +17,9 @@ class Product {
       dbOperation = db.collection('products').insertOne(this) 
     } else {
       dbOperation = db.collection('products').updateOne({
-        _id : new mongodb.ObjectId(this._id)
+        _id : this._id
       }, {
-        $set : this // replaces the value of a field with the specified value
+        $set : this 
       }) 
     }
     return dbOperation
@@ -27,10 +27,6 @@ class Product {
       console.log('data', data);
     })
   }
-
-  /*
-  TypeError: db.collection(...).UpdateOne is not a function
-  */
 
   static fetchAll() {
     const db = getDb()
@@ -45,7 +41,7 @@ class Product {
   static findByPk(id) {
     const db = getDb()
     return db.collection('products')
-    .find({ _id : mongodb.ObjectId(id.trim())}) 
+    .find({ _id : ObjectId(id.trim())}) 
     .next()
     .then( product => {
       return product

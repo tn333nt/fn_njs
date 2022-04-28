@@ -1,7 +1,5 @@
 const Product = require('../models/product');
 
-const ObjectId = require('mongodb').ObjectId;
-
 exports.getProducts = (req, res, next) => {
   Product.fetchAll()
     .then(products => {
@@ -34,10 +32,6 @@ exports.postAddProduct = (req, res, next) => {
     })
 } 
 
-/*
-TypeError: objectId is not a function
-*/
-
 exports.postEditProduct = (req, res) => {
   const id = req.body.productId
   const updatedTitle = req.body.title
@@ -46,11 +40,11 @@ exports.postEditProduct = (req, res) => {
   const updatedDescription = req.body.description
   
   const product = new Product(
+    id,
     updatedTitle, 
     updatedImageUrl, 
     updatedPrice, 
-    updatedDescription,
-    ObjectId(id)
+    updatedDescription
     )
   product.save()
     .then(() => res.redirect('/admin/products'))
