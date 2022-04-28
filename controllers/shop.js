@@ -11,21 +11,21 @@ exports.getProducts = (req, res, next) => {
     })
 };
 
-// exports.getProduct = (req, res) => {
-//   const id = req.params.productId
-//   Product.findByPk(id)
-//     .then(product => {
-//       res.render('shop/product-detail', {
-//         product: product,
-//         pageTitle: product.title,
-//         path: '/products'
-//       })
-//     })
-// }
+exports.getProduct = (req, res) => {
+  const id = req.params.productId
+  Product.findByPk(id)
+    .then(product => {
+      res.render('shop/product-detail', {
+        product: product,
+        pageTitle: product.title,
+        path: '/products'
+      })
+    })
+}
 
 exports.getIndex = (req, res, next) => {
   Product.fetchAll()
-    .then(products => { // undefined
+    .then(products => { 
       res.render('shop/index', {
         prods: products,
         pageTitle: 'Shop',
