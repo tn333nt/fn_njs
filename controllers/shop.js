@@ -36,14 +36,10 @@ exports.getProduct = (req, res) => {
 
 
 exports.getCart = (req, res, next) => {
-    console.log(req.user);
     req.user
         .populate('cart.items.productId')
-        // .execPopulate() // return promise 
-        // now populate() returns a promise and execPopulate() has been removed== https://mongoosejs.com/docs/migrating_to_6.html#removed-execpopulate
         .then(user => {
             const products = user.cart.items
-            console.log(products);
             res.render('shop/cart', {
                 path: '/cart',
                 pageTitle: 'Your Cart',
@@ -59,11 +55,11 @@ exports.postCart = (req, res) => {
         .then(() => res.redirect('/cart'))
 }
 
-// exports.deleteCartItem = (req, res) => {
-//   const id = req.body.productId;
-//   req.user.deleteFromCart(id)
-//     .then(() => res.redirect('/cart'))
-// }
+exports.deleteCartItem = (req, res) => {
+  const id = req.body.productId;
+  req.user.deleteFromCart(id)
+    .then(() => res.redirect('/cart'))
+}
 
 
 // exports.getOrders = (req, res, next) => {
