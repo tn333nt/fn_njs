@@ -46,16 +46,12 @@ exports.getProduct = (req, res) => {
 //     })
 // }
 
-// exports.postCart = (req, res) => {
-//   const id = req.body.productId
-//   console.log('postCart', id);
-//   Product.findByPk(id)
-//   .then(product => {
-//     console.log('...', req.user);
-//     return req.user.addToCart(product)
-//   })
-//   .then(() => res.redirect('/cart'))
-// }
+exports.postCart = (req, res) => {
+  const id = req.body.productId
+  Product.findById(id)
+  .then(product => req.user.addToCart(product))
+  .then(() => res.redirect('/cart'))
+}
 
 // exports.deleteCartItem = (req, res) => {
 //   const id = req.body.productId;
