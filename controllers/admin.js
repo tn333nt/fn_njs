@@ -40,14 +40,6 @@ exports.postEditProduct = (req, res) => {
   const updatedImageUrl = req.body.imageUrl
   const updatedPrice = req.body.price
   const updatedDescription = req.body.description
-  
-  // Product.findById(id).then(product => { 
-  //   product.title = updatedTitle,
-  //   product.imageUrl = updatedImageUrl,
-  //   product.price = updatedPrice,
-  //   product.description = updatedDescription
-  //   return product.save() 
-  // })
 
   Product.findByIdAndUpdate(id, { 
     title : updatedTitle,
@@ -81,17 +73,3 @@ exports.postDeleteProduct = (req, res) => {
   Product.findByIdAndDelete(id)
     .then(() => res.redirect('/admin/products'))
 }
-
-
-
-/*
-both "Finds a matching document, removes it, and passes the found document (if any) to the callback"
-
-findByIdAndDelete(id) is a shorthand for findOneAndDelete({ _id: id })
-findByIdAndRemove(id, ...) is equivalent to findOneAndRemove({ _id: id }, ...)
-
-https://stackoverflow.com/questions/50602037/difference-between-findoneanddelete-and-findoneandremove
-
-!= : remove = modify + remove functionality (with time to execution of particular amount of operations?)
-
-*/

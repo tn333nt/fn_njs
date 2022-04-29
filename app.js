@@ -9,7 +9,7 @@ const shopRoutes = require('./routes/shop');
 const errorController = require('./controllers/error');
 
 // const Product = require('./models/product');
-// const User = require('./models/user');
+const User = require('./models/user');
 // const Order = require('./models/order');
 
 const app = express();
@@ -20,15 +20,13 @@ app.set('views', 'views');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-// app.use((req, res, next) => {
-//     User.findByPk('626b3817c89e1988610f6aeb')
-//         .then(user => {
-//             console.log('user cart', user.cart);
-//             user ? req.user = new User(user.name, user.email, user.cart, user._id) : null
-//             console.log('ascvs', req.user);
-//             next();
-//         })
-// })
+app.use((req, res, next) => {
+    User.findByPk('626bc0b18a517f76ef639f1d')
+        .then(user => {
+            req.user = user // full mgs M
+            next();
+        })
+})
 
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);
@@ -36,4 +34,17 @@ app.use(errorController.get404);
 
 mongoose
 .connect('mongodb+srv://test:bJYVI29LEAjl147U@cluster0.ti4jx.mongodb.net/newShop?retryWrites=true&w=majority')
-.then(() => app.listen(3000))
+.then(() => {
+    User.findOne() // return first found doc if not passing arg
+    .then(user => {
+        if(!user) {
+            const user = new User({
+                name : 'abc',
+                email : 'abc@example.com',
+                cart : { items : [] }
+            })
+            user.save()
+        }
+    })
+    app.listen(3000)
+})

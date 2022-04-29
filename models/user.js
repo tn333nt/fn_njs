@@ -1,5 +1,16 @@
-const Schema = require('mongoose').Schema
+const mongoose = require('mongoose')
 
-const User = new Schema({})
+const Schema = mongoose.Schema
 
-module.exports = User
+const userSchema = new Schema({
+  name : String,
+  email : String,
+  cart : {
+    items : [{
+        productId : { type : Schema.Types.ObjectId , required : true },
+        quantity : { type : Number, required : true }
+    }]
+  }
+})
+
+module.exports = mongoose.model('user', userSchema)
