@@ -7,7 +7,7 @@ const userSchema = new Schema({
   email : String,
   cart : {
     items : [{
-        productId : { type : Schema.Types.ObjectId , required : true },
+        productId : { type : Schema.Types.ObjectId , ref : 'Product', required : true },
         quantity : { type : Number, required : true }
     }]
   }

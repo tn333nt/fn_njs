@@ -21,9 +21,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use((req, res, next) => {
-    User.findByPk('626bc0b18a517f76ef639f1d')
+    User.findById('626bc0b18a517f76ef639f1d')
         .then(user => {
-            req.user = user // full mgs M
+            req.user = user 
             next();
         })
 })
@@ -35,7 +35,7 @@ app.use(errorController.get404);
 mongoose
 .connect('mongodb+srv://test:bJYVI29LEAjl147U@cluster0.ti4jx.mongodb.net/newShop?retryWrites=true&w=majority')
 .then(() => {
-    User.findOne() // return first found doc if not passing arg
+    User.findOne()
     .then(user => {
         if(!user) {
             const user = new User({
