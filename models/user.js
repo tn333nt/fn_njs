@@ -5,7 +5,7 @@ class User {
     constructor(name, email, cart, id) {
         this.name = name,
             this.email = email,
-            this.cart = cart, // { items : [] }
+            this.cart = cart, 
             this._id = id
     }
 
@@ -104,8 +104,8 @@ class User {
     getOrders() {
         const db = getDb()
         return db.collection('orders').find({
-            'user._id': ObjectId(this._id) // define path to nested properties through ''
-        }) // find axact orders of which user
+            'user._id': ObjectId(this._id) 
+        }) 
             .toArray() 
     }
 
