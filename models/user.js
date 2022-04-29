@@ -4,9 +4,9 @@ const getDb = require('../util/database').getDb;
 class User {
     constructor(name, email, cart, id) {
         this.name = name,
-        this.email = email,
-        this.cart = cart, // { items : [] }
-        this._id = id
+            this.email = email,
+            this.cart = cart, // { items : [] }
+            this._id = id
     }
 
     save() {
@@ -14,11 +14,11 @@ class User {
         return db.collection('users').insertOne(this)
     }
 
-    addToCart(product) { 
+    addToCart(product) {
         console.log('addToCart', this.cart);
         const idx = this.cart.items.findIndex(p => {
-            return p.productId.toString() === product._id.toString() 
-        }) 
+            return p.productId.toString() === product._id.toString()
+        })
 
         const updatedCartItems = [...this.cart.items]
 
@@ -34,28 +34,30 @@ class User {
         const db = getDb()
         return db.collection('users')
             .updateOne(
-                { _id : ObjectId(this._id) }, 
-                { $set : { cart : {items : updatedCartItems} } } 
-            ) 
+                { _id: ObjectId(this._id) },
+                { $set: { cart: { items: updatedCartItems } } }
+            )
     }
 
     getCart() {
         const db = getDb();
         const ids = this.cart.items.map(item => {
             return item.productId
-        }) 
+        })
 
         return db.collection('products')
-            .find({ _id : {
-                $in : ids 
-            }})
+            .find({
+                _id: {
+                    $in: ids
+                }
+            })
             .toArray()
-            .then( products => {
-                return products.map(product => { 
+            .then(products => {
+                return products.map(product => {
                     const item = this.cart.items.find(i => {
-                        return i.productId.toString() === product._id.toString() 
+                        return i.productId.toString() === product._id.toString()
                     })
-                    return {...product, quantity : item.quantity } 
+                    return { ...product, quantity: item.quantity }
                 })
             })
 
@@ -76,8 +78,22 @@ class User {
             )
     }
 
+    addOrder() {
+        const db = getDb()
+        return db.collection('orders')
+            .insertOne(this.cart)
+            .then(() => {
+                this.cart = { items: [] } // clear in U obj 
+                return db.collection('users')
+                    .updateOne(
+                        { _id: ObjectId(this._id) },
+                        { $set: { cart: { items: [] } } } // clear in db
+                    )
+            })
+    }
+
     static findByPk(userId) {
-    console.log('findByPk', userId);
+        console.log('findByPk', userId);
         const db = getDb()
         return db.collection('users')
             .findOne({ _id: ObjectId(userId.trim()) })
