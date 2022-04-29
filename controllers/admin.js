@@ -29,12 +29,9 @@ exports.postAddProduct = (req, res, next) => {
     imageUrl : imageUrl,
     price : price,
     description : description
-  }) // map values to defined schema
+  }) 
   product.save()
-    .then(products => {
-      console.log('from postAddProduct', products);
-      res.redirect('/admin/products')
-    })
+    .then(() => res.redirect('/admin/products'))
 } 
 
 // exports.postEditProduct = (req, res) => {

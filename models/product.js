@@ -14,7 +14,3 @@ const productSchema = new Schema({
 
 module.exports = mongoose.model('Product', productSchema)
 
-
-
-// mgs uses Models -> connect to schema
-// (reflected_entity's name , defined entity's schema)
