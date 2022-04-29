@@ -41,12 +41,19 @@ exports.postEditProduct = (req, res) => {
   const updatedPrice = req.body.price
   const updatedDescription = req.body.description
   
-  Product.findById(id).then(product => { // mgs obj
-    product.title = updatedTitle,
-    product.imageUrl = updatedImageUrl,
-    product.price = updatedPrice,
-    product.description = updatedDescription
-    return product.save() // auto save changes for an existing obj
+  // Product.findById(id).then(product => { 
+  //   product.title = updatedTitle,
+  //   product.imageUrl = updatedImageUrl,
+  //   product.price = updatedPrice,
+  //   product.description = updatedDescription
+  //   return product.save() 
+  // })
+
+  Product.findByIdAndUpdate(id, { 
+    title : updatedTitle,
+    imageUrl : updatedImageUrl,
+    price : updatedPrice,
+    description : updatedDescription
   })
   .then(() => res.redirect('/admin/products'))
 }
@@ -69,8 +76,22 @@ exports.getEditProduct = (req, res, next) => {
 };
 
 
-// exports.postDeleteProduct = (req, res) => {
-//   const id = req.body.productId
-//   Product.deleteByPk(id)
-//     .then(() => res.redirect('/admin/products'))
-// }
+exports.postDeleteProduct = (req, res) => {
+  const id = req.body.productId
+  Product.findByIdAndDelete(id)
+    .then(() => res.redirect('/admin/products'))
+}
+
+
+
+/*
+both "Finds a matching document, removes it, and passes the found document (if any) to the callback"
+
+findByIdAndDelete(id) is a shorthand for findOneAndDelete({ _id: id })
+findByIdAndRemove(id, ...) is equivalent to findOneAndRemove({ _id: id }, ...)
+
+https://stackoverflow.com/questions/50602037/difference-between-findoneanddelete-and-findoneandremove
+
+!= : remove = modify + remove functionality (with time to execution of particular amount of operations?)
+
+*/
