@@ -35,5 +35,5 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(errorController.get404);
 
 mongoose
-.connect('mongodb+srv://test:bJYVI29LEAjl147U@cluster0.ti4jx.mongodb.net/shop?retryWrites=true&w=majority')
+.connect('mongodb+srv://test:bJYVI29LEAjl147U@cluster0.ti4jx.mongodb.net/newShop?retryWrites=true&w=majority')
 .then(() => app.listen(1111))

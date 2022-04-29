@@ -1,14 +1,5 @@
-const Sequelize = require('sequelize')
+const Schema = require('mongoose').Schema
 
-const sequelize = require('../util/database')
-
-const Order = sequelize.define('order', {
-    id: { 
-        type: Sequelize.INTEGER,
-        primaryKey: true,
-        autoIncrement: true,
-        allowNull: false
-    }
-})
+const Order = new Schema({})
 
 module.exports = Order
