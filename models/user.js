@@ -80,14 +80,23 @@ class User {
 
     addOrder() {
         const db = getDb()
-        return db.collection('orders')
-            .insertOne(this.cart)
+        return this.getCart() // get an arr of p
+            .then(products => {
+                const order = { // set oI
+                    items: products,
+                    user: {
+                        _id: ObjectId(this._id),
+                        name: this.name
+                    }
+                }
+                return db.collection('orders').insertOne(order)
+            })
             .then(() => {
-                this.cart = { items: [] } // clear in U obj 
+                this.cart = { items: [] }
                 return db.collection('users')
                     .updateOne(
                         { _id: ObjectId(this._id) },
-                        { $set: { cart: { items: [] } } } // clear in db
+                        { $set: { cart: { items: [] } } }
                     )
             })
     }
@@ -104,29 +113,5 @@ module.exports = User
 
 
 
-/*
-TypeError: Cannot read properties of undefined (reading 'items')
 
-transferring undefined cart 
-consider where it is initialised
-
-sao delete cho user di xong connect lai, lai loi r =))
-lan nay thi giu nguyen cho addToCart r day =)))
-
-hinh nhu loi cho connect
-chay thu attached pj cung ko dc
-
-postCart 626a42d8db5c5ba6c4d40355
-... User {
-  name: 'new',
-  email: 'test@gm',
-  cart: undefined,
-  _id: new ObjectId("626b3817c89e1988610f6aeb")
-}
-ro rang cho set cart co van de
-*/
-
-
-/*
-https://stackoverflow.com/questions/4075287/node-express-eaddrinuse-address-already-in-use-kill-server
-*/
+// later https://www.mongodb.com/docs/drivers/node/current/usage-examples/insertMany/
