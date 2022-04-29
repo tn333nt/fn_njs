@@ -80,9 +80,9 @@ class User {
 
     addOrder() {
         const db = getDb()
-        return this.getCart() // get an arr of p
+        return this.getCart()
             .then(products => {
-                const order = { // set oI
+                const order = {
                     items: products,
                     user: {
                         _id: ObjectId(this._id),
@@ -99,6 +99,14 @@ class User {
                         { $set: { cart: { items: [] } } }
                     )
             })
+    }
+
+    getOrders() {
+        const db = getDb()
+        return db.collection('orders').find({
+            'user._id': ObjectId(this._id) // define path to nested properties through ''
+        }) // find axact orders of which user
+            .toArray() 
     }
 
     static findByPk(userId) {
