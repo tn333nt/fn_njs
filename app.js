@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 
 const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
-// const errorController = require('./controllers/error');
+const errorController = require('./controllers/error');
 // const Product = require('./models/product');
 const User = require('./models/user');
 // const Cart = require('./models/cart');
@@ -24,15 +24,17 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use((req, res, next) => {
-    User.findByPk('626a8db4a4275922b032d062')
+    User.findByPk('626b3817c89e1988610f6aeb')
         .then(user => {
-            req.user = new User(user.name, user.email, user.cart, user._id)
+            console.log('user cart', user.cart);
+            user ? req.user = new User(user.name, user.email, user.cart, user._id) : null
+            console.log('ascvs', req.user);
             next();
         })
 })
 
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);
-// app.use(errorController.get404);
+app.use(errorController.get404);
 
-mongoConnect(() => app.listen(3000))
+mongoConnect(() => app.listen(8888))

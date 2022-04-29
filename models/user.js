@@ -5,16 +5,17 @@ class User {
     constructor(name, email, cart, id) {
         this.name = name,
         this.email = email,
-        this.cart = cart, 
+        this.cart = cart, // { items : [] }
         this._id = id
     }
 
     save() {
         const db = getDb()
-        return db.collection('products').insertOne(this)
+        return db.collection('users').insertOne(this)
     }
 
     addToCart(product) { 
+        console.log('addToCart', this.cart);
         const idx = this.cart.items.findIndex(p => {
             return p.productId.toString() === product._id.toString() 
         }) 
@@ -35,35 +36,51 @@ class User {
             .updateOne(
                 { _id : ObjectId(this._id) }, 
                 { $set : { cart : {items : updatedCartItems} } } 
-            )
+            ) 
     }
 
     getCart() {
         const db = getDb();
         const ids = this.cart.items.map(item => {
             return item.productId
-        }) // fetch all id in cart
+        }) 
 
         return db.collection('products')
             .find({ _id : {
-                $in : ids // select docs where the value of _id field = any value in the specified array (ids)
+                $in : ids 
             }})
             .toArray()
             .then( products => {
-                return products.map(product => { // execute on every element
+                return products.map(product => { 
                     const item = this.cart.items.find(i => {
-                        return i.productId.toString() === product._id.toString() // check if p of cI matches p -> return this element
+                        return i.productId.toString() === product._id.toString() 
                     })
-                    return {...product, quantity : item.quantity } // set qty of : p-in-c (cI) = p?
+                    return {...product, quantity : item.quantity } 
                 })
             })
 
     }
 
+    deleteFromCart(id) {
+        const updatedCartItems = this.cart.items.filter(p => {
+            return p.productId.toString() !== id.toString()
+            // return p.productId.toString() === id.toString()
+        })
+        const db = getDb()
+
+        return db.collection('users')
+            .updateOne(
+                // .deleteOne(
+                { _id: ObjectId(this._id) },
+                { $set: { cart: { items: updatedCartItems } } }
+            )
+    }
+
     static findByPk(userId) {
+    console.log('findByPk', userId);
         const db = getDb()
         return db.collection('users')
-            .findOne({ _id: new ObjectId(userId) })
+            .findOne({ _id: ObjectId(userId.trim()) })
     }
 }
 
@@ -72,10 +89,28 @@ module.exports = User
 
 
 /*
-no findMany() exists :)
-https://www.mongodb.com/docs/drivers/node/current/usage-examples/find/
+TypeError: Cannot read properties of undefined (reading 'items')
 
-more ab find() & cursor
-https://www.mongodb.com/docs/manual/reference/method/db.collection.find/
+transferring undefined cart 
+consider where it is initialised
 
+sao delete cho user di xong connect lai, lai loi r =))
+lan nay thi giu nguyen cho addToCart r day =)))
+
+hinh nhu loi cho connect
+chay thu attached pj cung ko dc
+
+postCart 626a42d8db5c5ba6c4d40355
+... User {
+  name: 'new',
+  email: 'test@gm',
+  cart: undefined,
+  _id: new ObjectId("626b3817c89e1988610f6aeb")
+}
+ro rang cho set cart co van de
+*/
+
+
+/*
+https://stackoverflow.com/questions/4075287/node-express-eaddrinuse-address-already-in-use-kill-server
 */

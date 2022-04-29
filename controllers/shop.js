@@ -46,25 +46,21 @@ exports.getCart = (req, res, next) => {
 }
 
 exports.postCart = (req, res) => {
-  const id = req.body.id
+  const id = req.body.productId
+  console.log('postCart', id);
   Product.findByPk(id)
   .then(product => {
+    console.log('...', req.user);
     return req.user.addToCart(product)
   })
   .then(() => res.redirect('/cart'))
 }
 
-// exports.deleteCart = (req, res) => {
-//   const id = req.body.productId;
-//   req.user.getCart()
-//     .then(cart => {
-//       return cart.getProducts({ where: { id: id } })
-//     })
-//     .then(products => {
-//       return products[0].cartItem.destroy()
-//     })
-//     .then(() => res.redirect('/cart'))
-// }
+exports.deleteCartItem = (req, res) => {
+  const id = req.body.productId;
+  req.user.deleteFromCart(id)
+    .then(() => res.redirect('/cart'))
+}
 
 
 // exports.getOrders = (req, res, next) => {
