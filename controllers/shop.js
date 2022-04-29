@@ -12,7 +12,7 @@ exports.getIndex = (req, res, next) => {
 };
 
 exports.getProducts = (req, res, next) => {
-    Product.find() 
+    Product.find()
         .then(products => {
             res.render('shop/product-list', {
                 prods: products,
@@ -23,34 +23,40 @@ exports.getProducts = (req, res, next) => {
 };
 
 exports.getProduct = (req, res) => {
-  const id = req.params.productId
-  Product.findById(id.trim()) 
-    .then(product => {
-      res.render('shop/product-detail', {
-        product: product,
-        pageTitle: product.title,
-        path: '/products'
-      })
-    })
+    const id = req.params.productId
+    Product.findById(id.trim())
+        .then(product => {
+            res.render('shop/product-detail', {
+                product: product,
+                pageTitle: product.title,
+                path: '/products'
+            })
+        })
 }
 
 
-// exports.getCart = (req, res, next) => {
-//   req.user.getCart()
-//     .then(products => {
-//       res.render('shop/cart', {
-//         path: '/cart',
-//         pageTitle: 'Your Cart',
-//         products: products
-//       });
-//     })
-// }
+exports.getCart = (req, res, next) => {
+    console.log(req.user);
+    req.user
+        .populate('cart.items.productId')
+        // .execPopulate() // return promise 
+        // now populate() returns a promise and execPopulate() has been removed== https://mongoosejs.com/docs/migrating_to_6.html#removed-execpopulate
+        .then(user => {
+            const products = user.cart.items
+            console.log(products);
+            res.render('shop/cart', {
+                path: '/cart',
+                pageTitle: 'Your Cart',
+                products: products
+            });
+        })
+}
 
 exports.postCart = (req, res) => {
-  const id = req.body.productId
-  Product.findById(id)
-  .then(product => req.user.addToCart(product))
-  .then(() => res.redirect('/cart'))
+    const id = req.body.productId
+    Product.findById(id)
+        .then(product => req.user.addToCart(product))
+        .then(() => res.redirect('/cart'))
 }
 
 // exports.deleteCartItem = (req, res) => {

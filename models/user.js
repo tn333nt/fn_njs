@@ -13,8 +13,7 @@ const userSchema = new Schema({
   }
 })
 
-userSchema.methods // add own methods
-.addToCart = function(product) {
+userSchema.methods.addToCart = function(product) {
   const idx = this.cart.items.findIndex(item => item.productId.toString() === product._id.toString())
   const updatedCartItems = [...this.cart.items]
   if (idx < 0) {
