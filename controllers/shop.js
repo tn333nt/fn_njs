@@ -24,7 +24,7 @@ exports.getProducts = (req, res, next) => {
 
 exports.getProduct = (req, res) => {
   const id = req.params.productId
-  Product.findById(id.trim()) // auto convert str into objID() // but not auto trim() =))
+  Product.findById(id.trim()) 
     .then(product => {
       res.render('shop/product-detail', {
         product: product,
@@ -33,16 +33,6 @@ exports.getProduct = (req, res) => {
       })
     })
 }
-
-/*
-CastError: Cast to ObjectId failed for value " 626ba69f9fc8246f636644c5" (type string) at path "_id" for model "Product"
-stringValue: '" 626ba69f9fc8246f636644c5"',
-  kind: 'ObjectId',
-  value: ' 626ba69f9fc8246f636644c5',
-  path: '_id',
-  reason: BSONTypeError: Argument passed in must be a string of 12 bytes or a string of 24 hex characters or 
-an integer
-*/
 
 
 // exports.getCart = (req, res, next) => {
