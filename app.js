@@ -4,7 +4,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose')
 
-// const adminRoutes = require('./routes/admin');
+const adminRoutes = require('./routes/admin');
 // const shopRoutes = require('./routes/shop');
 const errorController = require('./controllers/error');
 
@@ -30,10 +30,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 //         })
 // })
 
-// app.use('/admin', adminRoutes);
+app.use('/admin', adminRoutes);
 // app.use(shopRoutes);
 app.use(errorController.get404);
 
 mongoose
 .connect('mongodb+srv://test:bJYVI29LEAjl147U@cluster0.ti4jx.mongodb.net/newShop?retryWrites=true&w=majority')
-.then(() => app.listen(1111))
+.then(() => app.listen(3000))

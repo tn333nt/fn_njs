@@ -1,19 +1,20 @@
-const Schema = require('mongoose').Schema
+const mongoose = require('mongoose')
 
-const Product = new Schema({
+const Schema = mongoose.Schema
+
+const productSchema = new Schema({
   title : {
     type : String,
-    required : true // set some structure
+    required : true 
   },
   imageUrl : String,
   price : Number,
   description : String
 })
 
-module.exports = Product
+module.exports = mongoose.model('Product', productSchema)
 
 
 
-
-// schema -> describe data's structure & configuration?
-// type : https://mongoosejs.com/docs/schematypes.html
+// mgs uses Models -> connect to schema
+// (reflected_entity's name , defined entity's schema)
