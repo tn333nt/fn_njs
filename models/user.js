@@ -15,15 +15,12 @@ const userSchema = new Schema({
 
 userSchema.methods.addToCart = function (product) {
   const updatedCartItems = this.cart.items.filter(item => item.productId.toString() === product._id.toString())
-  console.log(updatedCartItems);
   if (updatedCartItems.length <= 0) {
-  console.log('if', updatedCartItems);
     updatedCartItems.push({
       productId: product._id,
       quantity: 1
     })
   } else {
-  console.log('else', updatedCartItems);
     updatedCartItems[0].quantity += 1
   }
   this.cart.items = updatedCartItems
@@ -33,6 +30,11 @@ userSchema.methods.addToCart = function (product) {
 userSchema.methods.deleteFromCart = function (id) {
   const updatedCartItems = this.cart.items.filter(item => item.productId.toString() !== id.toString())
   this.cart.items = updatedCartItems
+  return this.save()
+}
+
+userSchema.methods.clearCart = function () {
+  this.cart.items = []
   return this.save()
 }
 

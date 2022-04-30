@@ -79,23 +79,22 @@ exports.postOrder = (req, res, next) => {
     req.user
     .populate('cart.items.productId')
     .then(user => {
-        console.log( user.cart.items);
         const products = user.cart.items.map(item => { 
             return {
                 quantity : item.quantity,
-                product : { ...item.productId._doc } // access* all data in pI obj
+                product : { ...item.productId._doc } 
             }
         })
-        console.log(req.user, 'ab');
         const order = new Order({
             products : products,
             user : {
                 name : req.user.name,
-                userId : req.user // auto get id (only, if not config)
+                userId : req.user 
             }
         })
         return order.save()
     })
+    .then(() => req.user.clearCart())
     .then(() => res.redirect('/orders'));
 }
 
