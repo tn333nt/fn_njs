@@ -3,6 +3,7 @@ const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const session = require('express-session')
 
 const errorController = require('./controllers/error');
 const User = require('./models/user');
@@ -18,6 +19,11 @@ const authRoutes = require('./routes/auth');
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(session({
+  secret: 'abc', // sign a hash -> secretly store in ck's id
+  resave: false, // only reset session (on browser?) when st has changed in ss
+  saveuninitialized: false // only save ss when st has modified 
+}))
 
 app.use((req, res, next) => {
   User.findById('626b3817c89e1988610f6aeb')

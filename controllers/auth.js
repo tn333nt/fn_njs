@@ -1,26 +1,23 @@
 exports.getLogin = (req, res, next) => {
-  console.log('abc', req.get('Cookie'));
-  const isLoggedIn = req.get('Cookie').trim().split('=')[1]
+  console.log(req.get('Cookie'), 123)
+  console.log(req.get('Cookie').split(';')[0].trim().split('=')[1])
+  const isLoggedIn = req.get('Cookie').split(';')[0].trim().split('=')[1]
   res.render('auth/login', {
     path: '/login',
     pageTitle: 'Login',
-    isAuthenticated: isLoggedIn ? isLoggedIn : true
+    isAuthenticated: isLoggedIn ? isLoggedIn : false
   });
 };
 
 exports.postLogin = (req, res, next) => {
-  res.setHeader('set-cookie', 'loggedIn=true; httponly; test=false')
+  // req.session.cookie = 'abc'
   res.redirect('/');
 }
 
 
 
+
 /*
-  cookie (ck) -> store user's data across reqs
+https://stackoverflow.com/a/71050114
 
-  config -> block users to edit data from browser
-  we have pkgs manage that
-
-  common use : track users
-  bc it can contain info from another pages that u have visited
 */
