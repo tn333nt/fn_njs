@@ -15,13 +15,16 @@ const userSchema = new Schema({
 
 userSchema.methods.addToCart = function (product) {
   const updatedCartItems = this.cart.items.filter(item => item.productId.toString() === product._id.toString())
+  console.log(updatedCartItems);
   if (updatedCartItems.length <= 0) {
+  console.log('if', updatedCartItems);
     updatedCartItems.push({
       productId: product._id,
       quantity: 1
     })
   } else {
-    updatedCartItems.quantity += 1
+  console.log('else', updatedCartItems);
+    updatedCartItems[0].quantity += 1
   }
   this.cart.items = updatedCartItems
   return this.save()

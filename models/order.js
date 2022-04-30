@@ -1,5 +1,21 @@
-const Schema = require('mongoose').Schema
+const mongoose = require('mongoose')
 
-const Order = new Schema({})
+const Schema = mongoose.Schema
 
-module.exports = Order
+const orderSchema = new Schema({
+  products : [{
+    product : Object,
+    quantity : Number,
+  }],
+  user : {
+    name : String,
+    userId : {
+        type : Schema.Types.ObjectId,
+        ref : 'user', 
+        required : true
+      }
+  }
+})
+
+module.exports = mongoose.model('order', orderSchema)
+
