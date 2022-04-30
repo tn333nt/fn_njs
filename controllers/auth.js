@@ -15,11 +15,10 @@ exports.postLogin = (req, res, next) => {
 
 
 
-/**
- * ck -> identify user
- * ss -> encrypt info & store (in the memory) on server
- * and every ck in every browser is diff
- * ---> privacy & security?
+/** uri
+ * https://danielmiessler.com/study/difference-between-uri-url/#difference
  * 
- * other mechanism behind authenticating users in the web : build a web api
+ ** 
+ * avt: each user -> each ck -> each ss -> ability of sharing data across reqs through each single user
+ * dis : less secure when store in mmr + more limited
  */
