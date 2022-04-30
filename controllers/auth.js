@@ -7,18 +7,19 @@ exports.getLogin = (req, res, next) => {
 };
 
 exports.postLogin = (req, res, next) => {
-  req.session.isLoggedIn = true
-  res.redirect('/');
+  User.findById('626b3817c89e1988610f6aeb')
+  .then(user => {
+      req.session.isLoggedIn = true
+      req.session.user = user
+      res.redirect('/');
+    })
+    .catch(err => console.log(err));
 }
 
+exports.postLogout = (req, res, next) => {
+  console.log(123, req.session)
+  req.session.destroy(() => {
+    res.redirect('/');
+  })
+}
 
-
-
-
-/** uri
- * https://danielmiessler.com/study/difference-between-uri-url/#difference
- * 
- ** 
- * avt: each user -> each ck -> each ss -> ability of sharing data across reqs through each single user
- * dis : less secure when store in mmr + more limited
- */
