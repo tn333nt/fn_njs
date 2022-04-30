@@ -6,13 +6,18 @@
         <main>
             <% if (orders.length > 0) { %>
                 <ul>
+                    <% console.log('orders', orders) %>
                     <% orders.forEach(order => { %>
+                        <% console.log('order', order) %>
                         <li>
                             <h1># <%= order._id %></h1>
                             <ul>
-                                <% order.items.forEach(product => { %>
+                                <% order.products.forEach(p => { %>
+                                    <% console.log('CHVG', p) %>
+                                    <% console.log('abc', p.product) %>
+                                    <!-- do may cai ko co title = undefined ma van bat no lap qua day -->
                                     <li>
-                                        <%= product.title %> (<%= product.quantity %>)
+                                        <%= p.product.title %> (<%= p.quantity %>)
                                     </li>
                                 <% }) %>
                             </ul>
