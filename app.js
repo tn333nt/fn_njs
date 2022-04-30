@@ -20,9 +20,9 @@ const authRoutes = require('./routes/auth');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({
-  secret: 'abc', // sign a hash -> secretly store in ck's id
-  resave: false, // only reset session (on browser?) when st has changed in ss
-  saveuninitialized: false // only save ss when st has modified 
+  secret: 'abc', 
+  resave: false, 
+  saveuninitialized: false 
 }))
 
 app.use((req, res, next) => {
