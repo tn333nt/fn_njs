@@ -55,7 +55,7 @@ exports.postLogin = (req, res, next) => {
   User.findOne({ email: email })
     .then(user => {
       if (user) {
-        return bcrypt // Error [ERR_HTTP_HEADERS_SENT]: Cannot set headers after they are sent to the client
+        return bcrypt 
           .compare(password, user.password) 
           .then(matched => {
             if (matched) {
@@ -76,5 +76,5 @@ exports.postLogout = (req, res, next) => {
   req.session.destroy(() => {
     res.redirect('/');
   })
-}
+} // also a post req -> also need a token to access
 
