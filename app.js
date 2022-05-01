@@ -48,21 +48,3 @@ mongoose
   .connect(mgURI)
   .then(() => app.listen(3000))
   .catch(err => console.log(err))
-
-
-
-
-
-/**
- * https://viblo.asia/p/ky-thuat-tan-cong-csrf-va-cach-phong-chong-amoG84bOGz8P
- * 
- * fake sites can send a req to ur BE with some extra executing fields and use ur ss
- * but will be missing the token with random hased value that created in yr server
- * 
- * new token is gen for every rendered page
- * https://portswigger.net/web-security/csrf/tokens
- * https://stackoverflow.com/a/49435939
- * 
- * every change in data (non-get req) requires the token in req's body
- * ss -> find out if it's valid
- */

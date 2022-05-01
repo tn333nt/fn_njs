@@ -18,5 +18,3 @@ exports.passAuthData = (req, res, next) => {
   res.locals.csrfToken = req.csrfToken() 
   next()
 }
-
-// res's 'locals' field -> pass only_exist_in_V var into every rendered Views

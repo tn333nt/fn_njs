@@ -13,13 +13,9 @@ exports.getSignup = (req, res, next) => {
 exports.postSignup = (req, res, next) => {
   const email = req.body.email
   const password = req.body.password
-  const confirmPassword = req.body.confirmPassword
-  console.log('email', email);
-  console.log('password', password);
 
   User.findOne({ email: email })
     .then(data => {
-      console.log('data', data);
       if (data) {
         return res.redirect('/signup')
       }
@@ -27,12 +23,9 @@ exports.postSignup = (req, res, next) => {
       return bcrypt
         .hash(password, 12)
         .then(hasedPw => {
-          console.log('hasedPw', hasedPw);
-
           const user = new User({
             email: email,
-            password: hasedPw,
-            cart: { items: [] }
+            password: hasedPw
           })
           return user.save()
         })
@@ -76,5 +69,5 @@ exports.postLogout = (req, res, next) => {
   req.session.destroy(() => {
     res.redirect('/');
   })
-} // also a post req -> also need a token to access
+}
 
