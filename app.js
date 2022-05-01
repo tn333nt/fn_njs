@@ -36,7 +36,7 @@ app.use(session({
   store: store
 }))
 
-app.use(flash()) // ss's area for storing msgs; exists until msgs r displayed https://www.npmjs.com/package/connect-flash
+app.use(flash()) 
 app.use(csrfProtection)
 app.use(passData.passUser)
 app.use(passData.passAuthData)

@@ -1,4 +1,5 @@
 const bcrypt = require('bcryptjs')
+const { validationResult } = require('express-validator/check')
 
 const User = require('../models/user');
 
@@ -16,6 +17,21 @@ exports.getSignup = (req, res, next) => {
 exports.postSignup = (req, res, next) => {
   const email = req.body.email
   const password = req.body.password
+  const errors = validationResult(req) // gather errs from validationMW on the req
+  console.log(errors, 'not arr'); 
+  console.log(errors.formatWith(),'abc'); 
+  console.log(errors.formatter() , 'fmt'); 
+  console.log(validationResult); 
+
+  if(!errors.isEmpty()) {
+    return res.status(422) // => validation failed
+    .render('auth/signup', {
+      path: '/signup',
+      pageTitle: 'Signup',
+      isAuthenticated: false,
+      errMsg: 'abc'
+    });
+  }
 
   User.findOne({ email: email })
     .then(data => {
@@ -39,7 +55,7 @@ exports.postSignup = (req, res, next) => {
 
 exports.getLogin = (req, res, next) => {
   let msg = req.flash('err')
-  msg && msg.length > 0 ? msg=msg[0] : msg=null // bc it returns [] even if no value for key in flash -> still exist but undefined
+  msg && msg.length > 0 ? msg=msg[0] : msg=null 
   res.render('auth/login', {
     path: '/login',
     pageTitle: 'Login',
