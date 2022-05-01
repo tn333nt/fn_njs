@@ -33,6 +33,19 @@ app.use(session({
   store : store
 }))
 
+app.use((req, res, next) => {
+  console.log(req.session.user)
+  if (!req.session.user) {
+    return next()
+  }
+  User.findById(req.session.user._id)
+  .then(user => {
+      req.user = user // bc ss mw only fetch data from db without go through mgs M -> need to re-add the whole M to use methods in there
+      next()
+    })
+    .catch(err => console.log(err));
+})
+
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);
 app.use(authRoutes);
@@ -41,21 +54,6 @@ app.use(errorController.get404);
 
 mongoose
   .connect(mgURI)
-  .then(() => {
-    User.findOne().then(user => {
-      if (!user) {
-        const user = new User({
-          name: 'Max',
-          email: 'max@test.com',
-          cart: {
-            items: []
-          }
-        });
-        user.save();
-      }
-    });
-    app.listen(3000);
-  })
-  .catch(err => {
-    console.log(err);
-  });
+  .then(() => app.listen(3000))
+  .catch(err => console.log(err))
+
