@@ -10,7 +10,12 @@ exports.getSignup = (req, res, next) => {
     path: '/signup',
     pageTitle: 'Signup',
     isAuthenticated: false,
-    errMsg: msg
+    errMsg: msg,
+    oldInput: {
+      email: '',
+      password: '',
+      confirmPassword: ''
+    }
   });
 };
 
@@ -25,7 +30,12 @@ exports.postSignup = (req, res, next) => {
       path: '/signup',
       pageTitle: 'Signup',
       isAuthenticated: false,
-      errMsg: errors.array()[0].msg
+      errMsg: errors.array()[0].msg,
+      oldInput: {
+        email: email,
+        password: password,
+        confirmPassword: req.body.confirmPassword
+      }
     });
   }
       return bcrypt

@@ -15,9 +15,9 @@ router.post(
         .withMessage('check the email')
         .custom( value => {
             return User.findOne({ email: value }) 
-            .then(data => { // every then block implicitly returns a new Pm & e-v will wait for this pm to be fulfilled
+            .then(data => { 
             if (data) {
-                return Promise.reject('valid email') // detect & store rejection as an err
+                return Promise.reject('valid email') 
             }})
         })
     ,body('password', 'check the password')
