@@ -1,5 +1,5 @@
 const express = require('express');
-const { check } = require('express-validator/check'); // sub-pkgs ---> e-v obj with many props
+const { check } = require('express-validator/check'); 
 
 const authController = require('../controllers/auth');
 
@@ -8,9 +8,17 @@ const router = express.Router();
 router.get('/signup', authController.getSignup);
 router.post(
     '/signup', 
-    check('email') // check which field of icmreq // --> obj
-    .isEmail(), 
-    // store found errs in this obj // --> mw
+    check('email') 
+    .isEmail() // built-in validators https://github.com/validatorjs/validator.js
+    .withMessage('look at the email')
+    .custom((value, {req}) => {
+        console.log(value, 'value');
+        // console.log({req}, '{req}');
+        if (value === 'abc@abc.com') { // notice the format:D
+            throw new Error('alo')
+        }
+        return true
+    }), 
     authController.postSignup
 );
 
