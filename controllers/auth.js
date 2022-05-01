@@ -3,10 +3,13 @@ const bcrypt = require('bcryptjs')
 const User = require('../models/user');
 
 exports.getSignup = (req, res, next) => {
+  let msg = req.flash('err')
+  msg && msg.length>0 ? msg=msg[0] : msg=null
   res.render('auth/signup', {
     path: '/signup',
     pageTitle: 'Signup',
-    isAuthenticated: false
+    isAuthenticated: false,
+    errMsg: msg
   });
 };
 
@@ -17,6 +20,7 @@ exports.postSignup = (req, res, next) => {
   User.findOne({ email: email })
     .then(data => {
       if (data) {
+        req.flash('err', 'valid user')
         return res.redirect('/signup')
       }
 
@@ -34,10 +38,13 @@ exports.postSignup = (req, res, next) => {
 }
 
 exports.getLogin = (req, res, next) => {
+  let msg = req.flash('err')
+  msg && msg.length > 0 ? msg=msg[0] : msg=null // bc it returns [] even if no value for key in flash -> still exist but undefined
   res.render('auth/login', {
     path: '/login',
     pageTitle: 'Login',
-    isAuthenticated: false
+    isAuthenticated: false,
+    errMsg: msg
   });
 };
 
@@ -61,6 +68,7 @@ exports.postLogin = (req, res, next) => {
             return res.redirect('/login') 
           })
       } 
+      req.flash('err', 'invalid mail')
       return res.redirect('/login')
     })
 }
