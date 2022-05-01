@@ -8,17 +8,18 @@ const router = express.Router();
 router.get('/signup', authController.getSignup);
 router.post(
     '/signup', 
-    check('email') 
-    .isEmail() // built-in validators https://github.com/validatorjs/validator.js
-    .withMessage('look at the email')
+    [check('email').isEmail() 
+    .withMessage('check the email')
     .custom((value, {req}) => {
-        console.log(value, 'value');
-        // console.log({req}, '{req}');
-        if (value === 'abc@abc.com') { // notice the format:D
+        if (value === 'abc@abc.com') { 
             throw new Error('alo')
         }
         return true
     }), 
+    check('password', 'check the password')
+    .isAlphanumeric() //only allow numbers & normal char
+    .isLength({min:6})
+    ],
     authController.postSignup
 );
 
