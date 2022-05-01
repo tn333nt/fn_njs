@@ -28,14 +28,6 @@ exports.postSignup = (req, res, next) => {
       errMsg: errors.array()[0].msg
     });
   }
-
-  User.findOne({ email: email })
-    .then(data => {
-      if (data) {
-        req.flash('err', 'valid user')
-        return res.redirect('/signup')
-      }
-
       return bcrypt
         .hash(password, 12)
         .then(hasedPw => {
@@ -46,7 +38,6 @@ exports.postSignup = (req, res, next) => {
           return user.save()
         })
         .then(() => res.redirect('/login'))
-    })
 }
 
 exports.getLogin = (req, res, next) => {
