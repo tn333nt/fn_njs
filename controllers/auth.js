@@ -55,8 +55,8 @@ exports.postLogin = (req, res, next) => {
   User.findOne({ email: email })
     .then(user => {
       if (user) {
-        bcrypt.
-          compare(password, user.password) // compare hased pws ---> T/F
+        return bcrypt // Error [ERR_HTTP_HEADERS_SENT]: Cannot set headers after they are sent to the client
+          .compare(password, user.password) 
           .then(matched => {
             if (matched) {
               req.session.isLoggedIn = true
@@ -65,7 +65,7 @@ exports.postLogin = (req, res, next) => {
                 res.redirect('/');
               })
             } 
-            return res.redirect('/login')
+            return res.redirect('/login') 
           })
       } 
       return res.redirect('/login')
