@@ -17,26 +17,27 @@ exports.postSignup = (req, res, next) => {
   console.log('email', email);
   console.log('password', password);
 
-  User.findOne({ email: email})
-  .then(data => {
-    console.log('data', data);
-    if (data) {
-      return res.redirect('/signup')
-    }
+  User.findOne({ email: email })
+    .then(data => {
+      console.log('data', data);
+      if (data) {
+        return res.redirect('/signup')
+      }
 
-    return bcrypt
-    .hash(password, 12) // str to be hashed + applied hashing rounds -> gen a hash pw -> async task -> give back a pm
-    .then(hasedPw => {
-    console.log('hasedPw', hasedPw);
-      const user = new User({
-        email: email,
-        password: hasedPw,
-        cart: {items: []}
-      })
-      return user.save()
+      return bcrypt
+        .hash(password, 12)
+        .then(hasedPw => {
+          console.log('hasedPw', hasedPw);
+
+          const user = new User({
+            email: email,
+            password: hasedPw,
+            cart: { items: [] }
+          })
+          return user.save()
+        })
+        .then(() => res.redirect('/login'))
     })
-    .then(() => res.redirect('/login'))
-  })
 }
 
 exports.getLogin = (req, res, next) => {
@@ -48,16 +49,27 @@ exports.getLogin = (req, res, next) => {
 };
 
 exports.postLogin = (req, res, next) => {
-  console.log(req.session.user);
-  User.findById('626b3817c89e1988610f6aeb')
-  .then(user => {
-      req.session.isLoggedIn = true
-      req.session.user = user
-      req.session.save(() => { 
-        res.redirect('/');
-      })
+  const email = req.body.email
+  const password = req.body.password
+
+  User.findOne({ email: email })
+    .then(user => {
+      if (user) {
+        bcrypt.
+          compare(password, user.password) // compare hased pws ---> T/F
+          .then(matched => {
+            if (matched) {
+              req.session.isLoggedIn = true
+              req.session.user = user
+              return req.session.save(() => {
+                res.redirect('/');
+              })
+            } 
+            return res.redirect('/login')
+          })
+      } 
+      return res.redirect('/login')
     })
-    .catch(err => console.log(err));
 }
 
 exports.postLogout = (req, res, next) => {
