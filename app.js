@@ -40,7 +40,7 @@ app.use((req, res, next) => {
   }
   User.findById(req.session.user._id)
   .then(user => {
-      req.user = user // bc ss mw only fetch data from db without go through mgs M -> need to re-add the whole M to use methods in there
+      req.user = user 
       next()
     })
     .catch(err => console.log(err));
