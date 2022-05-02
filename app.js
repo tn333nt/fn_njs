@@ -2,6 +2,7 @@ const path = require('path');
 
 const express = require('express');
 const bodyParser = require('body-parser');
+const multer = require('multer');
 const mongoose = require('mongoose');
 const session = require('express-session')
 const MongodbStore = require('connect-mongodb-session')(session)
@@ -27,6 +28,9 @@ app.set('view engine', 'ejs');
 app.set('views', 'views');
 
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(multer({
+  dest: 'images' // collect data in buffer (streamed data) & turn it back into file & store it 'dest'(new folder) with filename=some_random_hash_name
+}).single('imageUrl'))
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({
   secret: 'abc',
