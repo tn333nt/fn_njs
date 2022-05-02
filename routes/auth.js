@@ -35,19 +35,13 @@ router.post(
 );
 
 router.get('/login', authController.getLogin);
-router.post('/login', authController.postLogin);
+router.post(
+    '/login',
+    check('email').isEmail()
+    ,check('password').isAlphanumeric()
+    ,authController.postLogin
+);
 
 router.post('/logout', authController.postLogout);
 
 module.exports = router;
-
-
-/*
-node:internal/process/promises:265
-            triggerUncaughtException(err, true (fromPromise) 
-
-[UnhandledPromiseRejection: This error originated either by throwing inside of an async function without a 
-catch block, or by rejecting a promise which was not handled with .catch(). The promise rejected with the reason "valid email".] {
-  code: 'ERR_UNHANDLED_REJECTION'
-}
-*/
