@@ -7,7 +7,7 @@ exports.getAddProduct = (req, res, next) => {
     pageTitle: 'Add Product',
     path: '/admin/add-product',
     editing: false,
-    hasErr: false, // keep old data
+    hasErr: false, 
     errMsg: null,
     validationErrors: []
   });
@@ -110,20 +110,8 @@ exports.postEditProduct = (req, res, next) => {
     .catch(err => console.log(err));
 };
 
-/** CastError: Cast to ObjectId failed for value "" (type string) at path "_id" for model "Product"  
-  messageFormat: undefined,
-  stringValue: '""',
-  kind: 'ObjectId',
-  value: '',
-  path: '_id',
-  reason: Error: Argument passed in must be a single String of 12 bytes or a string of 24 hex characters 
-  valueType: 'string'
-*/
-
 exports.getProducts = (req, res, next) => {
   Product.find()
-    // .select('title price -_id')
-    // .populate('userId', 'name')
     .then(products => {
       res.render('admin/products', {
         prods: products,
