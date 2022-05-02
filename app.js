@@ -46,14 +46,11 @@ app.get('/500', errorController.get500);
 app.use(errorController.get404);
 
 app.use((err, req, res, next) => { 
-  console.log(errorController.get500)
-  // res.redirect('/500')
   res.status(err.httpStatusCode).render('500', {
     pageTitle: 'for bigger technical issues',
     path: '/500',
     isAuthenticated: req.session.isLoggedIn
   });
-  // errorController.get500
 })
 
 mongoose
