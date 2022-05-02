@@ -42,9 +42,11 @@ exports.postAddProduct = (req, res, next) => {
   product
     .save()
     .then(() => res.redirect('/admin/products'))
-    .catch(err => {
-      console.log(err);
-    });
+    .catch(e => {
+      const err = new Error(e) 
+      err.httpStatusCode = 500
+      next(err) 
+    })
 };
 
 exports.getEditProduct = (req, res, next) => {
@@ -68,7 +70,11 @@ exports.getEditProduct = (req, res, next) => {
         validationErrors: []
       });
     })
-    .catch(err => console.log(err));
+    .catch(e => {
+      const err = new Error(e) 
+      err.httpStatusCode = 500
+      next(err) 
+    })
 };
 
 exports.postEditProduct = (req, res, next) => {
@@ -107,7 +113,11 @@ exports.postEditProduct = (req, res, next) => {
       return product.save();
     })
     .then(() => res.redirect('/admin/products'))
-    .catch(err => console.log(err));
+    .catch(e => {
+      const err = new Error(e) 
+      err.httpStatusCode = 500
+      next(err) 
+    })
 };
 
 exports.getProducts = (req, res, next) => {
@@ -119,12 +129,20 @@ exports.getProducts = (req, res, next) => {
         path: '/admin/products'
       });
     })
-    .catch(err => console.log(err));
+    .catch(e => {
+      const err = new Error(e) 
+      err.httpStatusCode = 500
+      next(err) 
+    })
 };
 
 exports.postDeleteProduct = (req, res, next) => {
   const prodId = req.body.productId;
   Product.findByIdAndRemove(prodId)
     .then(() => res.redirect('/admin/products'))
-    .catch(err => console.log(err));
+    .catch(e => {
+      const err = new Error(e) 
+      err.httpStatusCode = 500
+      next(err) 
+    })
 };

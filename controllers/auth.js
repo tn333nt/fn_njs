@@ -48,6 +48,11 @@ exports.postSignup = (req, res, next) => {
       return user.save()
     })
     .then(() => res.redirect('/login'))
+    .catch(e => {
+      const err = new Error(e) 
+      err.httpStatusCode = 500
+      next(err) 
+    })
 }
 
 exports.getLogin = (req, res, next) => {
@@ -110,6 +115,11 @@ exports.postLogin = (req, res, next) => {
                 },
                 validationErrors: errors.array()
               });
+          })
+          .catch(e => {
+            const err = new Error(e) 
+            err.httpStatusCode = 500
+            next(err) 
           })
       }
       return res.status(422)
