@@ -8,7 +8,7 @@ exports.getSignup = (req, res, next) => {
     path: '/signup',
     pageTitle: 'Signup',
     isAuthenticated: false,
-    errMsg: msg,
+    errMsg: null,
     oldInput: {
       email: '',
       password: '',
@@ -55,7 +55,7 @@ exports.getLogin = (req, res, next) => {
     path: '/login',
     pageTitle: 'Login',
     isAuthenticated: false,
-    errMsg: 'errors.array()[0].msg',
+    errMsg: null,
     oldInput: {
       email: '',
       password: ''
