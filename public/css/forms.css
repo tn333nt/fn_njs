@@ -23,6 +23,7 @@
 }
 
 
-.form-control input.invalid {
+.form-control input.invalid,
+.form-control textarea.invalid {
   border : 3px solid red;
 }

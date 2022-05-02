@@ -8,7 +8,8 @@ exports.getAddProduct = (req, res, next) => {
     path: '/admin/add-product',
     editing: false,
     hasErr: false, // keep old data
-    errMsg: null
+    errMsg: null,
+    validationErrors: []
   });
 };
 
@@ -33,7 +34,8 @@ exports.postAddProduct = (req, res, next) => {
       product: product,
       editing: false,
       hasErr: true,
-      errMsg: errors.array()[0].msg
+      errMsg: errors.array()[0].msg,
+      validationErrors: errors.array()
     });
   }
 
@@ -62,7 +64,8 @@ exports.getEditProduct = (req, res, next) => {
         product: product,
         editing: editMode,
         hasErr: false,
-        errMsg: null
+        errMsg: null,
+        validationErrors: []
       });
     })
     .catch(err => console.log(err));
@@ -74,6 +77,26 @@ exports.postEditProduct = (req, res, next) => {
   const updatedPrice = req.body.price;
   const updatedImageUrl = req.body.imageUrl;
   const updatedDesc = req.body.description;
+  const product = {
+    title: updatedTitle,
+    imageUrl: updatedImageUrl,
+    price: updatedPrice,
+    description: updatedDesc,
+    _id: prodId
+  };
+  const errors = validationResult(req)
+
+  if (!errors.isEmpty()) {
+    return res.render('admin/edit-product', {
+      pageTitle: 'edit Product',
+      path: '/admin/edit-product',
+      product: product,
+      editing: true,
+      hasErr: true,
+      errMsg: errors.array()[0].msg,
+      validationErrors: errors.array()
+    });
+  }
 
   Product.findById(prodId)
     .then(product => {
@@ -87,6 +110,16 @@ exports.postEditProduct = (req, res, next) => {
     .catch(err => console.log(err));
 };
 
+/** CastError: Cast to ObjectId failed for value "" (type string) at path "_id" for model "Product"  
+  messageFormat: undefined,
+  stringValue: '""',
+  kind: 'ObjectId',
+  value: '',
+  path: '_id',
+  reason: Error: Argument passed in must be a single String of 12 bytes or a string of 24 hex characters 
+  valueType: 'string'
+*/
+
 exports.getProducts = (req, res, next) => {
   Product.find()
     // .select('title price -_id')
@@ -95,8 +128,7 @@ exports.getProducts = (req, res, next) => {
       res.render('admin/products', {
         prods: products,
         pageTitle: 'Admin Products',
-        path: '/admin/products',
-        hasErr: false
+        path: '/admin/products'
       });
     })
     .catch(err => console.log(err));

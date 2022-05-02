@@ -13,17 +13,22 @@ router.get('/add-product', adminController.getAddProduct);
 router.post(
     '/add-product', 
     [
-        body('title').isString() // allow whitespace
+        body('title').isAlphanumeric()
         .isLength({min:3}).trim()
-        ,body('imageUrl').isURL() // check https://www.ibm.com/docs/en/cics-ts/5.1?topic=concepts-components-url
-        ,body('price').isNumeric() // allow both int & float
+        ,body('imageUrl').isURL() 
+        ,body('price').isFloat() 
         ,body('description').isLength({min:3, max:300}).trim()
     ]
     , isAuth
     , adminController.postAddProduct
 );
 
-router.post('/edit-product', isAuth, adminController.postEditProduct);
+router.post('/edit-product',[
+    body('title').isString().isLength({min:3}).trim()
+    ,body('imageUrl').isURL() 
+    ,body('price').isNumeric() 
+    ,body('description').isLength({min:3, max:300}).trim()
+], isAuth, adminController.postEditProduct);
 router.get('/edit-product/:productId', isAuth, adminController.getEditProduct);
 
 router.post('/delete-product', isAuth, adminController.postDeleteProduct);
