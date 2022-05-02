@@ -14,7 +14,9 @@ exports.passUser = (req, res, next) => {
         next()
     })
     .catch(err => {
-      res.redirect('/500')
+      const err = new Error(err) // create err obj
+      err.httpStatusCode = 500
+      next(err) // inform that occurring err -> skip all other mw & move to an err handling mw
     })
 }
 
