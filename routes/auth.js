@@ -13,6 +13,7 @@ router.post(
     check('email')
         .isEmail() 
         .withMessage('check the email')
+        .normalizeEmail()
         .custom( value => {
             return User.findOne({ email: value }) 
             .then(data => { 
@@ -23,7 +24,8 @@ router.post(
     ,body('password', 'check the password')
         .isAlphanumeric() 
         .isLength({min:3})
-    ,body('confirmPassword')
+        .trim()
+    ,body('confirmPassword').trim()
         .custom((value, {req}) => {
             if (value === req.body.password) {
                 return true
@@ -37,8 +39,8 @@ router.post(
 router.get('/login', authController.getLogin);
 router.post(
     '/login',
-    check('email').isEmail()
-    ,check('password').isAlphanumeric()
+    check('email').isEmail().normalizeEmail()
+    ,check('password').isAlphanumeric().trim()
     ,authController.postLogin
 );
 

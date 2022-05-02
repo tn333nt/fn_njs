@@ -132,9 +132,3 @@ exports.postLogout = (req, res, next) => {
     res.redirect('/');
   })
 }
-
-
-
-
-// 1. anyway to shorten this repeated section?
-// 2. it's always go into wrong pw case & rmb consider it later==
