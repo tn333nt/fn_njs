@@ -27,3 +27,7 @@
 .form-control textarea.invalid {
   border : 3px solid red;
 }
+
+.form-control #imageUrl {
+  border: none
+}
