@@ -15,9 +15,9 @@ exports.getProducts = (req, res, next) => {
       });
     })
     .catch(e => {
-      const err = new Error(e) 
+      const err = new Error(e)
       err.httpStatusCode = 500
-      next(err) 
+      next(err)
     })
 };
 
@@ -32,9 +32,9 @@ exports.getProduct = (req, res, next) => {
       });
     })
     .catch(e => {
-      const err = new Error(e) 
+      const err = new Error(e)
       err.httpStatusCode = 500
-      next(err) 
+      next(err)
     })
 };
 
@@ -49,9 +49,9 @@ exports.getIndex = (req, res, next) => {
       });
     })
     .catch(e => {
-      const err = new Error(e) 
+      const err = new Error(e)
       err.httpStatusCode = 500
-      next(err) 
+      next(err)
     })
 };
 
@@ -68,9 +68,9 @@ exports.getCart = (req, res, next) => {
       });
     })
     .catch(e => {
-      const err = new Error(e) 
+      const err = new Error(e)
       err.httpStatusCode = 500
-      next(err) 
+      next(err)
     })
 };
 
@@ -94,9 +94,9 @@ exports.postCartDeleteProduct = (req, res, next) => {
       res.redirect('/cart');
     })
     .catch(e => {
-      const err = new Error(e) 
+      const err = new Error(e)
       err.httpStatusCode = 500
-      next(err) 
+      next(err)
     })
 };
 
@@ -123,9 +123,9 @@ exports.postOrder = (req, res, next) => {
       res.redirect('/orders');
     })
     .catch(e => {
-      const err = new Error(e) 
+      const err = new Error(e)
       err.httpStatusCode = 500
-      next(err) 
+      next(err)
     })
 };
 
@@ -139,28 +139,27 @@ exports.getOrders = (req, res, next) => {
       });
     })
     .catch(e => {
-      const err = new Error(e) 
+      const err = new Error(e)
       err.httpStatusCode = 500
-      next(err) 
+      next(err)
     })
 };
 
 exports.getInvoice = (req, res, next) => {
-  const invoicePath = path.join('data', 'invoices', 'abc.pdf')
-  fs.readFile(invoicePath, (err, data) => {
-    if(err) {
-      return next(err)
-    }
-    console.log(err)
-    res.writeHeader(200, {
-      'content-type': 'application/pdf',
-      'content-disposition': 'attachment; filename="abc.pdf"'
-    }) // Error [ERR_HTTP_HEADERS_SENT]: Cannot set headers after they are sent to the client ?
-    .end(data)
-    // res.setHeader('content-type', 'application/pdf')
-    // res.setHeader('Content-Disposition', 'inline')
-    // res.send(data)
-  })
-}
+  const orderId = req.params.orderId
+  Order.findById(orderId)
+    .then(order => {
+      if (!order) return next(new Error('no found O'))
+      if (order.user.userId.toString() !== req.user._id.toString()) return next(new Error('unauthorised'))
 
-// https://nodejs.org/api/http.html#responsewriteheadstatuscode-statusmessage-headers
+      const invoicePath = path.join('data', 'invoices', 'abc.pdf')
+      fs.readFile(invoicePath, (err, data) => {
+        if (err) return next(err)
+        res.setHeader('content-type', 'application/pdf')
+        res.setHeader('Content-Disposition', 'inline')
+        res.send(data)
+      })
+
+    })
+    .catch(err => next(err))
+}
