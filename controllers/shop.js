@@ -16,11 +16,7 @@ exports.getProducts = (req, res, next) => {
         path: '/products'
       });
     })
-    .catch(e => {
-      const err = new Error(e)
-      err.httpStatusCode = 500
-      next(err)
-    })
+    .catch(err => next(err))
 };
 
 exports.getProduct = (req, res, next) => {
@@ -33,11 +29,7 @@ exports.getProduct = (req, res, next) => {
         path: '/products'
       });
     })
-    .catch(e => {
-      const err = new Error(e)
-      err.httpStatusCode = 500
-      next(err)
-    })
+    .catch(err => next(err))
 };
 
 exports.getIndex = (req, res, next) => {
@@ -50,11 +42,7 @@ exports.getIndex = (req, res, next) => {
         path: '/'
       });
     })
-    .catch(e => {
-      const err = new Error(e)
-      err.httpStatusCode = 500
-      next(err)
-    })
+    .catch(err => next(err))
 };
 
 exports.getCart = (req, res, next) => {
@@ -69,37 +57,22 @@ exports.getCart = (req, res, next) => {
         products: products
       });
     })
-    .catch(e => {
-      const err = new Error(e)
-      err.httpStatusCode = 500
-      next(err)
-    })
+    .catch(err => next(err))
 };
 
 exports.postCart = (req, res, next) => {
   const prodId = req.body.productId;
   Product.findById(prodId)
-    .then(product => {
-      return req.user.addToCart(product);
-    })
-    .then(result => {
-      console.log(result);
-      res.redirect('/cart');
-    });
+    .then(product => req.user.addToCart(product))
+    .then(() => res.redirect('/cart'));
 };
 
 exports.postCartDeleteProduct = (req, res, next) => {
   const prodId = req.body.productId;
   req.user
     .removeFromCart(prodId)
-    .then(result => {
-      res.redirect('/cart');
-    })
-    .catch(e => {
-      const err = new Error(e)
-      err.httpStatusCode = 500
-      next(err)
-    })
+    .then(() => res.redirect('/cart'))
+    .catch(err => next(err))
 };
 
 exports.postOrder = (req, res, next) => {
@@ -118,17 +91,9 @@ exports.postOrder = (req, res, next) => {
       });
       return order.save();
     })
-    .then(result => {
-      return req.user.clearCart();
-    })
-    .then(() => {
-      res.redirect('/orders');
-    })
-    .catch(e => {
-      const err = new Error(e)
-      err.httpStatusCode = 500
-      next(err)
-    })
+    .then(() => req.user.clearCart())
+    .then(() => res.redirect('/orders'))
+    .catch(err => next(err))
 };
 
 exports.getOrders = (req, res, next) => {
@@ -140,11 +105,7 @@ exports.getOrders = (req, res, next) => {
         orders: orders
       });
     })
-    .catch(e => {
-      const err = new Error(e)
-      err.httpStatusCode = 500
-      next(err)
-    })
+    .catch(err => next(err))
 };
 
 exports.getInvoice = (req, res, next) => {
@@ -156,15 +117,14 @@ exports.getInvoice = (req, res, next) => {
 
       const invoice = orderId + '.pdf'
       const invoicePath = path.join('data', 'invoices', invoice)
-      const pdfDoc = new pdfDocConstructor() // init as rs
+      const pdfDoc = new pdfDocConstructor()
       res.writeHeader(200, {
         'content-type': 'application/pdf',
         'content-disposition': 'inline'
       })
-      pdfDoc.pipe(fs.createWriteStream(invoicePath)) // store the gen-ed pdf to server
-      pdfDoc.pipe(res) // return the output to client 
-
-      // add text to doc
+      pdfDoc.pipe(fs.createWriteStream(invoicePath))
+      pdfDoc.pipe(res)
+    
       pdfDoc.fontSize(33).text('invoice', {underline: true}) 
       order.products.forEach(p => {
         pdfDoc.fontSize(18).text(`
@@ -172,7 +132,7 @@ exports.getInvoice = (req, res, next) => {
          total : ${p.quantity * p.product.price}`)
       })
 
-      pdfDoc.end() // close writing streams -> save file & send res
+      pdfDoc.end()
     })
     .catch(err => next(err))
 }

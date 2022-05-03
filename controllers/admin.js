@@ -1,13 +1,14 @@
 const { validationResult } = require('express-validator/check')
 
 const Product = require('../models/product');
+const deleteFile = require('../middleware/deleteFile')
 
 exports.getAddProduct = (req, res, next) => {
   res.render('admin/edit-product', {
     pageTitle: 'Add Product',
     path: '/admin/add-product',
     editing: false,
-    hasErr: false, 
+    hasErr: false,
     errMsg: null,
     validationErrors: []
   });
@@ -18,7 +19,7 @@ exports.postAddProduct = (req, res, next) => {
   const imageUrl = req.file;
   const price = req.body.price;
   const description = req.body.description;
-  console.log(imageUrl)
+  // console.log(imageUrl.replace('\','/'))
 
   if (!imageUrl) {
     return res.status(422).render('admin/edit-product', {
@@ -44,8 +45,6 @@ exports.postAddProduct = (req, res, next) => {
     userId: req.user
   });
   const errors = validationResult(req)
-  
-  
 
   if (!errors.isEmpty()) {
     return res.status(422).render('admin/edit-product', {
@@ -62,18 +61,13 @@ exports.postAddProduct = (req, res, next) => {
   product
     .save()
     .then(() => res.redirect('/admin/products'))
-    .catch(e => {
-      const err = new Error(e)
-      err.httpStatusCode = 500
-      next(err) 
-    })
+    .catch(err => next(err))
 };
 
 exports.getEditProduct = (req, res, next) => {
   const editMode = req.query.edit;
-  if (!editMode) {
-    return res.redirect('/');
-  }
+  if (!editMode) return res.redirect('/')
+
   const prodId = req.params.productId;
   Product.findById(prodId)
     .then(product => {
@@ -90,11 +84,7 @@ exports.getEditProduct = (req, res, next) => {
         validationErrors: []
       });
     })
-    .catch(e => {
-      const err = new Error(e) 
-      err.httpStatusCode = 500
-      next(err) 
-    })
+    .catch(err => next(err))
 };
 
 exports.postEditProduct = (req, res, next) => {
@@ -128,15 +118,14 @@ exports.postEditProduct = (req, res, next) => {
       product.title = updatedTitle;
       product.price = updatedPrice;
       product.description = updatedDesc;
-      updatedImageUrl ? product.imageUrl = updatedImageUrl.path : null
+      if (updatedImageUrl) {
+        deleteFile.deleteFile(product.imageUrl)
+        product.imageUrl = updatedImageUrl.path
+      }
       return product.save();
     })
     .then(() => res.redirect('/admin/products'))
-    .catch(e => {
-      const err = new Error(e) 
-      err.httpStatusCode = 500
-      next(err) 
-    })
+    .catch(err => next(err))
 };
 
 exports.getProducts = (req, res, next) => {
@@ -148,20 +137,17 @@ exports.getProducts = (req, res, next) => {
         path: '/admin/products'
       });
     })
-    .catch(e => {
-      const err = new Error(e) 
-      err.httpStatusCode = 500
-      next(err) 
-    })
+    .catch(err => next(err))
 };
 
 exports.postDeleteProduct = (req, res, next) => {
   const prodId = req.body.productId;
-  Product.findByIdAndRemove(prodId)
-    .then(() => res.redirect('/admin/products'))
-    .catch(e => {
-      const err = new Error(e) 
-      err.httpStatusCode = 500
-      next(err) 
+  Product.findById(prodId)
+    .then(product => {
+      if (!product) return next(new Error('no found product'))
+      deleteFile.deleteFile(product.imageUrl)
+      return Product.deleteOne({ _id: prodId, userId: req.user._id })
     })
+    .then(() => res.redirect('/admin/products'))
+    .catch(err => next(err))
 };
