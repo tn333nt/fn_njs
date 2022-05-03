@@ -48,7 +48,6 @@ app.use(multer({
   fileFilter: fileFilter
 }).single('imageUrl'))
 app.use(express.static(path.join(__dirname, 'public')));
-app.use('/images', express.static(path.join(__dirname, 'images'))); // keep fpaths be in this fd https://stackoverflow.com/a/68818023
 app.use(session({
   secret: 'abc',
   resave: false,
@@ -79,14 +78,3 @@ mongoose
   .connect(mgURI)
   .then(() => app.listen(3000))
   .catch(err => console.log(err))
-
-
-/*
-  static files = files that don't change when running the app
-  https://stackoverflow.com/questions/24108624/whats-difference-between-static-and-non-static-resources
-  
-  serve files statically = auto handle & return these files
-  https://stackoverflow.com/questions/28918845/what-exactly-does-serving-static-files-mean
-
-  exp.static('fb') -> serve files in fd as if they were on the root fd (i.e nothing bf /)
-*/

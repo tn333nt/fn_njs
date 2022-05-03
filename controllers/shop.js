@@ -1,3 +1,6 @@
+const fs = require('fs');
+const path = require('path');
+
 const Product = require('../models/product');
 const Order = require('../models/order');
 
@@ -141,3 +144,23 @@ exports.getOrders = (req, res, next) => {
       next(err) 
     })
 };
+
+exports.getInvoice = (req, res, next) => {
+  const invoicePath = path.join('data', 'invoices', 'abc.pdf')
+  fs.readFile(invoicePath, (err, data) => {
+    if(err) {
+      return next(err)
+    }
+    console.log(err)
+    res.writeHeader(200, {
+      'content-type': 'application/pdf',
+      'content-disposition': 'attachment; filename="abc.pdf"'
+    }) // Error [ERR_HTTP_HEADERS_SENT]: Cannot set headers after they are sent to the client ?
+    .end(data)
+    // res.setHeader('content-type', 'application/pdf')
+    // res.setHeader('Content-Disposition', 'inline')
+    // res.send(data)
+  })
+}
+
+// https://nodejs.org/api/http.html#responsewriteheadstatuscode-statusmessage-headers
