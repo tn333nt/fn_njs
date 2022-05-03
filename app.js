@@ -48,6 +48,7 @@ app.use(multer({
   fileFilter: fileFilter
 }).single('imageUrl'))
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/images', express.static(path.join(__dirname, 'images'))); // keep fpaths be in this fd https://stackoverflow.com/a/68818023
 app.use(session({
   secret: 'abc',
   resave: false,
@@ -65,7 +66,6 @@ app.use(authRoutes);
 app.get('/500', errorController.get500);
 app.use(errorController.get404);
 
-
 app.use((err, req, res, next) => {
   console.log(err)
   res.status(500).render('500', {
@@ -81,5 +81,12 @@ mongoose
   .catch(err => console.log(err))
 
 
-// how to sync del p ==> del img ?
-// how to filter if this img exists -> no save?
+/*
+  static files = files that don't change when running the app
+  https://stackoverflow.com/questions/24108624/whats-difference-between-static-and-non-static-resources
+  
+  serve files statically = auto handle & return these files
+  https://stackoverflow.com/questions/28918845/what-exactly-does-serving-static-files-mean
+
+  exp.static('fb') -> serve files in fd as if they were on the root fd (i.e nothing bf /)
+*/

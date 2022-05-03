@@ -35,7 +35,6 @@ exports.postAddProduct = (req, res, next) => {
       validationErrors: []
     });
   }
-  // bc if iU =udf -> err in path la dr=)
 
   const product = new Product({
     title: title,
