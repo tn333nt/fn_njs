@@ -1,6 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 
+const pdfDocConstructor = require('pdfkit')
+
 const Product = require('../models/product');
 const Order = require('../models/order');
 
@@ -152,37 +154,25 @@ exports.getInvoice = (req, res, next) => {
       if (!order) return next(new Error('no found O'))
       if (order.user.userId.toString() !== req.user._id.toString()) return next(new Error('unauthorised'))
 
-      const invoicePath = path.join('data', 'invoices', 'abc.pdf')
-      const file = fs.createReadStream(invoicePath) // -> read file step by step in diff chunks
-      res.setHeader('content-type', 'application/pdf')
-      res.setHeader('Content-Disposition', 'inline')
-      file.pipe(res) // forward chunks to the browser to concatenate into 1 obj
+      const invoice = orderId + '.pdf'
+      const invoicePath = path.join('data', 'invoices', invoice)
+      const pdfDoc = new pdfDocConstructor() // init as rs
+      res.writeHeader(200, {
+        'content-type': 'application/pdf',
+        'content-disposition': 'inline'
+      })
+      pdfDoc.pipe(fs.createWriteStream(invoicePath)) // store the gen-ed pdf to server
+      pdfDoc.pipe(res) // return the output to client 
 
+      // add text to doc
+      pdfDoc.fontSize(33).text('invoice', {underline: true}) 
+      order.products.forEach(p => {
+        pdfDoc.fontSize(18).text(`
+         product ${p.product.title} : ${p.quantity} * ${p.product.price}
+         total : ${p.quantity * p.product.price}`)
+      })
+
+      pdfDoc.end() // close writing streams -> save file & send res
     })
     .catch(err => next(err))
 }
-
-
-/*
-bc reading file data into memory to serve it as a res -> take time & can be overflow in mmr // preloading data
-
-stream
-https://nodesource.com/blog/understanding-streams-in-nodejs/
-https://nodejs.dev/learn/nodejs-streams
-
-pipe()
-https://nodejs.org/en/knowledge/advanced/streams/how-to-use-stream-pipe/
-
-stream ~ continuous transmission of data/files from a server to a client (s)
-
-data is streamed chunk by chunk
-buffers -> access to these chunks
-file.pipe(res) -> turn the file s (readable s)'s output into the res (writable s)
--> keep streaming res to the browser
--> browser concat these icm data pieces into the final file 
-
-=> node only need to streams all the data to the client on the fly & store 1 chunk of data
-but not pre-load all into mmr
-
-// streaming data
-*/
