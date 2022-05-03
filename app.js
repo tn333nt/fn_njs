@@ -22,6 +22,37 @@ const store = new MongodbStore({
   collection: 'sessions'
 })
 const csrfProtection = csrf()
+const fileStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, // empty errMsg -> keep storing icm file even if st was wrong
+      'images')
+  }, // set path 
+  filename: (req, file, cb) => {
+    // TypeError: Cannot read property 'isLoggedIn' of undefined
+    // cb(null, new Date().getTime() + '-' + file.originalname)
+    cb(null, new Date().toISOString().replace(/:/g,'-') + '-' + file.originalname);// A colon is an invalid character for a Windows file name & toISOString() uses colons =) // https://funix.udemy.com/course/nodejs-the-complete-guide/learn/lecture/12025856#questions/5778822
+  } // rename file
+})
+
+const fileFilter = (req, file, cb) => {
+  const types = ['image/png', 'image/jpeg', 'image/jpg']
+  if (types.find(type => type === file.mimetype)) {
+    cb(null, true) 
+  }
+  cb(null, false)
+} // only allow certain kinds of files
+
+// const fileFilter = (req, file, cb) => {
+//   if (
+//     file.mimetype === 'image/png' ||
+//     file.mimetype === 'image/jpg' ||
+//     file.mimetype === 'image/jpeg'
+//   ) {
+//     cb(null, true);
+//   } else {
+//     cb(null, false);
+//   }
+// };
 
 
 app.set('view engine', 'ejs');
@@ -29,8 +60,9 @@ app.set('views', 'views');
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(multer({
-  dest: 'images' // collect data in buffer (streamed data) & turn it back into file & store it 'dest'(new folder) with filename=some_random_hash_name
-}).single('imageUrl'))
+  storage: fileStorage,
+  fileFilter: fileFilter
+}).single('imageUrl')) // vay tuc la loi o day no cung chay vao mw xu ly err chung ha ?
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({
   secret: 'abc',
@@ -49,13 +81,25 @@ app.use(authRoutes);
 app.get('/500', errorController.get500);
 app.use(errorController.get404);
 
-app.use((err, req, res, next) => { 
-  res.status(err.httpStatusCode).render('500', {
-    pageTitle: 'for bigger technical issues',
+// app.use((err, req, res, next) => { 
+//   console.log(req.session, 123) // undefined
+//   console.log(err.httpStatusCode, 12516) // still undefined when changing in cb in filename? what causes?
+//   res.status(err.httpStatusCode).render('500', {
+//     pageTitle: 500,
+//     path: '/500',
+//     isAuthenticated: req.session.isLoggedIn,
+//     csrfToken: ''
+//   });
+// })
+
+app.use((err, req, res, next) => {
+  console.log('err', err); // ReferenceError: Cannot access 'imageUrl' before initialization
+  res.status(500).render('500', {
+    pageTitle: 500,
     path: '/500',
     isAuthenticated: req.session.isLoggedIn
   });
-})
+});
 
 mongoose
   .connect(mgURI)

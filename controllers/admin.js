@@ -26,8 +26,10 @@ exports.postAddProduct = (req, res, next) => {
     userId: req.user
   });
   const errors = validationResult(req)
-
-  console.log(imageUrl)
+  
+  console.log(imageUrl, 111)
+  console.log(errors, 139761)
+  // console.log(req.session, 456)
 
   if (!errors.isEmpty()) {
     return res.render('admin/edit-product', {
@@ -45,11 +47,27 @@ exports.postAddProduct = (req, res, next) => {
     .save()
     .then(() => res.redirect('/admin/products'))
     .catch(e => {
-      const err = new Error(e) 
+      const err = new Error(e) // 
       err.httpStatusCode = 500
       next(err) 
     })
 };
+
+/*
+Result { formatter: [Function: formatter], errors: [] } 139761
+err Error: ValidationError: imageUrl: Cast to string failed for value "{
+  fieldname: 'imageUrl',
+  originalname: 'Clipboard - April 17, 2022 9_22 AM.png',
+  encoding: '7bit',
+  mimetype: 'image/png',
+  destination: 'images',
+  filename: '2022-05-03T00-56-35.537Z-Clipboard - April 17, 2022 9_22 AM.png',
+  path: 'images\\2022-05-03T00-56-35.537Z-Clipboard - April 17, 2022 9_22 AM.png', // bc path here? // nope
+  size: 2663
+}" (type Object) at path "imageUrl"
+
+bc type of str in schema =) & req.file is an obj =)
+*/
 
 exports.getEditProduct = (req, res, next) => {
   const editMode = req.query.edit;

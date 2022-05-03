@@ -13,9 +13,7 @@ exports.passUser = (req, res, next) => {
         next()
     })
     .catch(e => {
-      const err = new Error(e) 
-      err.httpStatusCode = 500
-      next(err) 
+      next(new Error(e));
     })
 }
 
