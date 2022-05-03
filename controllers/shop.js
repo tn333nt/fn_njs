@@ -153,13 +153,36 @@ exports.getInvoice = (req, res, next) => {
       if (order.user.userId.toString() !== req.user._id.toString()) return next(new Error('unauthorised'))
 
       const invoicePath = path.join('data', 'invoices', 'abc.pdf')
-      fs.readFile(invoicePath, (err, data) => {
-        if (err) return next(err)
-        res.setHeader('content-type', 'application/pdf')
-        res.setHeader('Content-Disposition', 'inline')
-        res.send(data)
-      })
+      const file = fs.createReadStream(invoicePath) // -> read file step by step in diff chunks
+      res.setHeader('content-type', 'application/pdf')
+      res.setHeader('Content-Disposition', 'inline')
+      file.pipe(res) // forward chunks to the browser to concatenate into 1 obj
 
     })
     .catch(err => next(err))
 }
+
+
+/*
+bc reading file data into memory to serve it as a res -> take time & can be overflow in mmr // preloading data
+
+stream
+https://nodesource.com/blog/understanding-streams-in-nodejs/
+https://nodejs.dev/learn/nodejs-streams
+
+pipe()
+https://nodejs.org/en/knowledge/advanced/streams/how-to-use-stream-pipe/
+
+stream ~ continuous transmission of data/files from a server to a client (s)
+
+data is streamed chunk by chunk
+buffers -> access to these chunks
+file.pipe(res) -> turn the file s (readable s)'s output into the res (writable s)
+-> keep streaming res to the browser
+-> browser concat these icm data pieces into the final file 
+
+=> node only need to streams all the data to the client on the fly & store 1 chunk of data
+but not pre-load all into mmr
+
+// streaming data
+*/
