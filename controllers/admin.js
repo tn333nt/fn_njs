@@ -18,21 +18,38 @@ exports.postAddProduct = (req, res, next) => {
   const imageUrl = req.file;
   const price = req.body.price;
   const description = req.body.description;
+  console.log(imageUrl)
+
+  if (!imageUrl) {
+    return res.status(422).render('admin/edit-product', {
+      pageTitle: 'Add Product',
+      path: '/admin/add-product',
+      product: {
+        title: title,
+        price: price,
+        description: description
+      },
+      editing: false,
+      hasErr: true,
+      errMsg: 'check the file',
+      validationErrors: []
+    });
+  }
+  // bc if iU =udf -> err in path la dr=)
+
   const product = new Product({
     title: title,
     price: price,
+    imageUrl: imageUrl.path,
     description: description,
-    imageUrl: imageUrl,
     userId: req.user
   });
   const errors = validationResult(req)
   
-  console.log(imageUrl, 111)
-  console.log(errors, 139761)
-  // console.log(req.session, 456)
+  
 
   if (!errors.isEmpty()) {
-    return res.render('admin/edit-product', {
+    return res.status(422).render('admin/edit-product', {
       pageTitle: 'Add Product',
       path: '/admin/add-product',
       product: product,
@@ -47,27 +64,11 @@ exports.postAddProduct = (req, res, next) => {
     .save()
     .then(() => res.redirect('/admin/products'))
     .catch(e => {
-      const err = new Error(e) // 
+      const err = new Error(e)
       err.httpStatusCode = 500
       next(err) 
     })
 };
-
-/*
-Result { formatter: [Function: formatter], errors: [] } 139761
-err Error: ValidationError: imageUrl: Cast to string failed for value "{
-  fieldname: 'imageUrl',
-  originalname: 'Clipboard - April 17, 2022 9_22 AM.png',
-  encoding: '7bit',
-  mimetype: 'image/png',
-  destination: 'images',
-  filename: '2022-05-03T00-56-35.537Z-Clipboard - April 17, 2022 9_22 AM.png',
-  path: 'images\\2022-05-03T00-56-35.537Z-Clipboard - April 17, 2022 9_22 AM.png', // bc path here? // nope
-  size: 2663
-}" (type Object) at path "imageUrl"
-
-bc type of str in schema =) & req.file is an obj =)
-*/
 
 exports.getEditProduct = (req, res, next) => {
   const editMode = req.query.edit;
@@ -100,12 +101,11 @@ exports.getEditProduct = (req, res, next) => {
 exports.postEditProduct = (req, res, next) => {
   const prodId = req.body.productId;
   const updatedTitle = req.body.title;
+  const updatedImageUrl = req.file;
   const updatedPrice = req.body.price;
-  const updatedImageUrl = req.body.imageUrl;
   const updatedDesc = req.body.description;
   const product = {
     title: updatedTitle,
-    imageUrl: updatedImageUrl,
     price: updatedPrice,
     description: updatedDesc,
     _id: prodId
@@ -113,7 +113,7 @@ exports.postEditProduct = (req, res, next) => {
   const errors = validationResult(req)
 
   if (!errors.isEmpty()) {
-    return res.render('admin/edit-product', {
+    return res.status(422).render('admin/edit-product', {
       pageTitle: 'edit Product',
       path: '/admin/edit-product',
       product: product,
@@ -129,7 +129,7 @@ exports.postEditProduct = (req, res, next) => {
       product.title = updatedTitle;
       product.price = updatedPrice;
       product.description = updatedDesc;
-      product.imageUrl = updatedImageUrl;
+      updatedImageUrl ? product.imageUrl = updatedImageUrl.path : null
       return product.save();
     })
     .then(() => res.redirect('/admin/products'))
