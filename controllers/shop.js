@@ -6,20 +6,32 @@ const pdfDocConstructor = require('pdfkit')
 const Product = require('../models/product');
 const Order = require('../models/order');
 
-const itemsPerPage = 2
+const productsPerPage = 1
 
 exports.getIndex = (req, res, next) => {
-  const pageIdx = req.query.page
-  console.log(pageIdx, 'pageIdx');
+  const page = +req.query.page || 1
+  let totalProducts
 
   Product.find()
-    .skip((pageIdx-1)*itemsPerPage) // skip how many items
-    .limit(itemsPerPage) // restrict how many items/page
+  .count() // https://stackoverflow.com/a/65286914 // https://stackoverflow.com/a/62539985
+  .then(numProducts => {
+    totalProducts = numProducts
+    return Product.find()
+    .skip((page-1)*productsPerPage)
+    .limit(productsPerPage)
+  })
     .then(products => {
       res.render('shop/index', {
         prods: products,
         pageTitle: 'Shop',
-        path: '/'
+        path: '/',
+        totalProducts: totalProducts,
+        currentPage: page,
+        hasNextPage: productsPerPage*page < totalProducts,
+        hasPreviousPage: page > 1,
+        nextPage: page + 1,
+        previousPage: page - 1,
+        lastPage: Math.ceil(totalProducts/productsPerPage)
       });
     })
     .catch(err => next(err))
