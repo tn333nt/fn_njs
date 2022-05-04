@@ -6,6 +6,25 @@ const pdfDocConstructor = require('pdfkit')
 const Product = require('../models/product');
 const Order = require('../models/order');
 
+const itemsPerPage = 2
+
+exports.getIndex = (req, res, next) => {
+  const pageIdx = req.query.page
+  console.log(pageIdx, 'pageIdx');
+
+  Product.find()
+    .skip((pageIdx-1)*itemsPerPage) // skip how many items
+    .limit(itemsPerPage) // restrict how many items/page
+    .then(products => {
+      res.render('shop/index', {
+        prods: products,
+        pageTitle: 'Shop',
+        path: '/'
+      });
+    })
+    .catch(err => next(err))
+};
+
 exports.getProducts = (req, res, next) => {
   Product.find()
     .then(products => {
@@ -27,19 +46,6 @@ exports.getProduct = (req, res, next) => {
         product: product,
         pageTitle: product.title,
         path: '/products'
-      });
-    })
-    .catch(err => next(err))
-};
-
-exports.getIndex = (req, res, next) => {
-  Product.find()
-    .then(products => {
-      console.log(req.csrfToken())
-      res.render('shop/index', {
-        prods: products,
-        pageTitle: 'Shop',
-        path: '/'
       });
     })
     .catch(err => next(err))
