@@ -13,13 +13,13 @@ exports.getIndex = (req, res, next) => {
   let totalProducts
 
   Product.find()
-  .count() // https://stackoverflow.com/a/65286914 // https://stackoverflow.com/a/62539985
-  .then(numProducts => {
-    totalProducts = numProducts
-    return Product.find()
-    .skip((page-1)*productsPerPage)
-    .limit(productsPerPage)
-  })
+    .countDocuments()
+    .then(numProducts => {
+      totalProducts = numProducts
+      return Product.find()
+        .skip((page - 1) * productsPerPage)
+        .limit(productsPerPage)
+    })
     .then(products => {
       res.render('shop/index', {
         prods: products,
@@ -27,24 +27,40 @@ exports.getIndex = (req, res, next) => {
         path: '/',
         totalProducts: totalProducts,
         currentPage: page,
-        hasNextPage: productsPerPage*page < totalProducts,
+        hasNextPage: productsPerPage * page < totalProducts,
         hasPreviousPage: page > 1,
         nextPage: page + 1,
         previousPage: page - 1,
-        lastPage: Math.ceil(totalProducts/productsPerPage)
+        lastPage: Math.ceil(totalProducts / productsPerPage)
       });
     })
     .catch(err => next(err))
 };
 
 exports.getProducts = (req, res, next) => {
+  const page = +req.query.page || 1
+  let totalProducts
+
   Product.find()
+    .countDocuments()
+    .then(numProducts => {
+      totalProducts = numProducts
+      return Product.find()
+        .skip((page - 1) * productsPerPage)
+        .limit(productsPerPage)
+    })
     .then(products => {
-      console.log(products);
       res.render('shop/product-list', {
         prods: products,
         pageTitle: 'All Products',
-        path: '/products'
+        path: '/products',
+        totalProducts: totalProducts,
+        currentPage: page,
+        hasNextPage: productsPerPage * page < totalProducts,
+        hasPreviousPage: page > 1,
+        nextPage: page + 1,
+        previousPage: page - 1,
+        lastPage: Math.ceil(totalProducts / productsPerPage)
       });
     })
     .catch(err => next(err))
@@ -142,8 +158,8 @@ exports.getInvoice = (req, res, next) => {
       })
       pdfDoc.pipe(fs.createWriteStream(invoicePath))
       pdfDoc.pipe(res)
-    
-      pdfDoc.fontSize(33).text('invoice', {underline: true}) 
+
+      pdfDoc.fontSize(33).text('invoice', { underline: true })
       order.products.forEach(p => {
         pdfDoc.fontSize(18).text(`
          product ${p.product.title} : ${p.quantity} * ${p.product.price}
