@@ -19,7 +19,7 @@ exports.postAddProduct = (req, res, next) => {
   const imageUrl = req.file;
   const price = req.body.price;
   const description = req.body.description;
-  // console.log(imageUrl.replace('\','/')) // test
+  // console.log(imageUrl.path.toString().replace(/\\/g, '/')) 
 
   if (!imageUrl) {
     return res.status(422).render('admin/edit-product', {
@@ -40,7 +40,7 @@ exports.postAddProduct = (req, res, next) => {
   const product = new Product({
     title: title,
     price: price,
-    imageUrl: imageUrl.path,
+    imageUrl: '/images/' + imageUrl.filename,
     description: description,
     userId: req.user
   });
@@ -119,8 +119,9 @@ exports.postEditProduct = (req, res, next) => {
       product.price = updatedPrice;
       product.description = updatedDesc;
       if (updatedImageUrl) {
+        console.log(product.imageUrl, 'post edit')
         deleteFile.deleteFile(product.imageUrl)
-        product.imageUrl = updatedImageUrl.path
+        product.imageUrl = 'images/' + updatedImageUrl.filename
       }
       return product.save();
     })
@@ -144,6 +145,7 @@ exports.postDeleteProduct = (req, res, next) => {
   const prodId = req.body.productId;
   Product.findById(prodId)
     .then(product => {
+      console.log(product.imageUrl, 'post delete');
       if (!product) return next(new Error('no found product'))
       deleteFile.deleteFile(product.imageUrl)
       return Product.deleteOne({ _id: prodId, userId: req.user._id })
