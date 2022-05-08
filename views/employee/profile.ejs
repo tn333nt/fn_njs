@@ -1,0 +1,29 @@
+<%- include('../includes/head.ejs')%> <%- include('../includes/mav.ejs')%>
+
+<main class="centered">
+  <h1><%= user.name %></h1>
+  <hr />
+  <div class="image">
+    <img src="<%= user.image %>" alt="<%= user.id %>" />
+  </div>
+  <% if (isAuth) { %>
+  <form
+    action="<% if (editing) { %>edit-profile<% } else { %>add-profile<% } %>"
+    method="post"
+    enctype="multipart/form-data"
+  >
+    <input type="file" name="image" value="change apperance" />
+  </form>
+  <% } %>
+  <ul>
+    <li>id : <%= user.id %></li>
+    <li>doB : xxx </li>
+    <li>salaryScale : xxx </li>
+    <li>startDate : xxx </li>
+    <li>annualLeave : xxx </li>
+    <li>overTime : xxx </li>
+  </ul>
+  <!-- turn into dynamic info later -->
+</main>
+
+<%- include('../includes/foot.ejs')%>

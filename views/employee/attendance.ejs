@@ -1,0 +1,32 @@
+<%- include('../includes/head.ejs')%>
+<%- include('../includes/mav.ejs')%>
+
+    <main>
+        <h1>hi <%= user.name %>!</h1>
+        <h3>pick your working place for this section : </h3>
+        <form action="/<% onWork ? 'onWork' : 'offWork' %>">
+            <label for="workplace-home">home</label>
+            <input type="radio" id="workplace-home" name="workplace-home">
+            <label for="workplace-company">company</label>
+            <input type="radio" id="workplace-company" name="workplace-company">
+            <label for="workplace-other">other</label>
+            <input type="radio" id="workplace-other" name="workplace-other">
+            <% if (!onWork) { %>
+                <button type="submit" class="btn"> start working </button>
+            <% } else { %>
+                <button type="submit" class="btn"> finish </button>
+            <% }%>
+        </form>
+
+        <!-- register onLeave -->
+        <div class="form-background">
+            <div class="form-popUp">
+              <form action="" class="form-container">
+        
+                <input type="submit" value="register" />
+              </form>
+            </div>
+          </div>
+    </main>
+
+<%- include('../includes/foot.ejs')%>

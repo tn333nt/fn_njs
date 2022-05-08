@@ -1,0 +1,63 @@
+<nav class="nav-container">
+  <ul class="nav-top nav-list">
+    <li class="nav-item">
+      <a class="<%= path === '/login' ? 'active' : ''%>" href="/login">login</a>
+    </li>
+    <li class="nav-item">
+      <a class="<%= path === '/signup' ? 'active' : ''%>" href="/signup"
+        >signup</a
+      >
+    </li>
+    <li class="nav-item">
+      <% if (isAuth) { %>
+      <form action="/logout" method="post">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+        <button
+          class="btn <%= path === '/logout' ? 'active' : ''%>"
+          type="submit"
+        >
+          Logout
+        </button>
+      </form>
+      <% } %>
+    </li>
+  </ul>
+  <ul class="nav-welcome nav-list">
+    <% if (isAuth) { %>
+    <h3 class="nav-item"><%= user.name %> 's</h3>
+    <% } else { %>
+    <h3 class="nav-item">welcome to abc company</h3>
+    <% } %>
+
+    <p class="role">(<% isManager ? 'manager' : 'employee' %>)</p>
+  </ul>
+  <ul class="nav-bottom nav-list">
+    <% if (isManager) { %>
+    <li class="nav-item">
+      <a class="<%= path === '/' ? 'active' : ''%>" href="/"
+        >management-office</a
+      >
+    </li>
+    <% } %>
+    <li class="nav-item">
+      <a class="<%= path === '/' ? 'active' : ''%>" href="/">dashboard</a>
+    </li>
+    <li class="nav-item">
+      <a class="<%= path === '/attendance' ? 'active' : ''%>" href="/attendance"
+        >attendance</a
+      >
+    </li>
+    <li class="nav-item">
+      <a class="<%= path === '/profile' ? 'active' : ''%>" href="/profile"
+        >profile</a
+      >
+    </li>
+    <li class="nav-item">
+      <a
+        class="<%= path === '/health-declaration' ? 'active' : ''%>"
+        href="/health-declaration"
+        >health-declaration</a
+      >
+    </li>
+  </ul>
+</nav>

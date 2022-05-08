@@ -1,0 +1,37 @@
+<%- include('../includes/head.ejs')%> <%- include('../includes/mav.ejs')%>
+
+<main>
+  <!-- add statistics later -->
+  <div class="grid">
+    <% if (workingSessions.length > 0) { %>
+    <ul>
+      <!-- render timelist of worked sessions -->
+      <% work.forEach(workDay => { %>
+      <li>work at <%= workDay.workPlace %></li>
+      <li>annual leave <%= workDay.annualLeave %></li>
+      <!-- can delete if isManager -->
+      <li>start at <%= workDay.startTime %></li>
+      <li>finish at <%= workDay.finishTime %></li>
+      <li>over time <%= workDay.overTime %> h</li>
+      <li>
+        total <%= workDay.finishTime - workDay.startTime %>h for today's
+        sessions
+      </li>
+      <li>
+        total <%= (workDay.finishTime - workDay.startTime) + workDay.annualLeave
+        %> h of working
+      </li>
+      <% }) %>
+      <li>=> total <%= work.user.salary %> $ of month</li>
+    </ul>
+    <div>
+      <h3>contact to manager :</h3>
+      <p><%= work.user.manager.name %> <%= work.user.manager._id %></p>
+    </div>
+    
+    <!-- pagination? -->
+    <% } %>
+  </div>
+</main>
+
+<%- include('../includes/foot.ejs')%>
