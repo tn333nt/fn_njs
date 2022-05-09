@@ -15,7 +15,16 @@ const workSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'Work',
         required: true
-    }
+    },
+    workingSessions: {
+        session: [
+            {
+                startSession: { type: Schema.Types.Date, default: Date.now },
+                finishSession: Date,
+                totalWorkingTime: Number
+            }
+        ]
+    } // de vay thi each ss van gen dc id rieng thi phai
 });
 
 module.exports = mongoose.model('Work', workSchema);

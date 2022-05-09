@@ -34,13 +34,15 @@
   <ul class="nav-bottom nav-list">
     <% if (isManager) { %>
     <li class="nav-item">
-      <a class="<%= path === '/' ? 'active' : ''%>" href="/"
-        >management-office</a
+      <a class="<%= path === '/work-reports' ? 'active' : ''%>" href="/"
+        >work-reports</a
       >
     </li>
     <% } %>
     <li class="nav-item">
-      <a class="<%= path === '/' ? 'active' : ''%>" href="/">dashboard</a>
+      <a class="<%= path === '/report-details' ? 'active' : ''%>" href="/"
+        >report-details</a
+      >
     </li>
     <li class="nav-item">
       <a class="<%= path === '/attendance' ? 'active' : ''%>" href="/attendance"
