@@ -1,6 +1,49 @@
 
 const User = require('../models/user');
+const deleteFile = require('../middleware/deleteFile')
 
+
+// up , store & serve file
+exports.postProfile = (req, res, next) => {
+    const userId = req.user._id
+    const image = req.file;
+
+    if (!image) {
+        return res.status(422).render('employee/profile', {
+            title: 'profile',
+            path: '/profile',
+            errMsg: 'check the file'
+        });
+    }
+
+    User.findById(userId)
+        .then(user => {
+            if (image) {
+                deleteFile(user.image)
+                user.image = 'images/' + image.filename
+            }
+            return user.save();
+        })
+        .then(() => res.redirect('/profile'))
+        .catch(err => next(err))
+};
+
+exports.getProfile = (req, res, next) => {
+    const userId = req.user._id
+    User.findById(userId)
+    .then(user => {
+        res.render('employee/profile', {
+            title: 'profile',
+            path: '/profile',
+            user: user,
+            errMsg: null
+        });
+    })
+    .catch(err => next(err))
+};
+
+
+// post health info & extract it into file
 exports.postHealthDeclaration = (req, res, next) => {
     const userId = req.user._id;
     const temperature = req.body.temperature;

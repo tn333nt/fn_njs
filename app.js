@@ -6,6 +6,7 @@ const bodyParser = require('body-parser');
 const session = require('express-session')
 const MongodbStore = require('connect-mongodb-session')(session)
 const csrf = require('csurf')
+const multer = require('multer');
 
 const managerRoutes = require('./routes/manager');
 const employeeRoutes = require('./routes/employee');
@@ -16,12 +17,30 @@ const mgURI = 'mongodb+srv://test:bJYVI29LEAjl147U@cluster0.ti4jx.mongodb.net/co
 const port = 3001
 const app = express();
 
-const csrfProtection = csrf() // https://www.npmjs.com/package/csurf#csurfoptions
-
 app.set('view engine', 'ejs');
 
 app.use(bodyParser.json())
 app.use(express.static(path.join(__dirname, 'public')))
+app.use(multer({
+  storage: multer.diskStorage({
+    destination: (req, file, cb) => {
+      cb(null, 'public/images')
+    },
+    filename: (req, file, cb) => {
+      cb(null, new Date().toISOString().replace(/:/g, '-') + '-' + file.originalname)
+    }
+  }),
+  fileFilter: (req, file, cb) => {
+    const types = [
+      'image/png', 
+      'image/jpeg', 
+      'image/jpg'
+    ]
+    types.find(type => type === file.mimetype) ? cb(null, true) : cb(null, false)
+  }
+})
+  .single('image'))
+
 
 app.use(session({
   resave: false,
@@ -31,7 +50,7 @@ app.use(session({
     collection: 'loginSessions'
   })
 }))
-app.use(csrfProtection)
+app.use(csrf())
 app.use(passData.passAuthData)
 
 app.use(managerRoutes);

@@ -17,6 +17,7 @@ router.post('/register-leave', isAuth, isAuth, employeeController.postRegisterLe
 router.get('/attendance', isAuth, employeeController.getAttendance);
 
 router.get('/profile', isAuth, employeeController.getProfile);
+router.post('/profile', isAuth, employeeController.postProfile);
 
 router.post('/health-declaration', isAuth, employeeController.postHealthDeclaration);
 
