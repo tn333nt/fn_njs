@@ -57,6 +57,23 @@ app.use(managerRoutes);
 app.use(employeeRoutes);
 app.use(authRoutes);
 
+// err handlers
+app.use((req, res, next) => {
+  res.status(404).render('err/404', {
+    title: 404,
+    path: '/404',
+    isAuth: req.session.isLoggedIn
+  });
+});
+app.use((err, req, res, next) => {
+  console.log(err.message);
+  res.status(err.status || 500).render('err/500', {
+    title: 500,
+    path: '/500',
+    isAuth: req.session.isLoggedIn
+  });
+});
+
 mongoose
   .connect(mgURI)
   .then(() => app.listen(port))
