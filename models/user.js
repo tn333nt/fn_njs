@@ -11,12 +11,8 @@ const userSchema = new Schema({
         timeRegister: Date,
         temperature: Number,
         vaccination: {
-            injection: [
-              {
-                type: String,
-                date: Date
-              }
-            ]
+            turn1: { type: String, date: Date },
+            turn2: { type: String, date: Date }
           },
         isPositive: Boolean
     }
