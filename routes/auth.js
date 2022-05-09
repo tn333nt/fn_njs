@@ -1,14 +1,27 @@
 const express = require('express');
+const { check, body } = require('express-validator/check');
 
 const authController = require('../controllers/auth');
 
 const router = express.Router();
 
-router.get('/signup', authController.getSignup);
-router.post('/signup', authController.postSignup);
-
 router.get('/login', authController.getLogin);
-router.post('/login', authController.postLogin);
+router.post(
+    '/login',
+    check('email').isEmail().normalizeEmail()
+    , check('password').isAlphanumeric().trim()
+    , [
+        check('email')
+            .isEmail()
+            .withMessage('check the email')
+            .normalizeEmail()
+        , body('password', 'check the password')
+            .isAlphanumeric()
+            .isLength({ min: 3 })
+            .trim()
+    ]
+    , authController.postLogin
+);
 
 router.post('/logout', authController.postLogout);
 

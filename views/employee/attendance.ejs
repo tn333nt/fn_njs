@@ -2,7 +2,7 @@
 <%- include('../includes/mav.ejs')%>
 
     <main>
-        <h1>hi <%= user.name %>!</h1>
+        <h1>hi <%= user.email %>!</h1>
         <h3>pick your working place for this section : </h3>
         <form action="/<% onWork ? 'onWork' : 'offWork' %>">
             <label for="workplace-home">home</label>
@@ -24,6 +24,7 @@
               <form action="" class="form-container">
         
                 <input type="submit" value="register" />
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
               </form>
             </div>
           </div>

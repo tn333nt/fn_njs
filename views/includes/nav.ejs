@@ -4,33 +4,28 @@
       <a class="<%= path === '/login' ? 'active' : ''%>" href="/login">login</a>
     </li>
     <li class="nav-item">
-      <a class="<%= path === '/signup' ? 'active' : ''%>" href="/signup"
-        >signup</a
-      >
-    </li>
-    <li class="nav-item">
       <% if (isAuth) { %>
       <form action="/logout" method="post">
-        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
         <button
           class="btn <%= path === '/logout' ? 'active' : ''%>"
           type="submit"
         >
           Logout
         </button>
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
       </form>
       <% } %>
     </li>
   </ul>
-  <ul class="nav-welcome nav-list">
+  <!-- <ul class="nav-welcome nav-list">
     <% if (isAuth) { %>
-    <h3 class="nav-item"><%= user.name %> 's</h3>
+    <h3 class="nav-item"><%= user.email %> 's</h3>
     <% } else { %>
     <h3 class="nav-item">welcome to abc company</h3>
     <% } %>
 
     <p class="role">(<% isManager ? 'manager' : 'employee' %>)</p>
-  </ul>
+  </ul> -->
   <ul class="nav-bottom nav-list">
     <% if (isManager) { %>
     <li class="nav-item">

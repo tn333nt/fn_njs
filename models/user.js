@@ -3,14 +3,10 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
-    name: { type: String, required: true },
     email: { type: String, required: true },
     password: { type: String, required: true },
     annualLeave: { type: Number, default: 12 },
-    managerId: {
-        type: Schema.Types.ObjectId,
-        required: true
-    },
+    managerId: Schema.Types.ObjectId,
     health: { 
         timeRegister: Date,
         temperature: Number,

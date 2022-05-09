@@ -1,22 +1,23 @@
 const express = require('express');
 
-const employeeController = require('../controllers/employee');
+const employeeController = require('../controllers/auth');
+const isAuth = require('./middleware/isAuth');
 
 const router = express.Router();
 
-router.get('/work-reports/:reportId', managerController.getReportDetails); //
+router.get('/work-reports/:reportId', isAuth, managerController.getReportDetails); //
 
-router.post('/start-work', employeeController.postStartWork);
-router.get('/start-work', employeeController.getStartWork);
-router.post('/finish-work', employeeController.postFinishWork);
-router.get('/finish-work', employeeController.getFinishWork);
+router.post('/start-work',  isAuth, employeeController.postStartWork);
+router.get('/start-work', isAuth, employeeController.getStartWork);
+router.post('/finish-work', isAuth, employeeController.postFinishWork);
+router.get('/finish-work', isAuth, employeeController.getFinishWork);
 
-router.post('/register-leave', employeeController.postRegisterLeave);
+router.post('/register-leave', isAuth, isAuth, employeeController.postRegisterLeave);
 
-router.get('/attendance', employeeController.getAttendance);
+router.get('/attendance', isAuth, employeeController.getAttendance);
 
-router.get('/profile', employeeController.getProfile);
+router.get('/profile', isAuth, employeeController.getProfile);
 
-router.post('/health-declaration', employeeController.postHealthDeclaration);
+router.post('/health-declaration', isAuth, employeeController.postHealthDeclaration);
 
 module.exports = router;

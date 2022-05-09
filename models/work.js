@@ -11,10 +11,13 @@ const workSchema = new Schema({
     overTime: { type: Number, required: true },
     annualLeave: { type: Number, required: true },
     totalSummaryTime: { type: Number, required: true },
-    userId: {
-        type: Schema.Types.ObjectId,
-        ref: 'Work',
-        required: true
+    user: {
+        userId: {
+            type: Schema.Types.ObjectId,
+            ref: 'User',
+            required: true
+        },
+        managerId: { type: Schema.Types.ObjectId, ref: 'User'} // xem lai cho populate
     },
     workingSessions: {
         session: [
