@@ -16,7 +16,8 @@ exports.passUser = (req, res, next) => {
 }
 
 exports.passAuthData = (req, res, next) => {
-    res.locals.isAuthenticated = req.session.isLoggedIn,
+    res.locals.isAuth = req.session.isLoggedIn,
+    res.locals.isManager = req.session.isLoggedIn,
     res.locals.csrfToken = req.csrfToken() 
     next()
 }

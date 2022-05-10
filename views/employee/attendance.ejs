@@ -1,33 +1,40 @@
-<%- include('../includes/head.ejs')%>
-<%- include('../includes/mav.ejs')%>
+<%- include('../includes/head.ejs')%> <%- include('../includes/mav.ejs')%>
 
-    <main>
-        <h1>hi <%= user.email %>!</h1>
-        <h3>pick your working place for this section : </h3>
-        <form action="/<% onWork ? 'onWork' : 'offWork' %>">
-            <label for="workplace-home">home</label>
-            <input type="radio" id="workplace-home" name="workplace-home">
-            <label for="workplace-company">company</label>
-            <input type="radio" id="workplace-company" name="workplace-company">
-            <label for="workplace-other">other</label>
-            <input type="radio" id="workplace-other" name="workplace-other">
-            <% if (!onWork) { %>
-                <button type="submit" class="btn"> start working </button>
-            <% } else { %>
-                <button type="submit" class="btn"> finish </button>
-            <% }%>
-        </form>
+<main>
+  <h1>hi <%= user.email %></h1>
+  <h3>pick your working place for this session :</h3>
+  <form
+    action="/<% checkin ? 'checkin' : 'checkout' %>"
+    class="form-container"
+    method="post"
+  >
+    <div class="form-item">
+      <label for="workplace-home">home</label>
+      <input type="radio" id="workplace-home" name="workplace" />
+    </div>
+    <div class="form-item">
+      <label for="workplace-company">company</label>
+      <input type="radio" id="workplace-company" name="workplace" />
+    </div>
+    <div class="form-item">
+      <label for="workplace-other">other</label>
+      <input type="radio" id="workplace-other" name="workplace" />
+    </div>
+    <% if (!checkin) { %>
+    <button type="submit" class="btn">start working</button>
+    <% } else { %>
+    <button type="submit" class="btn">finish</button>
+    <% }%>
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+  </form>
 
-        <!-- register onLeave -->
-        <div class="form-background">
-            <div class="form-popUp">
-              <form action="" class="form-container">
-        
-                <input type="submit" value="register" />
-                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-              </form>
-            </div>
-          </div>
-    </main>
+  <h3> working status : <% checkin ? %>on<% : %>off</h3> 
+  <!-- hay la turn into 1 key xong fetch data tu day nhi -->
+
+  <form action="/register-leave">
+    <button type="submit" class="btn"> register leave </button>
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+  </form>
+</main>
 
 <%- include('../includes/foot.ejs')%>

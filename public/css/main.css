@@ -25,6 +25,17 @@ main {
   align-items: stretch;
 }
 
+.grid-item {
+  border: 1px solid var(--main);
+  border-radius: 5px;
+  text-align: center;
+  margin: 10px;
+}
+
+.grid-item p {
+  word-wrap: break-word;
+}
+
 .centered {
   text-align: center;
 }
@@ -52,6 +63,10 @@ main {
   margin: 0;
   padding: 0;
   display: flex;
+}
+
+.nav-top {
+  justify-content: flex-end;
 }
 
 .nav-item {

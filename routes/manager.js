@@ -1,15 +1,17 @@
 const express = require('express');
 
 const managerController = require('../controllers/manager');
+const isAuth = require('./middleware/confirm').isAuth
+const isManager = require('./middleware/confirm').isManager
 
 const router = express.Router();
 
-router.get('/work-reports', isAuth, managerController.getWorkReports);
+router.get('/reports', isAuth, isManager, managerController.getAllReports);
 
-router.post('/edit-reports/:reportId', isAuth, managerController.postEditReportDetails);
+router.post('/edit-report/:reportId', isAuth, isManager, managerController.postEditReportDetails);
 
-// hay la tach rieng phan h giac ra nhi?
+router.post('/disable-changes/:reportId', isAuth, isManager, managerController.postDisableReport);
 
-router.get('/health-declaration/:delarationId', isAuth, employeeController.getDeclaration);
+router.get('/health-declaration', isAuth, isManager, employeeController.getDeclaration);
 
 module.exports = router;

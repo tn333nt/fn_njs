@@ -2,32 +2,40 @@
 
 <main>
   <div class="grid">
-    <% if (workingSessions.length > 0) { %>
+    <% if (reports.length > 0) { %>
     <ul>
-      <!-- render timelist of worked sessions -->
-      <% work.forEach(workDay => { %>
-      <li>work at <%= workDay.workPlace %></li>
-      <li>annual leave <%= workDay.annualLeave %></li>
+      <% reports.forEach(report => { %>
+      <li>report at <%= report.workplace %></li>
+      <li>annual leave <%= report.dayLeaveHours.period %></li>
+      <li>start at <%= report.startTime %></li>
       <!-- can delete if isManager -->
-      <li>start at <%= workDay.startTime %></li>
-      <li>finish at <%= workDay.finishTime %></li>
-      <li>over time <%= workDay.overTime %> h</li>
-      <li>
-        total <%= workDay.finishTime - workDay.startTime %>h for today's
-        sessions
-      </li>
-      <li>
-        total <%= (workDay.finishTime - workDay.startTime) + workDay.annualLeave
-        %> h of working
-      </li>
+      <li>finish at <%= report.finishTime %></li>
+      <!-- <div>
+        <input type="text" value="<%= report.finishTime %>" <% isManager ? '' : 'disabled' %> />
+      </div> -->
+      <li>over time <%= report.overTime %> h</li>
+      <li>total <%= report.totalWorkingTime %> h for today's sessions</li>
+      <li>total <%= report.totalSummaryTime %> h of working</li>
+      <li> => total <%= report.salary %> $ of month</li>
+        <!-- <% if (isManager) { %>
+        <form action="/edit-report/:<%= report._id %>" method="post">
+          <button class="btn" type="submit">edit</button>
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+          // still render this page but some content is populated
+        </form>
+        <form action="/disable-changes/:<%= report._id %>" method="post">
+          <button class="btn" type="submit">disable-changes</button>
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+        </form>
+        <% } else { %>
+        <div>
+          <h3>contact to manager :</h3>
+          <p>abc <%= report.userId.managerId %></p>
+        </div>
+        <% } %> -->
       <% }) %>
-      <li>=> total <%= work.user.salary %> $ of month</li>
     </ul>
-    <div>
-      <h3>contact to manager :</h3>
-      <p> abc <%= work.user.managerId %></p>
-    </div>
-    
+
     <!-- pagination? -->
     <% } %>
   </div>

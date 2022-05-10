@@ -56,7 +56,7 @@ exports.postLogin = (req, res, next) => {
             req.session.isLoggedIn = true
             req.session.user = user
             return req.session.save(() => {
-                res.redirect('/work-reports');
+                res.redirect('back'); // https://www.geeksforgeeks.org/how-to-redirect-back-to-original-url-in-node-js/
             })
         })
         .catch(err => next(err))
