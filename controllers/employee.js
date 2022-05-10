@@ -1,6 +1,38 @@
 
 const User = require('../models/user');
+const Report = require('../models/report');
 const deleteFile = require('../middleware/deleteFile')
+
+
+exports.registerLeave = (req, res, next) => {
+    const reportId = req.params.reportId
+    const period = req.body.period;
+    const reason = req.body.reason;
+    const appliedDate = new Date();
+
+    req.user
+        .populate('reports.reportId')
+        .execPopulate()
+        .then(user => {
+            // 1. add leave hour for dayReport
+            const reports = user.reports.map(report => {
+                // return { report: { ...report.reportId._doc } }; // https://stackoverflow.com/a/60978177
+                return { report: { ...report.reportId.toObject() } } // https://stackoverflow.com/a/66944141
+            });
+            return reports.findById(reportId)
+                .then(report => {
+                    report.dayLeaveHours = {
+                        period: period,
+                        reason: reason,
+                    }
+                    return report.save()
+                })
+        })
+        // 2. update aL
+        .then(report => req.user.updateAnnualLeave(report))
+        .then(() => res.redirect('/health-declaration'))
+        .catch(err => next(err))
+};
 
 
 // up , store & serve file
@@ -31,15 +63,15 @@ exports.postProfile = (req, res, next) => {
 exports.getProfile = (req, res, next) => {
     const userId = req.user._id
     User.findById(userId)
-    .then(user => {
-        res.render('employee/profile', {
-            title: 'profile',
-            path: '/profile',
-            user: user,
-            errMsg: null
-        });
-    })
-    .catch(err => next(err))
+        .then(user => {
+            res.render('employee/profile', {
+                title: 'profile',
+                path: '/profile',
+                user: user,
+                errMsg: null
+            });
+        })
+        .catch(err => next(err))
 };
 
 

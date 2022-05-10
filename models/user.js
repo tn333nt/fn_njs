@@ -27,4 +27,10 @@ const userSchema = new Schema({
     ]
 });
 
+
+userSchema.methods.updateAnnualLeave = function (report) {
+    this.annualLeave -= report.dayLeaveHours.period
+    return this.save();
+};
+
 module.exports = mongoose.model('User', userSchema);
