@@ -26,21 +26,42 @@ exports.getAttendance = (req, res, next) => {
 exports.getReportDetails = (req, res, next) => {
     const managerId = req.user.managerId
     const reportId = req.params.reportId;
+    const ReportsPerPage = +req.body.pagination || 1
+    const page = +req.query.page || 1
+    let totalReports
+
     Report.findById(reportId)
         .then(report => {
             if (!report) {
                 return res.redirect('back');
             }
-            // check if current user has id same mngId => mng
-            return User.findById(managerId).then(user => {
-                const isManager = user ? true : false
-                return res.render('employee/report-details', {
-                    title: 'report',
-                    path: '/report-details',
-                    report: report,
-                    isManager: isManager
-                });
-            })
+            return Report.find()
+                .countDocuments()
+                .then(countReports => {
+                    totalReports = countReports
+                    return Report.find()
+                        .skip((page - 1) * ReportsPerPage)
+                        .limit(ReportsPerPage)
+                })
+                .then(reports => {
+                    return User.findById(managerId).then(user => {
+                        const isManager = user ? true : false
+                        return res.render('employee/report-details', {
+                            title: 'report',
+                            path: '/report-details',
+                            report: report,
+                            reports: reports,
+                            isManager: isManager,
+                            hasNextPage: ReportsPerPage * page < totalReports,
+                            hasPreviousPage: page > 1,
+                            nextPage: page + 1,
+                            previousPage: page - 1,
+                            currentPage: page,
+                            lastPage: Math.ceil(totalReports / ReportsPerPage)
+                        });
+                    })
+                })
+
         })
         .catch(err => next(err))
 }
@@ -154,10 +175,10 @@ exports.getHealthDeclaration = (req, res, next) => {
     req.user
         .then(user => {
             User.findById(managerId)
-            .then(manager => {
-                let isManager
-                return isManager = manager ? true : false
-            })
+                .then(manager => {
+                    let isManager
+                    return isManager = manager ? true : false
+                })
             return res.render('employee/health-declaration', {
                 title: 'health-declaration',
                 path: '/health-declaration',

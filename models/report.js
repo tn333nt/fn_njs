@@ -4,7 +4,11 @@ const Schema = mongoose.Schema;
 
 const reportSchema = new Schema({
     date: { type: Date, required: true },
-    workplace: { type: String, required: true },
+    workplaces: [
+        {
+            workplace: String
+        }
+    ],
     startTime: { type: Number, required: true },
     finishTime: Number,
     totalWorkingTime: Number,
@@ -27,6 +31,7 @@ const reportSchema = new Schema({
             {
                 checkin: { type: Schema.Types.Date, default: Date.now },
                 checkout: Date,
+                workplace: String,
                 diffTime: Number
             }
         ]

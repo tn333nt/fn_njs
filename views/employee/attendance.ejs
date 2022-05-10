@@ -10,15 +10,15 @@
   >
     <div class="form-item">
       <label for="workplace-home">home</label>
-      <input type="radio" id="workplace-home" name="workplace" />
+      <input type="radio" id="workplace-home" name="workplace" value="home"/>
     </div>
     <div class="form-item">
       <label for="workplace-company">company</label>
-      <input type="radio" id="workplace-company" name="workplace" />
+      <input type="radio" id="workplace-company" name="workplace" value="company" />
     </div>
     <div class="form-item">
       <label for="workplace-other">other</label>
-      <input type="radio" id="workplace-other" name="workplace" />
+      <input type="radio" id="workplace-other" name="workplace" value="other" />
     </div>
     <% if (reports.reportId.editMode) { %>
         <% if (!reports.reportId.workMode) { %>
