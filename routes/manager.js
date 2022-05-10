@@ -8,9 +8,9 @@ const router = express.Router();
 
 router.get('/reports', isAuth, isManager, managerController.getAllReports);
 
-router.post('/edit-report/:reportId', isAuth, isManager, managerController.postEditReportDetails);
+router.post('/delete-report/:reportId', isAuth, isManager, managerController.deleteOldReports);
 
-router.post('/disable-changes/:reportId', isAuth, isManager, managerController.postDisableReport);
+router.post('/disable-changes/:reportId', isAuth, isManager, managerController.postDisableChanges);
 
 router.get('/health-declaration', isAuth, isManager, employeeController.getDeclaration);
 

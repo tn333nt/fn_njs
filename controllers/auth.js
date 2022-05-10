@@ -39,16 +39,10 @@ exports.postLogin = (req, res, next) => {
     return bcrypt
         .hash(password, 12)
         .then(hasedPw => {
-            // if exist user with this id -> return value & store in var, else 
-            // User.findOne({ _id: ObjectId('626ebc84126f7a0bcce75a20') })
-            // .then(user => {
-            //     const managerId = user._id 
-            //     return managerId
-            // })
             const user = new User({
                 email: email,
                 password: hasedPw,
-                managerId: managerId
+                managerId: ObjectId('626ebc84126f7a0bcce75a20') // temp
             })
             return user.save()
         })

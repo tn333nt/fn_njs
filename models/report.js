@@ -30,7 +30,9 @@ const reportSchema = new Schema({
                 diffTime: Number
             }
         ]
-    } // de vay thi each ss van gen dc id rieng thi phai
+    },
+    editMode: { type: Boolean, default: true },
+    workMode: { type: Boolean, default: false }
 });
 
 module.exports = mongoose.model('Report', reportSchema);

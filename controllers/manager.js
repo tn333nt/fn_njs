@@ -4,7 +4,38 @@ const path = require('path');
 const pdfDocConstructor = require('pdfkit')
 
 const User = require('../models/user');
+const Report = require('../models/report');
 
+
+// delete data from previous days
+exports.deleteOldReports = (req, res, next) => {
+    const now = new Date();
+    Report.find()
+        .then(reports => {
+            if (!reports) return next(new Error('no found Report'))
+            // update new reports with only data of now
+            const updatedReports = reports.find(report => {
+                return report.date === now;
+            });
+            reports = updatedReports;
+            return reports.save();
+
+            // later : delete() with config date lt today
+        })
+        .then(() => res.redirect('/reports/:reportId'))
+        .catch(err => next(err))
+};
+
+// disable actions check in-out & register leave
+exports.postDisableChanges = (req, res, next) => {
+    const reportId = req.params.reportId
+    Report.findById(reportId)
+        .then(report => {
+            report.editMode = false
+            return report.save()
+        })
+        .catch(err => next(err))
+}
 
 // get health-declaration as pdf doc
 exports.getDeclaration = (req, res, next) => {
@@ -24,7 +55,7 @@ exports.getDeclaration = (req, res, next) => {
         .exec((err, data) => {
             if (err) next(err);
             return data
-        }) // exec mgs query then can use as pm https://mongoosejs.com/docs/queries.html
+        })
         .then(users => {
             if (!users) return next(new Error('no user'))
 

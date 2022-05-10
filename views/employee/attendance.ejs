@@ -4,7 +4,7 @@
   <h1>hi <%= user.email %></h1>
   <h3>pick your working place for this session :</h3>
   <form
-    action="/<% checkin ? 'checkin' : 'checkout' %>"
+    action="/<% user.reports.reportId.workMode ? 'check-in' : 'check-out' %>"
     class="form-container"
     method="post"
   >
@@ -20,21 +20,46 @@
       <label for="workplace-other">other</label>
       <input type="radio" id="workplace-other" name="workplace" />
     </div>
-    <% if (!checkin) { %>
-    <button type="submit" class="btn">start working</button>
-    <% } else { %>
-    <button type="submit" class="btn">finish</button>
-    <% }%>
+    <% if (reports.reportId.editMode) { %>
+        <% if (!reports.reportId.workMode) { %>
+          <div class="grid">
+            <% reports.reportId.forEach(report => { %>
+              <div class="grid-item">
+                <p><%= user.name %></p>
+                <p><%= report.workplace %></p>
+                <p><%= report.startTime %></p>
+              </div>
+            <% }) %>
+          </div>
+          <button type="submit" class="btn">start working</button>
+        <% } else { %>
+          <div class="grid">
+            <% reports.reportId.forEach(report => { %>
+              <div class="grid-item">
+                <p><%= report.workplace %></p>
+                <p><%= report.startTime %></p>
+                <p><%= report.finishTime %></p>
+              </div>
+            <% }) %>
+          </div>
+          <button type="submit" class="btn">finish</button>
+        <% }%>
+          <form action="/register-leave">
+            <button type="submit" class="btn"> register leave </button>
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+          </form>
+    <% } %>
     <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
   </form>
 
-  <h3> working status : <% checkin ? %>on<% : %>off</h3> 
-  <!-- hay la turn into 1 key xong fetch data tu day nhi -->
-
-  <form action="/register-leave">
-    <button type="submit" class="btn"> register leave </button>
-        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
-  </form>
+  <h3> working status : <% reports.reportId.workMode ? %>on<% : %>off</h3> 
+<!-- rmb chinh mode khi tao ham post check in out -->
+    <% if (reports.reportId.editMode) { %>
+        <form action="/register-leave">
+          <button type="submit" class="btn"> register leave </button>
+              <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+        </form>
+    <% } %>
 </main>
 
 <%- include('../includes/foot.ejs')%>
