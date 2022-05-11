@@ -7,8 +7,9 @@
     <img src="<%= user.image %>" alt="<%= user._id %>" />
   </div>
   <% if (isAuth) { %>
+    <% console.log(isAuth, 'abc') %>
   <form
-    action="<% if (editing) { %>edit-profile<% } else { %>add-profile<% } %>"
+    action="/profile"
     method="post"
     enctype="multipart/form-data"
   >
@@ -19,7 +20,7 @@
     <% } %>
   </form>
   <% } %>
-  <ul>
+  <ul class="none-bullet">
     <li>id : <%= user._id %></li>
     <li>doB : xxx</li>
     <li>salaryScale : xxx</li>

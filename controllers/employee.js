@@ -7,11 +7,12 @@ const deleteFile = require('../middlewares/deleteFile')
 // get & check attendance
 
 exports.getAttendance = (req, res, next) => {
+    console.log(123, req.user);
     req.user
         .populate('reports.reportId')
-        .execPopulate()
         .then(user => {
             const reports = user.reports
+            console.log(reports)
             return res.render('employee/attendance', {
                 title: 'attendance',
                 path: '/attendance',
@@ -190,7 +191,6 @@ exports.postRegisterLeave = (req, res, next) => {
 
     req.user
         .populate('reports.reportId')
-        .execPopulate()
         .then(user => {
             // 1. add leave hour for dayReport
             const reports = user.reports
@@ -223,7 +223,7 @@ exports.postProfile = (req, res, next) => {
         });
     }
 
-    req.user
+    User.findById(req.user._id)
         .then(user => {
             if (image) {
                 deleteFile(user.image)
@@ -236,7 +236,7 @@ exports.postProfile = (req, res, next) => {
 };
 
 exports.getProfile = (req, res, next) => {
-    req.user
+    User.findById(req.user._id)
         .then(user => {
             res.render('employee/profile', {
                 title: 'profile',
@@ -261,7 +261,7 @@ exports.postHealthDeclaration = (req, res, next) => {
     const isPositive = req.body.isPositive;
     // validate later
 
-    req.user
+    User.findById(req.user._id)
         .then(user => {
             user.health = {
                 timeRegister: timeRegister,
@@ -285,19 +285,13 @@ exports.postHealthDeclaration = (req, res, next) => {
 };
 
 exports.getHealthDeclaration = (req, res, next) => {
-    const managerId = req.user.managerId
-    req.user
+    console.log(req.user);
+    User.findById(req.user._id)
         .then(user => {
-            User.findById(managerId)
-                .then(manager => {
-                    let isManager
-                    return isManager = manager ? true : false
-                })
             return res.render('employee/health-declaration', {
                 title: 'health-declaration',
                 path: '/health-declaration',
-                user: user,
-                isManager: isManager
+                user: user
             });
         })
         .catch(err => next(err))

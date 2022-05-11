@@ -1,10 +1,11 @@
-<%- include('../includes/head.ejs')%> <%- include('../includes/nav.ejs')%>
+<%- include ('../includes/head')%> <%- include ('../includes/nav')%>
 
 <main>
   <h1>hi <%= user.email %></h1>
   <h3>pick your working place for this session :</h3>
+  <!-- o ha va case ko co thi sao -->
   <form
-    action="/<% user.reports.reportId.workMode ? 'check-in' : 'check-out' %>"
+    action="/<% if (reports.reportId.workMode) { %>check-in<% } else  %>check-out<% } %>"
     class="form-container"
     method="post"
   >
@@ -20,7 +21,10 @@
       <label for="workplace-other">other</label>
       <input type="radio" id="workplace-other" name="workplace" value="other" />
     </div>
-    <% if (reports.reportId.editMode) { %>
+    <button type="submit" class="btn">start working</button>
+    <!-- dieu kien r ma  -->
+    <% if (reports.length > 0) { %>
+      <% if (reports.reportId.editMode) { %>
         <% if (!reports.reportId.workMode) { %>
           <div class="grid">
             <% reports.reportId.forEach(report => { %>
@@ -31,7 +35,6 @@
               </div>
             <% }) %>
           </div>
-          <button type="submit" class="btn">start working</button>
         <% } else { %>
           <div class="grid">
             <% reports.reportId.forEach(report => { %>
@@ -48,18 +51,18 @@
             <button type="submit" class="btn"> register leave </button>
             <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
           </form>
+      <% } %>
+      <h3> working status : <% reports.reportId.workMode ? %>on<% : %>off</h3> 
+        <% if (reports.reportId.editMode) { %>
+            <form action="/register-leave">
+              <button type="submit" class="btn"> register leave </button>
+              <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+            </form>
+        <% } %>
     <% } %>
-    <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+  <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
   </form>
 
-  <h3> working status : <% reports.reportId.workMode ? %>on<% : %>off</h3> 
-<!-- rmb chinh mode khi tao ham post check in out -->
-    <% if (reports.reportId.editMode) { %>
-        <form action="/register-leave">
-          <button type="submit" class="btn"> register leave </button>
-          <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
-        </form>
-    <% } %>
 </main>
 
-<%- include('../includes/foot.ejs')%>
+<%- include('../includes/foot')%>

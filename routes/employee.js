@@ -1,25 +1,25 @@
 const express = require('express');
 
 const employeeController = require('../controllers/employee');
-const isAuth = require('../middlewares/confirm').isAuth
+const confirmAuth = require('../middlewares/confirm').confirmAuth
 
 const router = express.Router();
 
-router.get('/reports/:reportId', isAuth, employeeController.getReportDetails); 
+router.get('/attendance', confirmAuth, employeeController.getAttendance);
 
-router.post('/select-month', isAuth, employeeController.postSelectedMonth); 
+router.get('/reports/:reportId', confirmAuth, employeeController.getReportDetails); 
 
-router.get('/attendance/:userId', isAuth, employeeController.getAttendance);
+router.post('/select-month', confirmAuth, employeeController.postSelectedMonth); 
 
-router.post('/check-in/:reportId',  isAuth, employeeController.postCheckIn);
-router.post('/check-out/:reportId', isAuth, employeeController.postCheckOut);
+router.post('/check-in/:reportId',  confirmAuth, employeeController.postCheckIn);
+router.post('/check-out/:reportId', confirmAuth, employeeController.postCheckOut);
 
-router.post('/register-leave/:userId', isAuth, employeeController.postRegisterLeave);
+router.post('/register-leave/:userId', confirmAuth, employeeController.postRegisterLeave);
 
-router.get('/profile/:userId', isAuth, employeeController.getProfile);
-router.post('/profile/:userId', isAuth, employeeController.postProfile);
+router.get('/profile', confirmAuth, employeeController.getProfile);
+router.post('/profile', confirmAuth, employeeController.postProfile);
 
-router.get('/health-declaration/:userId', isAuth, employeeController.getHealthDeclaration);
-router.post('/health-declaration/:userId', isAuth, employeeController.postHealthDeclaration);
+router.get('/health-declaration/:userId', confirmAuth, employeeController.getHealthDeclaration);
+router.post('/health-declaration/:userId', confirmAuth, employeeController.postHealthDeclaration);
 
 module.exports = router;

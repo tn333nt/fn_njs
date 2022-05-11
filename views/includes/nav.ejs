@@ -18,11 +18,13 @@
     </li>
   </ul>
   <ul class="nav-bottom nav-list">
+    <% if (isManager) { %>
     <li class="nav-item">
       <a class="<%= path === '/reports' ? 'active' : ''%>" href="/"
         >work-reports</a
       >
     </li>
+    <% } %>
     <li class="nav-item">
       <a class="<%= path === '/report-details' ? 'active' : ''%>" href="/"
         >report-details</a

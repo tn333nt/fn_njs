@@ -145,3 +145,7 @@ main {
   background-color: var(--dark);
   color: var(--opposite);
 }
+
+.none-bullet {
+  list-style: none;
+}

@@ -1,20 +1,20 @@
 const express = require('express');
 
 const managerController = require('../controllers/manager');
-const isAuth = require('../middlewares/confirm').isAuth
-const isManager = require('../middlewares/confirm').isManager
+const confirmAuth = require('../middlewares/confirm').confirmAuth
+const confirmManager = require('../middlewares/confirm').confirmManager
 
 const router = express.Router();
 
-router.get('/reports', isAuth, isManager, managerController.getAllReports);
-router.get('/reports/:reportId', isAuth, isManager, managerController.getReportDetails); 
+router.get('/reports', confirmAuth, confirmManager, managerController.getAllReports);
+router.get('/reports/:reportId', confirmAuth, confirmManager, managerController.getReportDetails); 
 
-router.post('/select-number-of-report', isAuth, isManager, managerController.postNumberOfReport); // needed?
+router.post('/select-number-of-report', confirmAuth, confirmManager, managerController.postNumberOfReport); // needed?
 
-router.post('/delete-report/:reportId', isAuth, isManager, managerController.deleteOldReports);
+router.post('/delete-report/:reportId', confirmAuth, confirmManager, managerController.deleteOldReports);
 
-router.post('/disable-changes/:reportId', isAuth, isManager, managerController.postDisableChanges);
+router.post('/disable-changes/:reportId', confirmAuth, confirmManager, managerController.postDisableChanges);
 
-router.get('/health-declaration', isAuth, isManager, managerController.getDeclaration);
+router.get('/health-declaration', confirmAuth, confirmManager, managerController.getDeclaration);
 
 module.exports = router;

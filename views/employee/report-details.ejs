@@ -18,7 +18,7 @@
               <li>total <%= report.totalSummaryTime %> h of working</li>
           </ul>
         <% } %>
-        <h3> salary/month : <%= reports[-1].salary %> </h3> <!-- get salary data of latest rp -->
+        <h3> salary/month : <%= reports.at(-1).salary %> </h3> <!-- get salary data of latest rp -->
         <form method="post" action="/select-month"class="centered">
           <label>
             <select name="month">

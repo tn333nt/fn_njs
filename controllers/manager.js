@@ -11,7 +11,6 @@ const Report = require('../models/report');
 exports.getAllReports = (req, res, next) => {
     req.user
         .populate('reports.reportId')
-        .execPopulate()
         .then(user => {
             const reports = user.reports
             res.render('manager/work-reports', {
@@ -90,6 +89,7 @@ exports.postDisableChanges = (req, res, next) => {
 
 // get health-declaration as pdf doc
 exports.getDeclaration = (req, res, next) => {
+    const userId = req.params.userId
     User.find(
         {
             _id: {
