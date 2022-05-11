@@ -1,5 +1,5 @@
 const express = require('express');
-const { check, body } = require('express-validator');
+const { body } = require('express-validator');
 
 const authController = require('../controllers/auth');
 
@@ -8,10 +8,10 @@ const router = express.Router();
 router.get('/login', authController.getLogin);
 router.post(
     '/login',
-    check('email').isEmail().normalizeEmail()
-    , check('password').isAlphanumeric().trim()
+    body('email').isEmail().normalizeEmail()
+    , body('password').isAlphanumeric().trim()
     , [
-        check('email')
+        body('email')
             .isEmail()
             .withMessage('check the email')
             .normalizeEmail()

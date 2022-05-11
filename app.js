@@ -14,14 +14,16 @@ const authRoutes = require('./routes/auth');
 const passData = require('./middlewares/passData');
 
 const mgURI = 'mongodb+srv://test:bJYVI29LEAjl147U@cluster0.ti4jx.mongodb.net/company'
-const port = 3000
+const port = 3001
 const app = express();
 
-const csrfProtection = csrf();
+const csrfProtection = csrf({
+  cookie: false,
+});
 
 app.set('view engine', 'ejs');
 
-app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true })); // to parse application/x-www-form-urlencoded - type of token=) https://stackoverflow.com/a/51844327
 app.use(express.static(path.join(__dirname, 'public')))
 app.use(multer({
   storage: multer.diskStorage({
@@ -57,9 +59,9 @@ app.use(csrfProtection)
 app.use(passData.passAuthData)
 app.use(passData.passUser)
 
+app.use(authRoutes);
 app.use(managerRoutes);
 app.use(employeeRoutes);
-app.use(authRoutes);
 
 // err handlers
 app.use((req, res, next) => {

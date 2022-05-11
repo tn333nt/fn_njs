@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 
 const pdfDocConstructor = require('pdfkit')
+const mongoose = require('mongoose');
 
 const User = require('../models/user');
 const Report = require('../models/report');
@@ -92,7 +93,7 @@ exports.getDeclaration = (req, res, next) => {
     User.find(
         {
             _id: {
-                $ne: ObjectId('62723fec666ebe0b98236cd5') // mngId later
+                $ne: mongoose.Types.ObjectId('627b988970f0856aa5afec3e') // mngId later
             }
         }
         // {

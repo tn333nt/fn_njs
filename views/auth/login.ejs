@@ -5,7 +5,7 @@
   <% if (errMsg) { %>
   <div class="message message-error"><%= errMsg %></div>
   <% } %>
-  <form class="form-container" action="/login" method="POST">
+  <form class="form-container" action="/login" method="POST" novalidate>
     <div class="form-item">
       <label for="email">E-Mail</label>
       <input
@@ -13,6 +13,7 @@
         type="email"
         name="email"
         id="email"
+        value="<%= oldInput.email %>"
       />
     </div>
     <div class="form-item">
@@ -22,6 +23,7 @@
         type="password"
         name="password"
         id="password"
+        value="<%= oldInput.password %>"
       />
     </div>
     <button class="btn" type="submit">Login</button>

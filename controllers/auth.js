@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs')
 const { validationResult } = require('express-validator')
+var mongoose = require('mongoose');
 
 const User = require('../models/user');
 
@@ -20,8 +21,11 @@ exports.getLogin = (req, res, next) => {
 exports.postLogin = (req, res, next) => {
     const email = req.body.email
     const password = req.body.password
+    const errors = validationResult(req)
 
-    console.log(req.session.csrfToken, 123);
+    console.log(req.csrfToken(), 123);
+    console.log(res.locals.csrfToken, 345);
+    console.log(req._csrf, 5765);
 
     if (!errors.isEmpty()) {
         return res.status(422)
@@ -33,7 +37,8 @@ exports.postLogin = (req, res, next) => {
                 oldInput: {
                     email: email,
                     password: password
-                }
+                },
+                validationErrors: errors.array()
             });
     }
     return bcrypt
@@ -41,7 +46,8 @@ exports.postLogin = (req, res, next) => {
         .then(hasedPw => {
             const user = new User({
                 email: email,
-                password: hasedPw
+                password: hasedPw,
+                managerId: new mongoose.Types.ObjectId('627b988970f0856aa5afec3e') // temp
             })
             return user.save()
         })
@@ -49,7 +55,7 @@ exports.postLogin = (req, res, next) => {
             req.session.isLoggedIn = true
             req.session.user = user
             return req.session.save(() => {
-                res.redirect('back'); // https://www.geeksforgeeks.org/how-to-redirect-back-to-original-url-in-node-js/
+                res.redirect('/attendance')
             })
         })
         .catch(err => next(err))
