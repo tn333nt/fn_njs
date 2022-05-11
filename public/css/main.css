@@ -2,6 +2,7 @@
 
 :root {
   --dark: #3085d6;
+  --opposite: #cf7a29;
   --main: rgb(234, 242, 248);
   --light: #fff;
   --warning: #dc3545;
@@ -89,7 +90,7 @@ main {
 .nav-item a.active,
 .nav-item button:hover,
 .nav-item button:active {
-  color: var(--main);
+  color: var(--opposite);
 }
 
 .btn {
@@ -142,5 +143,5 @@ main {
 .pagination a:active,
 .pagination a.active {
   background-color: var(--dark);
-  color: var(--light);
+  color: var(--opposite);
 }

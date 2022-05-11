@@ -11,11 +11,13 @@ const multer = require('multer');
 const managerRoutes = require('./routes/manager');
 const employeeRoutes = require('./routes/employee');
 const authRoutes = require('./routes/auth');
-const passData = require('./middleware/passData');
+const passData = require('./middlewares/passData');
 
 const mgURI = 'mongodb+srv://test:bJYVI29LEAjl147U@cluster0.ti4jx.mongodb.net/company'
-const port = 3001
+const port = 3000
 const app = express();
+
+const csrfProtection = csrf();
 
 app.set('view engine', 'ejs');
 
@@ -43,15 +45,17 @@ app.use(multer({
 
 
 app.use(session({
+  secret: 'abc',
   resave: false,
-  saveuninitialized: false,
+  saveUninitialized: false,
   store: new MongodbStore({
     uri: mgURI,
     collection: 'loginSessions'
   })
 }))
-app.use(csrf())
+app.use(csrfProtection)
 app.use(passData.passAuthData)
+app.use(passData.passUser)
 
 app.use(managerRoutes);
 app.use(employeeRoutes);

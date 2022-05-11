@@ -17,23 +17,12 @@
       <% } %>
     </li>
   </ul>
-  <!-- <ul class="nav-welcome nav-list">
-    <% if (isAuth) { %>
-    <h3 class="nav-item"><%= user.email %> 's</h3>
-    <% } else { %>
-    <h3 class="nav-item">welcome to abc company</h3>
-    <% } %>
-/* xong truyen user vao from tung page */
-    <p class="role">(<% isManager ? 'manager' : 'employee' %>)</p>
-  </ul> -->
   <ul class="nav-bottom nav-list">
-    <% if (isManager) { %>
     <li class="nav-item">
       <a class="<%= path === '/reports' ? 'active' : ''%>" href="/"
         >work-reports</a
       >
     </li>
-    <% } %>
     <li class="nav-item">
       <a class="<%= path === '/report-details' ? 'active' : ''%>" href="/"
         >report-details</a

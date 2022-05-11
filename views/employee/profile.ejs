@@ -1,4 +1,4 @@
-<%- include('../includes/head.ejs')%> <%- include('../includes/mav.ejs')%>
+<%- include('../includes/head.ejs')%> <%- include('../includes/nav.ejs')%>
 
 <main class="centered">
   <h1>name : xxx</h1>
@@ -12,6 +12,7 @@
     method="post"
     enctype="multipart/form-data"
   >
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
     <input type="file" name="image" value="change apperance" />
     <% if (errMsg) { %>
     <div class="message message-error"><%= errMsg %></div>

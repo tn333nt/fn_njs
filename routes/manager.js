@@ -1,8 +1,8 @@
 const express = require('express');
 
 const managerController = require('../controllers/manager');
-const isAuth = require('./middleware/confirm').isAuth
-const isManager = require('./middleware/confirm').isManager
+const isAuth = require('../middlewares/confirm').isAuth
+const isManager = require('../middlewares/confirm').isManager
 
 const router = express.Router();
 
@@ -15,6 +15,6 @@ router.post('/delete-report/:reportId', isAuth, isManager, managerController.del
 
 router.post('/disable-changes/:reportId', isAuth, isManager, managerController.postDisableChanges);
 
-router.get('/health-declaration', isAuth, isManager, employeeController.getDeclaration);
+router.get('/health-declaration', isAuth, isManager, managerController.getDeclaration);
 
 module.exports = router;

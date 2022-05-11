@@ -1,4 +1,4 @@
-<%- include('../includes/head.ejs')%> <%- include('../includes/mav.ejs')%>
+<%- include('../includes/head.ejs')%> <%- include('../includes/nav.ejs')%>
 
 <main>
   <h1>hi <%= user.email %></h1>
@@ -46,7 +46,7 @@
         <% }%>
           <form action="/register-leave">
             <button type="submit" class="btn"> register leave </button>
-                <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
           </form>
     <% } %>
     <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
@@ -57,7 +57,7 @@
     <% if (reports.reportId.editMode) { %>
         <form action="/register-leave">
           <button type="submit" class="btn"> register leave </button>
-              <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
         </form>
     <% } %>
 </main>

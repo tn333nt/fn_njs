@@ -1,7 +1,7 @@
 
 const User = require('../models/user');
 const Report = require('../models/report');
-const deleteFile = require('../middleware/deleteFile')
+const deleteFile = require('../middlewares/deleteFile')
 
 
 // get & check attendance

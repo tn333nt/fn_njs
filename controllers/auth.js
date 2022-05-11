@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs')
-const { validationResult } = require('express-validator/check')
+const { validationResult } = require('express-validator')
 
 const User = require('../models/user');
 
@@ -20,7 +20,8 @@ exports.getLogin = (req, res, next) => {
 exports.postLogin = (req, res, next) => {
     const email = req.body.email
     const password = req.body.password
-    const errors = validationResult(req)
+
+    console.log(req.session.csrfToken, 123);
 
     if (!errors.isEmpty()) {
         return res.status(422)
@@ -32,8 +33,7 @@ exports.postLogin = (req, res, next) => {
                 oldInput: {
                     email: email,
                     password: password
-                },
-                validationErrors: errors.array()
+                }
             });
     }
     return bcrypt
@@ -41,8 +41,7 @@ exports.postLogin = (req, res, next) => {
         .then(hasedPw => {
             const user = new User({
                 email: email,
-                password: hasedPw,
-                managerId: ObjectId('626ebc84126f7a0bcce75a20') // temp
+                password: hasedPw
             })
             return user.save()
         })
@@ -55,11 +54,6 @@ exports.postLogin = (req, res, next) => {
         })
         .catch(err => next(err))
 }
-
-// later : 
-// 1. 'Đăng nhập xong thì quay lại trang trước đó, nếu không có trang trước đó thì quay về trang chủ.' 
-// 2. if admin login -> return user without managerId, else within 
-// 3. adjust conditions sections : if 
 
 exports.postLogout = (req, res, next) => {
     req.session.destroy(() => {

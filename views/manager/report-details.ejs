@@ -28,6 +28,7 @@
               <% }) %>
             </select>
           </label>
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
         </form>
         <section class="centered pagination">
           <% if (currentPage !== 1 && previousPage !== 1) { %>
@@ -51,6 +52,7 @@
                 <option value="3">3</option>
               </select>
             </label>
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
             <input type="submit" value="report/day">
             <!-- later : consider lines -->
           </form>

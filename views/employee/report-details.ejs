@@ -1,4 +1,4 @@
-<%- include('../includes/head.ejs')%> <%- include('../includes/mav.ejs')%>
+<%- include('../includes/head.ejs')%> <%- include('../includes/nav.ejs')%>
 
 <main>
     <% if (reports.length > 0) { %>
@@ -28,6 +28,7 @@
               <% }) %>
             </select>
           </label>
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
         </form>
         
       <h3>contact to manager :</h3>

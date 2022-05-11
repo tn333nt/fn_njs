@@ -1,13 +1,13 @@
 const express = require('express');
 
-const employeeController = require('../controllers/auth');
-const isAuth = require('./middleware/confirm').isAuth
+const employeeController = require('../controllers/employee');
+const isAuth = require('../middlewares/confirm').isAuth
 
 const router = express.Router();
 
-router.get('/reports/:reportId', isAuth, managerController.getReportDetails); 
+router.get('/reports/:reportId', isAuth, employeeController.getReportDetails); 
 
-router.post('/select-month', isAuth, managerController.postSelectedMonth); 
+router.post('/select-month', isAuth, employeeController.postSelectedMonth); 
 
 router.get('/attendance/:userId', isAuth, employeeController.getAttendance);
 
