@@ -27,8 +27,8 @@ exports.postCheckIn = (req, res, next) => {
     const workplace = req.body.workplace
 
     // convert time into decimal number
-    const timeArr = now.toLocaleTimeString().replace(/:/g,'-').split('-');
-    const start = (+timeArr[0] + +timeArr[1]/60).toFixed(2)
+    const timeArr = now.toLocaleTimeString().replace(/:/g, '-').split('-');
+    const start = (+timeArr[0] + +timeArr[1] / 60).toFixed(2)
 
     Report.find({ userId: req.user._id })
         .then(reports => {
@@ -51,7 +51,7 @@ exports.postCheckIn = (req, res, next) => {
                         }
                     ]
                 })
-            // add workplace & time if start day is matched
+                // add workplace & time if start day is matched
             } else {
                 updatedReports[0].workplaces.push({ workplace: workplace })
                 updatedReports[0].workingSessions.push({
@@ -60,34 +60,84 @@ exports.postCheckIn = (req, res, next) => {
                 })
             }
             // 3. change work mode
-            reports.workMode = true
+            reports[0].workMode = true
             reports = updatedReports
             return reports.save()
 
         })
         .then(() => res.redirect('/attendance'))
         .catch(err => next(err))
-        
+
 }
 
 exports.postCheckOut = (req, res, next) => {
-    // 0. find doc that has workMode = T (vi mac dinh la F => will found tk pending)
-    // 1. find lan checkin chua co finishSession trc -> add
-    // 2. neu chua co finishTime (& related others ) -> add, else cap nhat
-    //  ( tinh theo ngay )
-    // 8. chain theo block, thay cx on ma=)
-    // 3. totalWorkingTime = diff fT & sT
-    // 4. overTime = diff total & 8 (day) -> cho thang = 
-    // 5. totalSummaryTime = sum tt & fetched aL
-    // 7. underTime = 8 - totalSummaryTime (later : uT positive || 0)
-    // (theo thang => phai tu lap qua xong cong don may cai tren vao )
-    // 6. salary = 3000000 + (monthly : overTime - underTime)*200000 
+    const now = new Date()
+    const timeArr = now.toLocaleTimeString().replace(/:/g, '-').split('-');
+    const finish = +(+timeArr[0] + +timeArr[1] / 60).toFixed(2)
 
     Report.find({
         userId: req.user._id,
-        startTime: new Date().getDate()
+        workMode: true
     })
-        .then(report => { })
+        .then(reports => {
+            const rp = reports[0]
+            if (reports.date.toLocaleDateString() !== now.toLocaleDateString()) return next(new Error('over day'))
+
+            // first time checkout or not -> still have to update all remaining
+            // bc once checkin -> have the data
+
+            rp.workingSessions[0].checkout = finish
+            rp.workingSessions[0].diffTime = finish - rp.workingSessions[0].checkin
+
+            rp.finishTime = finish
+
+            // 3. sum of diffTime of each session
+            const itemsDiffTime = []
+            reports.workingSessions.forEach(session => {
+                itemsDiffTime.push(session.diffTime)
+            })
+            itemsDiffTime.forEach(item => {
+                return rp.totalWorkingTime += +item
+            })
+            // // backup
+            // let sum = 0
+            // const total = itemsDiffTime.forEach(item => {
+            //     return sum += +item
+            // })
+            // rp.totalWorkingTime = total
+
+            rp.workMode = false
+            return reports.save()
+        })
+        .then(reports => {
+            const rp = reports[0]
+
+            rp.overTime = rp.totalWorkingTime>8 ? rp.totalWorkingTime - 8 : 0
+            
+            rp.totalSummaryTime = rp.totalWorkingTime + rp.dayLeaveHours
+            
+            rp.underTime = rp.totalSummaryTime<8 ? 8 - rp.totalSummaryTime : 0
+
+            return reports.save()
+        })
+        .then(rp => {
+            // loop through all reports & get the whole result
+            // later : ensure that is each month
+
+            Report.find({ userId: req.user._id })
+            .then(reports => {
+                let sumOverTime
+                let sumUnderTime
+                reports.map(report => {
+                    sumOverTime += report.overTime
+                    sumUnderTime += report.underTime
+                })
+                rp[0].salary = +(3000000 + ((+sumOverTime - +sumUnderTime)/8)*200000).toFixed(0)
+
+                return rp.save()
+            })
+
+        })
         .then(() => res.redirect('/attendance'))
         .catch(err => next(err))
 }
@@ -116,7 +166,6 @@ exports.postSelectedMonth = (req, res, next) => {
             });
         })
         .catch(err => next(err))
-
 }
 
 exports.getReportDetails = (req, res, next) => {

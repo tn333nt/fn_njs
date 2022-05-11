@@ -13,8 +13,9 @@ const reportSchema = new Schema({
     finishTime: Number,
     totalWorkingTime: Number,
     overTime: Number,
+    underTime: Number,
     dayLeaveHours: { // ref each day
-        period: { type: Number, min: 0, max: 8 },
+        period: { type: Number, min: 0, max: 8, default: 0 },
         reason: String
     },
     totalSummaryTime: Number,
