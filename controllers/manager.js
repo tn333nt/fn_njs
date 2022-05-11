@@ -76,12 +76,12 @@ exports.deleteOldReports = (req, res, next) => {
         .catch(err => next(err))
 };
 
-// disable actions check in-out & register leave
+// toggle actions check in-out & register leave
 exports.postDisableChanges = (req, res, next) => {
     const reportId = req.params.reportId
     Report.findById(reportId)
         .then(report => {
-            report.editMode = false
+            report.editMode = !report.editMode
             return report.save()
         })
         .catch(err => next(err))

@@ -9,7 +9,7 @@ const reportSchema = new Schema({
             workplace: String
         }
     ],
-    startTime: { type: Number, required: true },
+    startTime: { type: Number, required: true, unique: true },
     finishTime: Number,
     totalWorkingTime: Number,
     overTime: Number,
@@ -24,16 +24,14 @@ const reportSchema = new Schema({
         ref: 'User',
         required: true
     },
-    workingSessions: {
-        session: [
-            {
-                checkin: { type: Schema.Types.Date, default: Date.now }, // test
-                checkout: Date,
-                workplace: String,
-                diffTime: Number
-            }
-        ]
-    },
+    workingSessions: [
+        {
+            checkin: Date,
+            checkout: Date,
+            workplace: String,
+            diffTime: Number
+        }
+    ],
     editMode: { type: Boolean, default: true },
     workMode: { type: Boolean, default: false }
 });
