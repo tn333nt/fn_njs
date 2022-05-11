@@ -7,14 +7,14 @@ const router = express.Router();
 
 router.get('/reports/:reportId', isAuth, managerController.getReportDetails); 
 
-router.post('/check-in/:reportId',  isAuth, employeeController.postCheckIn);
-router.get('/check-in/:reportId', isAuth, employeeController.getCheckIn);
-router.post('/check-out/:reportId', isAuth, employeeController.postCheckOut);
-router.get('/check-out/:reportId', isAuth, employeeController.getCheckOut);
-
-router.post('/register-leave/:userId', isAuth, employeeController.postRegisterLeave);
+router.post('/select-month', isAuth, managerController.postSelectedMonth); 
 
 router.get('/attendance/:userId', isAuth, employeeController.getAttendance);
+
+router.post('/check-in/:reportId',  isAuth, employeeController.postCheckIn);
+router.post('/check-out/:reportId', isAuth, employeeController.postCheckOut);
+
+router.post('/register-leave/:userId', isAuth, employeeController.postRegisterLeave);
 
 router.get('/profile/:userId', isAuth, employeeController.getProfile);
 router.post('/profile/:userId', isAuth, employeeController.postProfile);

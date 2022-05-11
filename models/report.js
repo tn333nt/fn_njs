@@ -15,10 +15,8 @@ const reportSchema = new Schema({
     overTime: Number,
     dayLeaveHours: { // ref each day
         period: { type: Number, min: 0, max: 8 },
-        reason: String,
-    }, // chon ngay nao thi se tinh aL vao report hom do
-    // 1. ti populate cai tk aL ra xong tru from value above
-    // 2. xong con phai condition trung ngay nua
+        reason: String
+    },
     totalSummaryTime: Number,
     salary: Number,
     userId: {
@@ -29,7 +27,7 @@ const reportSchema = new Schema({
     workingSessions: {
         session: [
             {
-                checkin: { type: Schema.Types.Date, default: Date.now },
+                checkin: { type: Schema.Types.Date, default: Date.now }, // test
                 checkout: Date,
                 workplace: String,
                 diffTime: Number

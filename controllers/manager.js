@@ -7,6 +7,56 @@ const User = require('../models/user');
 const Report = require('../models/report');
 
 
+exports.getAllReports = (req, res, next) => {
+    req.user
+        .populate('reports.reportId')
+        .execPopulate()
+        .then(user => {
+            const reports = user.reports
+            res.render('manager/work-reports', {
+                title: 'reports',
+                path: '/reports',
+                reports: reports
+            });
+        })
+        .catch(err => next(err))
+}
+
+
+exports.getReportDetails = (req, res, next) => {
+    const ReportsPerPage = +req.body.pagination || 1
+    const page = +req.query.page || 1
+    let totalReports
+
+    Report.find()
+        .countDocuments()
+        .then(countReports => {
+            totalReports = countReports
+            return Report.find()
+                .skip((page - 1) * ReportsPerPage)
+                .limit(ReportsPerPage)
+        })
+        .then(reports => {
+            return res.render('manager/report-details', {
+                title: 'report',
+                path: '/report-details',
+                reports: reports,
+                hasNextPage: ReportsPerPage * page < totalReports,
+                hasPreviousPage: page > 1,
+                nextPage: page + 1,
+                previousPage: page - 1,
+                currentPage: page,
+                lastPage: Math.ceil(totalReports / ReportsPerPage)
+            });
+        })
+        .catch(err => next(err))
+}
+
+
+exports.postNumberOfReport = (req, res, next) => {
+    // find 
+}
+
 // delete data from previous days
 exports.deleteOldReports = (req, res, next) => {
     const now = new Date();
