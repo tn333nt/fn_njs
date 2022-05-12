@@ -8,11 +8,11 @@ const deleteFile = require('../middlewares/deleteFile')
 
 exports.getAttendance = (req, res, next) => {
     console.log(123, req.user);
-    req.user
-        .populate('reports.reportId')
+    User.findById(req.user._id)
+        .populate('reports.report.reportId') //
         .then(user => {
-            const reports = user.reports
-            console.log(reports)
+            const reports = user.reports.report
+            console.log(reports) // [] // co rp roi sao ko populate dc ?
             return res.render('employee/attendance', {
                 title: 'attendance',
                 path: '/attendance',
@@ -213,9 +213,9 @@ exports.postRegisterLeave = (req, res, next) => {
 // up , store & serve file
 
 exports.postProfile = (req, res, next) => {
-    const image = req.file;
+    const imgFile = req.file;
 
-    if (!image) {
+    if (!imgFile) {
         return res.status(422).render('employee/profile', {
             title: 'profile',
             path: '/profile',
@@ -225,10 +225,14 @@ exports.postProfile = (req, res, next) => {
 
     User.findById(req.user._id)
         .then(user => {
-            if (image) {
-                deleteFile(user.image)
-                user.image = 'images/' + image.filename
+            if (!imgFile) {
+                res.redirect('back')
             }
+            user.image && deleteFile.deleteFile(user.image)
+            return user.save();
+        })
+        .then(user => {
+            user.image = '/images/' + imgFile.filename
             return user.save();
         })
         .then(() => res.redirect('back'))

@@ -5,7 +5,7 @@ const Schema = mongoose.Schema;
 const userSchema = new Schema({
     email: { type: String, required: true },
     password: { type: String, required: true },
-    image: String,
+    image: Schema.Types.Mixed,
     annualLeave: { type: Number, default: 12 }, // ref each year
     managerId: Schema.Types.ObjectId,
     health: {
@@ -17,14 +17,40 @@ const userSchema = new Schema({
         },
         isPositive: Boolean
     },
-    reports: [
-        {
+    // reports: [
+    //     {
+    //         reportId: {
+    //             type: Schema.Types.ObjectId,
+    //             ref: 'Report'
+    //         }
+    //     }
+    // ],
+    reports: {
+        report: [
+          {
             reportId: {
-                type: Schema.Types.ObjectId,
-                ref: 'Report'
+              type: Schema.Types.ObjectId,
+              ref: 'Report',
+              required: true
             }
-        }
-    ]
+          }
+        ]
+    }
+    // ,
+    // reports: [
+    //     {
+    //         report: {
+    //             reportId: [
+    //                 {
+    //                     type: Schema.Types.ObjectId,
+    //                     ref: 'Report',
+    //                     required: true
+    //                 }
+    //             ]
+    //         }
+    //     }
+    // ]
+
 });
 
 

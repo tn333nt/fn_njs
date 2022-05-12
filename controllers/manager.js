@@ -93,7 +93,7 @@ exports.getDeclaration = (req, res, next) => {
     User.find(
         {
             _id: {
-                $ne: mongoose.Types.ObjectId('627b988970f0856aa5afec3e') // mngId later
+                $ne: mongoose.Types.ObjectId('627c644af847400f53e77fe0')
             }
         }
         // {

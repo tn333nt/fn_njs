@@ -1,23 +1,16 @@
-<%- include('../includes/head.ejs')%>
-<%- include('../includes/mav.ejs')%>
+<%- include('../includes/head.ejs')%> <%- include('../includes/mav.ejs')%>
 
-    <main>
-        <!-- 1. can select which emp to go to details : -->
-        <!-- 2. can select which month to render : -->
-            <!-- (1) list of working hour -->
-            <!-- (2) delete finish time button-->
-            <!-- (3) confirm button -> toggle activation of check in-out functions & onLeave form -->
-
-            <div class="grid">
-                <%= users && users.map(user => { %>
-                  <div class="grid-item" >
-                    <a class="image" href="/reports/:<%= user.reports.reportId %>" >
-                        <img src="<%= user.image %>" alt="<%= user.name %>" >
-                    </a>
-                    <p><%= user.name %></p>
-                  </div>
-                <% }) %>
-              </div>
-    </main>
+<main>
+  <div class="grid">
+    <%= users && users.map(user => { %>
+    <div class="grid-item">
+      <a class="image" href="/reports/:<%= user.reports.reportId %>">
+        <img src="<%= user.image %>" alt="<%= user.name %>" />
+      </a>
+      <p><%= user.name %></p>
+    </div>
+    <% }) %>
+  </div>
+</main>
 
 <%- include('../includes/foot.ejs')%>

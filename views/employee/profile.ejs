@@ -4,7 +4,7 @@
   <h1>name : xxx</h1>
   <hr />
   <div class="image">
-    <img src="<%= user.image %>" alt="<%= user._id %>" />
+    <img src="/<%= user.image %>" alt="<%= user._id %>" />
   </div>
   <% if (isAuth) { %>
     <% console.log(isAuth, 'abc') %>
@@ -15,6 +15,7 @@
   >
     <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
     <input type="file" name="image" value="change apperance" />
+    <input type="submit" value="confirm" />
     <% if (errMsg) { %>
     <div class="message message-error"><%= errMsg %></div>
     <% } %>

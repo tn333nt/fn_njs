@@ -3,6 +3,7 @@ const { validationResult } = require('express-validator')
 var mongoose = require('mongoose');
 
 const User = require('../models/user');
+const Report = require('../models/report');
 
 exports.getLogin = (req, res, next) => {
     res.render('auth/login', {
@@ -23,6 +24,7 @@ exports.postLogin = (req, res, next) => {
     const password = req.body.password
     const errors = validationResult(req)
 
+    let refUser
     // console.log(errors.array()); 
 
     if (!errors.isEmpty()) {
@@ -51,7 +53,7 @@ exports.postLogin = (req, res, next) => {
                             console.log(matched, 111);
                             req.session.isLoggedIn = true
                             req.session.user = user
-                            if (req.user._id.toString() === mongoose.Types.ObjectId('627b988970f0856aa5afec3e').toString()) {
+                            if (user._id.toString() === mongoose.Types.ObjectId('627c644af847400f53e77fe0').toString()) {
                                 return req.session.isManager = true 
                             }
                             console.log(req.session, 123);
@@ -78,30 +80,32 @@ exports.postLogin = (req, res, next) => {
             }
             // not have user -> create new one
             return bcrypt
-                .hash(password, 12)
+                .hash(password, 6)
                 .then(hasedPw => {
                     const user = new User({
                         email: email,
                         password: hasedPw,
-                        managerId: new mongoose.Types.ObjectId('627b988970f0856aa5afec3e'),
-                        reports: [
-                            {
-                                reportId: {
-                                    
-                                }
-                            } // 2.
-                        ]
+                        managerId: new mongoose.Types.ObjectId('627c644af847400f53e77fe0')
                     })
                     console.log(user);
                     return user.save()
                 })
                 .then(user => {
+                    refUser = user
+                    const report = new Report({
+                        date: new Date(),
+                        userId: user._id
+                    })
+                    console.log(report, 1241);
+                    return report.save()
+                })
+                .then(report => {
+                    const user = refUser
                     req.session.isLoggedIn = true
                     req.session.user = user
-                    return req.session.save(() => {
-                        res.redirect('/attendance')
-                    })
+                    return req.session.save()
                 })
+                .then(() => res.redirect('/attendance'))
                 .catch(err => next(err))
         })
         .catch(err => next(err))

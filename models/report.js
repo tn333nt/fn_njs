@@ -9,7 +9,7 @@ const reportSchema = new Schema({
             workplace: String
         }
     ],
-    startTime: { type: Number, required: true, unique: true },
+    startTime: { type: Number, required: true, default: 0 },
     finishTime: Number,
     totalWorkingTime: Number,
     overTime: Number,
