@@ -7,22 +7,48 @@ const deleteFile = require('../middlewares/deleteFile')
 // get & check attendance
 
 exports.getAttendance = (req, res, next) => {
+    
     console.log(123, req.user);
-    User.findById(req.user._id)
-        .populate('reports.report.reportId') //
+    req.user
+        .populate('reports.report.reportId') // sai path maybe? dungma
+        // .deepPopulate('reports.report') 
         .then(user => {
-            const reports = user.reports.report
-            console.log(reports) // [] // co rp roi sao ko populate dc ?
+            // const reports = user.reports // []
+            const report = user.reports.report.find(report => {
+                // find rp today
+                return report.reportId.date.toUTCString().split(' 2022 ')[0].trim() === new Date().toUTCString().split(' 2022 ')[0].trim()
+            })
+            // const reports = user.reports.report[0].reportId // undefined
+            console.log(user);
+            console.log(report, 'abc') // 2. co rp roi sao ko populate dc ? moi lay dc report
+            console.log(report.reportId, '123abc')
             return res.render('employee/attendance', {
                 title: 'attendance',
                 path: '/attendance',
                 user: user,
-                reports: reports
+                report: report.reportId
             })
         })
         .catch(err => next(err))
+
+    // Report.find({userId: req.user._id})
+    // .populate('userId')
+    // // .exec()
+    // .then(reports => {
+    //     const user = reports.userId
+    //     console.log(user); // undefined => vay la sai cho ref r
+    //     return res.render('employee/attendance', {
+    //         title: 'attendance',
+    //         path: '/attendance',
+    //         user: user,
+    //         reports: reports
+    //     })
+    // })
+    // .catch(err => next(err))
+
 }
 
+// doi lai tim moi & add ---> update
 exports.postCheckIn = (req, res, next) => {
     const now = new Date()
     const workplace = req.body.workplace
@@ -52,6 +78,15 @@ exports.postCheckIn = (req, res, next) => {
                         }
                     ]
                 })
+
+                // updatedReports[0].startTime = start
+                // updatedReports[0].date = new Date()
+                // updatedReports[0].userId = req.user._id
+                // updatedReports[0].workplaces = [{ workplace: workplace }]
+                // updatedReports[0].workingSessions = [{
+                //     checkin: start,
+                //     workplace: workplace,
+                // }]
                 // add workplace & time if start day is matched
             } else {
                 updatedReports[0].workplaces.push({ workplace: workplace })
@@ -290,13 +325,13 @@ exports.postHealthDeclaration = (req, res, next) => {
 
 exports.getHealthDeclaration = (req, res, next) => {
     console.log(req.user);
-    User.findById(req.user._id)
-        .then(user => {
-            return res.render('employee/health-declaration', {
-                title: 'health-declaration',
-                path: '/health-declaration',
-                user: user
-            });
-        })
-        .catch(err => next(err))
+    // User.findById(req.user._id)
+    //     .then(user => {
+    //         return res.render('employee/health-declaration', {
+    //             title: 'health-declaration',
+    //             path: '/health-declaration',
+    //             user: user
+    //         });
+    //     })
+    //     .catch(err => next(err))
 }
