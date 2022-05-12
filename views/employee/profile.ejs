@@ -6,8 +6,8 @@
   <div class="image">
     <img src="/<%= user.image %>" alt="<%= user._id %>" />
   </div>
-  <% if (isAuth) { %>
-    <% console.log(isAuth, 'abc') %>
+  <% if (isAuth && !isManager) { %>
+    <% console.log(isAuth, isManager, 'cf profile') %>
   <form
     action="/profile"
     method="post"

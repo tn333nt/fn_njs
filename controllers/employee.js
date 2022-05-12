@@ -7,22 +7,17 @@ const deleteFile = require('../middlewares/deleteFile')
 // get & check attendance
 
 exports.getAttendance = (req, res, next) => {
-    
-    console.log(123, req.user);
+    // console.log(123, req.user);
     req.user
-        .populate('reports.report.reportId') // sai path maybe? dungma
-        // .deepPopulate('reports.report') 
+        .populate('reports.report.reportId')
         .then(user => {
-            // const reports = user.reports // []
             const report = user.reports.report.find(report => {
                 // find rp today
                 return report.reportId.date.toUTCString().split(' 2022 ')[0].trim() === new Date().toUTCString().split(' 2022 ')[0].trim()
             })
-            // const reports = user.reports.report[0].reportId // undefined
-            console.log(user);
-            console.log(report, 'abc') // 2. co rp roi sao ko populate dc ? moi lay dc report
-            console.log(report.reportId, '123abc')
-            return res.render('employee/attendance', {
+            console.log('USER ' + user)
+            // console.log(report.reportId, '123abc')
+            res.render('employee/attendance', {
                 title: 'attendance',
                 path: '/attendance',
                 user: user,
@@ -30,22 +25,6 @@ exports.getAttendance = (req, res, next) => {
             })
         })
         .catch(err => next(err))
-
-    // Report.find({userId: req.user._id})
-    // .populate('userId')
-    // // .exec()
-    // .then(reports => {
-    //     const user = reports.userId
-    //     console.log(user); // undefined => vay la sai cho ref r
-    //     return res.render('employee/attendance', {
-    //         title: 'attendance',
-    //         path: '/attendance',
-    //         user: user,
-    //         reports: reports
-    //     })
-    // })
-    // .catch(err => next(err))
-
 }
 
 // doi lai tim moi & add ---> update
@@ -59,8 +38,15 @@ exports.postCheckIn = (req, res, next) => {
 
     Report.find({ userId: req.user._id })
         .then(reports => {
+            console.log(reports);
             // find if there is today's report
-            const updatedReports = reports.filter(report => report.startTime.toLocaleDateString() === now.toLocaleTimeString()) // to let it return arr
+            const updatedReports = reports.filter(report => {
+                console.log('...', report.startTime);
+                return report.startTime!=0 ? report.startTime.toLocaleDateString() === now.toLocaleTimeString() : false;
+            }) // to let it return arr
+
+            // reports = new Report()
+            // console.log(reports,123123)
 
             // add new daily rp 
             if (updatedReports.length <= 0) {
@@ -95,10 +81,14 @@ exports.postCheckIn = (req, res, next) => {
                     workplace: workplace,
                 })
             }
+            console.log('updatedReports', updatedReports);
+            console.log('reports[0]', reports[0]);
             // 3. change work mode
             reports[0].workMode = true
             reports = updatedReports
-            return reports.save()
+
+            console.log('reports[0] at assign', reports[0]);
+            return reports[0].save() // data is ok, chi dang ko luu dc thoi // hinh nhu do ne lay nv -> du lieu, not mgsObj
 
         })
         .then(() => res.redirect('/attendance'))
@@ -148,11 +138,11 @@ exports.postCheckOut = (req, res, next) => {
         .then(reports => {
             const rp = reports[0]
 
-            rp.overTime = rp.totalWorkingTime>8 ? rp.totalWorkingTime - 8 : 0
-            
+            rp.overTime = rp.totalWorkingTime > 8 ? rp.totalWorkingTime - 8 : 0
+
             rp.totalSummaryTime = rp.totalWorkingTime + rp.dayLeaveHours
-            
-            rp.underTime = rp.totalSummaryTime<8 ? 8 - rp.totalSummaryTime : 0
+
+            rp.underTime = rp.totalSummaryTime < 8 ? 8 - rp.totalSummaryTime : 0
 
             return reports.save()
         })
@@ -161,17 +151,17 @@ exports.postCheckOut = (req, res, next) => {
             // later : ensure that is each month
 
             Report.find({ userId: req.user._id })
-            .then(reports => {
-                let sumOverTime
-                let sumUnderTime
-                reports.map(report => {
-                    sumOverTime += report.overTime
-                    sumUnderTime += report.underTime
-                })
-                rp[0].salary = +(3000000 + ((+sumOverTime - +sumUnderTime)/8)*200000).toFixed(0)
+                .then(reports => {
+                    let sumOverTime
+                    let sumUnderTime
+                    reports.map(report => {
+                        sumOverTime += report.overTime
+                        sumUnderTime += report.underTime
+                    })
+                    rp[0].salary = +(3000000 + ((+sumOverTime - +sumUnderTime) / 8) * 200000).toFixed(0)
 
-                return rp.save()
-            })
+                    return rp.save()
+                })
 
         })
         .then(() => res.redirect('/attendance'))
@@ -277,6 +267,7 @@ exports.postProfile = (req, res, next) => {
 exports.getProfile = (req, res, next) => {
     User.findById(req.user._id)
         .then(user => {
+            console.log(user);
             res.render('employee/profile', {
                 title: 'profile',
                 path: '/profile',
@@ -325,13 +316,13 @@ exports.postHealthDeclaration = (req, res, next) => {
 
 exports.getHealthDeclaration = (req, res, next) => {
     console.log(req.user);
-    // User.findById(req.user._id)
-    //     .then(user => {
-    //         return res.render('employee/health-declaration', {
-    //             title: 'health-declaration',
-    //             path: '/health-declaration',
-    //             user: user
-    //         });
-    //     })
-    //     .catch(err => next(err))
+    User.find()
+        .then(users => {
+            res.render('employee/health-declaration', {
+                title: 'health-declaration',
+                path: '/health-declaration',
+                users: users
+            });
+        })
+        .catch(err => next(err))
 }

@@ -1,67 +1,62 @@
 <%- include ('../includes/head')%> <%- include ('../includes/nav')%>
 
 <main>
-  <% console.log(444, user) %>
-  <% console.log(555, report) %>
+  <% console.log(444, user) %> <% console.log(555, report.workMode) %>
   <h1>hi <%= user.email %></h1>
   <h3>pick your working place for this session :</h3>
-  <form
-    action="/<% if (report.workMode) { %>check-in<% } else  %>check-out<% } %>"
-    class="form-container"
-    method="post"
-  >
+
+  <form action="/check-in" class="form-container" method="post">
     <div class="form-item">
       <label for="workplace-home">home</label>
-      <input type="radio" id="workplace-home" name="workplace" value="home"/>
-    </div>
-    <div class="form-item">
+      <input type="radio" id="workplace-home" name="workplace" value="home" />
       <label for="workplace-company">company</label>
-      <input type="radio" id="workplace-company" name="workplace" value="company" checked/>
-    </div>
-    <div class="form-item">
+      <input
+        type="radio"
+        id="workplace-company"
+        name="workplace"
+        value="company"
+        checked
+      />
       <label for="workplace-other">other</label>
       <input type="radio" id="workplace-other" name="workplace" value="other" />
     </div>
     <button type="submit" class="btn">start working</button>
-    <!-- hien thi cho hn thoi ma:D -->
-      <% if (reports.editMode) { %>
-        <% if (!report.workMode) { %>
-          <div class="grid">
-            <% reports.workingSessions.forEach(session => { %>
-              <div class="grid-item">
-                <p><%= user.name %></p>
-                <p><%= session.workplace %></p>
-                <p><%= session.startTime %></p>
-              </div>
-            <% }) %>
-          </div>
-        <% } else { %>
-          <div class="grid">
-            <% reports.workingSessions.forEach(session => { %>
-              <div class="grid-item">
-                <p><%= session.workplace %></p>
-                <p><%= session.startTime %></p>
-                <p><%= session.finishTime %></p>
-              </div>
-            <% }) %>
-          </div>
-          <button type="submit" class="btn">finish</button>
-        <% }%>
-          <form action="/register-leave">
-            <button type="submit" class="btn"> register leave </button>
-            <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
-          </form>
-        <h3> working status : <% report.workMode ? %>on<% : %>off</h3> 
-        <% if (report.editMode) { %>
-            <form action="/register-leave">
-              <button type="submit" class="btn"> register leave </button>
-              <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
-            </form>
-        <% } %>
-      <% } %>
-  <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+    <h3>
+      working status : <% if (report.workMode) { %>on<% } else { %>off<% } %>
+    </h3>
   </form>
 
+  <% if (report.editMode) { %> <% if (!report.workMode) { %>
+  <div class="grid">
+    <% report.workingSessions.forEach(session => { %>
+    <div class="grid-item">
+      <p><%= user.name %></p>
+      <p><%= session.workplace %></p>
+      <p><%= session.startTime %></p>
+    </div>
+    <% }) %>
+  </div>
+  <% } else { %>
+  <div class="grid">
+    <% report.workingSessions.forEach(session => { %>
+    <div class="grid-item">
+      <p><%= session.workplace %></p>
+      <p><%= session.startTime %></p>
+      <p><%= session.finishTime %></p>
+    </div>
+    <% }) %>
+  </div>
+  <form action="/check-out">
+    <button type="submit" class="btn">finish</button>
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+  </form>
+  <% } %> <% } %>
+
+  <form action="/register-leave">
+    <button type="submit" class="btn">register leave</button>
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+  </form>
 </main>
 
 <%- include('../includes/foot')%>

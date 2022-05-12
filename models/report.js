@@ -37,4 +37,5 @@ const reportSchema = new Schema({
     workMode: { type: Boolean, default: false }
 });
 
+
 module.exports = mongoose.model('Report', reportSchema);

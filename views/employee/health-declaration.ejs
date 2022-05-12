@@ -1,61 +1,61 @@
-<%- include('../includes/head.ejs')%> <%- include('../includes/nav.ejs')%>
+<%- include('../includes/head')%> <%- include('../includes/nav')%>
 
 <main>
-  <% console.log(isManager, 'h-d') %>
-  <% if(!isManager) { %>
-  <form action="" class="form-container">
-    <h1 class="form-title">register information about :</h1>
-    <h3 class="form-title">temperature</h3>
-    <div class="form-item">
-      <input
-        type="number"
-        step="0.001"
-        name="temperature"
-        min="-30"
-        max="50"
-        placeholder="°C"
-      /><br />
-      <input type="datetime-local" name="timeRegister" />
-    </div>
-    <h3 class="form-title">vaccination</h3>
-    <div class="form-item">
-      <label>
-        injection-1 <input type="text" name="injectionType1" /><br />
-        <input type="datetime-local" name="injectionDate1" />
-      </label>
+  <% console.log(isManager, users, 'h-d') %>
+  <% if (!isManager) { %>
+    <form action="" class="form-container">
+      <h1 class="form-title">register information about :</h1>
+      <h3 class="form-title">temperature</h3>
+      <div class="form-item">
+        <input
+          type="number"
+          step="0.001"
+          name="temperature"
+          min="-30"
+          max="50"
+          placeholder="°C"
+        /><br />
+        <input type="datetime-local" name="timeRegister" />
+      </div>
+      <h3 class="form-title">vaccination</h3>
+      <div class="form-item">
+        <label>
+          injection-1 <input type="text" name="injectionType1" /><br />
+          <input type="datetime-local" name="injectionDate1" />
+        </label>
 
-      <label
-        >injection-type-2 <input type="text" name="injectionType2" /><br />
-        <input type="datetime-local" name="injectionDate2" />
-      </label>
-    </div>
-    <h3 class="form-title">testing result</h3>
-    <div class="form-item">
-      <label
-        >is positive
-        <input type="radio" name="isPositive" value="true" />
-      </label>
-      <label
-        >not
-        <input type="radio" name="isPositive" value="false" />
-      </label>
-    </div>
+        <label
+          >injection-type-2 <input type="text" name="injectionType2" /><br />
+          <input type="datetime-local" name="injectionDate2" />
+        </label>
+      </div>
+      <h3 class="form-title">testing result</h3>
+      <div class="form-item">
+        <label
+          >is positive
+          <input type="radio" name="isPositive" value="true" />
+        </label>
+        <label
+          >not
+          <input type="radio" name="isPositive" value="false" />
+        </label>
+      </div>
 
-    <input type="submit" value="register" />
-    <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
-  </form>
-  <% } else { %>
-  <div class="grid">
-    <%= users && users.forEach(user => { %>
-    <div class="grid-item">
-      <p>timeRegister: <% user.health.timeRegister %></p>
-      <p>temperature: <% user.health.temperature %> (celsius)</p>
-      <p>...</p>
-      <p>isPositive: <% user.health.isPositive %></p>
+      <input class="btn" type="submit" value="register" />
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+    </form>
+    <% } else { %>
+    <div class="grid">
+      <% users && users.forEach(user => { %>
+      <div class="grid-item">
+        <p>timeRegister: <% user.health.timeRegister %></p>
+        <p>temperature: <% user.health.temperature %> (celsius)</p>
+        <p>...</p>
+        <p>isPositive: <% user.health.isPositive %></p>
+      </div>
+      <% }) %>
     </div>
-    <% }) %>
-  </div>
   <% } %>
 </main>
 
-<%- include('../includes/foot.ejs')%>
+<%- include('../includes/foot')%>
