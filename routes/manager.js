@@ -15,6 +15,6 @@ router.post('/delete-report/:reportId', confirmAuth, confirmManager, managerCont
 
 router.post('/disable-changes/:reportId', confirmAuth, confirmManager, managerController.postDisableChanges);
 
-// router.get('/health-declaration', confirmAuth, confirmManager, managerController.getDeclaration);
+router.get('/get-declaration', confirmAuth, confirmManager, managerController.getDeclaration);
 
 module.exports = router;

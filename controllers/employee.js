@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 
 const User = require('../models/user');
 const Report = require('../models/report');
@@ -15,8 +16,8 @@ exports.getAttendance = (req, res, next) => {
                 // find rp today
                 return report.reportId.date.toUTCString().split(' 2022 ')[0].trim() === new Date().toUTCString().split(' 2022 ')[0].trim()
             })
-            console.log('USER ' + user)
-            // console.log(report.reportId, '123abc')
+            // console.log('report from page after post checkin' + report)
+            console.log(report.reportId, 'report from page after post checkin123abc')
             res.render('employee/attendance', {
                 title: 'attendance',
                 path: '/attendance',
@@ -40,55 +41,92 @@ exports.postCheckIn = (req, res, next) => {
         .then(reports => {
             console.log(reports);
             // find if there is today's report
-            const updatedReports = reports.filter(report => {
-                console.log('...', report.startTime);
-                return report.startTime!=0 ? report.startTime.toLocaleDateString() === now.toLocaleTimeString() : false;
-            }) // to let it return arr
+            // const updatedReports = reports.filter(report => {
+            //     console.log('...', report.startTime);
+            //     return report.date.toLocaleDateString() === now.toLocaleTimeString()
+            // }) // to let it return arr
 
             // reports = new Report()
+            return Report.findOne({ _id: reports[0]._id }).then(report => {
+                console.log(report, 'report');
+                if (report.startTime === 0) {
+    
+                    report.startTime = start
+                    report.date = new Date()
+                    report.userId = req.user._id
+                    report.workplaces = [{ workplace: workplace }]
+                    report.workingSessions = [{
+                        checkin: start,
+                        workplace: workplace,
+                    }]
+                    // add workplace & time if start day is matched
+                } else {
+                    report.workplaces.push({ workplace: workplace })
+                    report.workingSessions.push({
+                        checkin: start,
+                        workplace: workplace,
+                    })
+                }
+
+                console.log('report', report);
+                console.log('reports', report);
+                report.workMode = true
+                console.log('report', report);
+    
+                console.log('report from postCheckIn', report);
+
+                return report.save() 
+
+            })
+
+
             // console.log(reports,123123)
 
             // add new daily rp 
-            if (updatedReports.length <= 0) {
-                updatedReports.push({
-                    userId: req.user._id,
-                    date: new Date(),
-                    startTime: start,
-                    workplaces: [
-                        { workplace: workplace }
-                    ],
-                    workingSessions: [
-                        {
-                            checkin: start,
-                            workplace: workplace,
-                        }
-                    ]
-                })
+            // if (updatedReports.length <= 0) {
+            //     updatedReports.push({
+            //         userId: req.user._id,
+            //         date: new Date(),
+            //         startTime: start,
+            //         workplaces: [
+            //             { workplace: workplace }
+            //         ],
+            //         workingSessions: [
+            //             {
+            //                 checkin: start,
+            //                 workplace: workplace,
+            //             }
+            //         ]
+            //     })
 
-                // updatedReports[0].startTime = start
-                // updatedReports[0].date = new Date()
-                // updatedReports[0].userId = req.user._id
-                // updatedReports[0].workplaces = [{ workplace: workplace }]
-                // updatedReports[0].workingSessions = [{
-                //     checkin: start,
-                //     workplace: workplace,
-                // }]
-                // add workplace & time if start day is matched
-            } else {
-                updatedReports[0].workplaces.push({ workplace: workplace })
-                updatedReports[0].workingSessions.push({
-                    checkin: start,
-                    workplace: workplace,
-                })
-            }
-            console.log('updatedReports', updatedReports);
-            console.log('reports[0]', reports[0]);
-            // 3. change work mode
-            reports[0].workMode = true
-            reports = updatedReports
+            //     // updatedReports[0].startTime = start
+            //     // updatedReports[0].date = new Date()
+            //     // updatedReports[0].userId = req.user._id
+            //     // updatedReports[0].workplaces = [{ workplace: workplace }]
+            //     // updatedReports[0].workingSessions = [{
+            //     //     checkin: start,
+            //     //     workplace: workplace,
+            //     // }]
+            //     // add workplace & time if start day is matched
+            // } else {
+            //     updatedReports[0].workplaces.push({ workplace: workplace })
+            //     updatedReports[0].workingSessions.push({
+            //         checkin: start,
+            //         workplace: workplace,
+            //     })
+            // }
+            // // console.log('reports[0]', reports[0]);
+            // // 3. change work mode
+            // console.log('updatedReports', updatedReports);
+            // console.log('reports', reports);
+            
+            // // reports = updatedReports[0]
+            // // reports = new Report(updatedReports[0])
+            // reports.workMode = true
+            // console.log('reports', reports);
 
-            console.log('reports[0] at assign', reports[0]);
-            return reports[0].save() // data is ok, chi dang ko luu dc thoi // hinh nhu do ne lay nv -> du lieu, not mgsObj
+            // console.log('reports[0] at assign', reports);
+            // return reports.save() 
 
         })
         .then(() => res.redirect('/attendance'))
@@ -308,6 +346,7 @@ exports.postHealthDeclaration = (req, res, next) => {
                 },
                 isPositive: isPositive
             }
+            console.log(user);
             return user.save()
         })
         .then(() => res.redirect('back'))
@@ -317,6 +356,7 @@ exports.postHealthDeclaration = (req, res, next) => {
 exports.getHealthDeclaration = (req, res, next) => {
     console.log(req.user);
     User.find()
+        .where('_id').ne('627c644af847400f53e77fe0') 
         .then(users => {
             res.render('employee/health-declaration', {
                 title: 'health-declaration',

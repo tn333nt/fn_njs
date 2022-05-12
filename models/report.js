@@ -27,8 +27,8 @@ const reportSchema = new Schema({
     },
     workingSessions: [
         {
-            checkin: Date,
-            checkout: Date,
+            checkin: Number,
+            checkout: Number,
             workplace: String,
             diffTime: Number
         }

@@ -22,28 +22,28 @@ exports.getLogin = (req, res, next) => {
 exports.postLogin = (req, res, next) => {
     const email = req.body.email
     const password = req.body.password
-    const errors = validationResult(req)
+    const errors = validationResult(req) // 1. find err sai sao day => co loi nhung errors luon [] => can not read 'msg'
 
     return User.findOne({ email: email })
             .then(user => {
                 // have user -> compare pw
                 if (user) {
                     return bcrypt
-                        .compare(password, user.password) // 1. compare sai sao day => co loi nhung errors luon [] => can not read 'msg'
+                        .compare(password, user.password) 
                         .then(matched => {
                             if (matched) {
                                 console.log(matched, 111);
                                 req.session.isLoggedIn = true
                                 req.session.user = user
                                 console.log(user,213143);
-                                // if (user._id.toString() === mongoose.Types.ObjectId('627c7bce74cdc86544b3238e').toString()) {
-                                //     req.session.isManager = true
-                                //     console.log(req.session.isManager, 222);
-                                //     return req.session.isManager
-                                // } else {
-                                //     return req.session.isManager = false
-                                // }
-                                // console.log(req.session.isManager, 333); // 3. no dang ko ra ngoai dc, return r ma nhi?
+
+                                if (user._id.toString() === mongoose.Types.ObjectId('627c644af847400f53e77fe0').toString()) {
+                                    req.session.isManager = true
+                                } else {
+                                    req.session.isManager = false
+                                }
+                                console.log(req.session.isManager, 333)
+
                                 console.log(req.session, 123);
                                 return req.session.save(() => {
                                     res.redirect('/attendance');
@@ -84,6 +84,7 @@ exports.postLogin = (req, res, next) => {
 
 exports.postLogout = (req, res, next) => {
     req.session.destroy(() => {
+        console.log(req.session);
         res.redirect('/');
     })
 }

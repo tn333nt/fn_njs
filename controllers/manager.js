@@ -89,30 +89,24 @@ exports.postDisableChanges = (req, res, next) => {
 
 // get health-declaration as pdf doc
 exports.getDeclaration = (req, res, next) => {
-    const userId = req.params.userId
+    const userId = req.user._id
     User.find(
         {
             _id: {
                 $ne: mongoose.Types.ObjectId('627c644af847400f53e77fe0')
             }
         }
-        // {
-        //     $not: {
-        //         _id: 
-        //     }
-        // } // or
     )
-        // where('_id').ne('62723fec666ebe0b98236cd5') // or
-        .exec((err, data) => {
-            if (err) next(err);
-            return data
-        })
         .then(users => {
+            console.log(users);
             if (!users) return next(new Error('no user'))
 
-            const declaration = userId + '.pdf'
-            const declarationPath = path.join('data', 'declarations', declaration)
+            const declaration = 'emp-health-declaration.pdf'
+            const declarationPath = path.join('data', declaration)
             const pdfDoc = new pdfDocConstructor()
+
+            // console.log(pdfDoc, 1);
+
             res.writeHeader(200, {
                 'content-type': 'application/pdf',
                 'content-disposition': 'inline'
@@ -120,15 +114,20 @@ exports.getDeclaration = (req, res, next) => {
             pdfDoc.pipe(fs.createWriteStream(declarationPath))
             pdfDoc.pipe(res)
 
+            // console.log(pdfDoc, 2);
+
             pdfDoc.fontSize(33).text('health-declaration', { underline: true })
-            users.user.forEach(user => {
+            users.forEach(user => {
                 pdfDoc.fontSize(18).text(`
+                timeRegister: ${user.email},
                 timeRegister: ${user.health.timeRegister},
                 temperature: ${user.health.temperature} (celsius),
                 ...
                 isPositive: ${user.health.isPositive}
                 `)
             })
+
+            // console.log(pdfDoc, 3);
 
             pdfDoc.end()
         })

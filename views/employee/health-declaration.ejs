@@ -48,13 +48,18 @@
     <div class="grid">
       <% users && users.forEach(user => { %>
       <div class="grid-item">
-        <p>timeRegister: <% user.health.timeRegister %></p>
-        <p>temperature: <% user.health.temperature %> (celsius)</p>
+        <p>user: <%= user.email %></p>
+        <p>timeRegister: <%= user.health.timeRegister %></p>
+        <p>temperature: <%= user.health.temperature %> (celsius)</p>
         <p>...</p>
-        <p>isPositive: <% user.health.isPositive %></p>
+        <p>isPositive: <%= user.health.isPositive %></p>
       </div>
       <% }) %>
     </div>
+    <form action="/get-declaration" class="centered">
+      <input class="btn" type="submit" value="get declaration" />
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+    </form>
   <% } %>
 </main>
 

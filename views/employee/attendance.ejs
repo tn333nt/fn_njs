@@ -27,33 +27,33 @@
     </h3>
   </form>
 
-  <% if (report.editMode) { %> <% if (!report.workMode) { %>
+  <% if (report.editMode) { %> 
+    <% if (report.workMode) { %>
   <div class="grid">
     <% report.workingSessions.forEach(session => { %>
-    <div class="grid-item">
-      <p><%= user.name %></p>
-      <p><%= session.workplace %></p>
-      <p><%= session.startTime %></p>
-    </div>
+      <div class="grid-item">
+        <p>checkin : <%= session.checkin %> h</p>
+        <p>workplace : <%= session.workplace %></p>
+      </div>
     <% }) %>
   </div>
+  <form action="/check-out" class="centered">
+    <button type="submit" class="btn">finish</button>
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+  </form>
   <% } else { %>
   <div class="grid">
     <% report.workingSessions.forEach(session => { %>
     <div class="grid-item">
-      <p><%= session.workplace %></p>
-      <p><%= session.startTime %></p>
-      <p><%= session.finishTime %></p>
+      <p>checkin : <%= session.checkin %></p>
+      <p>checkout : <%= session.checkout %></p>
+      <p>workplace : <%= session.workplace %></p>
     </div>
     <% }) %>
   </div>
-  <form action="/check-out">
-    <button type="submit" class="btn">finish</button>
-    <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
-  </form>
   <% } %> <% } %>
 
-  <form action="/register-leave">
+  <form action="/register-leave" >
     <button type="submit" class="btn">register leave</button>
     <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
   </form>
