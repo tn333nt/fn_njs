@@ -1,36 +1,21 @@
 <%- include('../includes/head.ejs')%> <%- include('../includes/nav.ejs')%>
 
 <main>
-    <% if (reports.length > 0) { %>
-
-      <form method="post" action="/select-month" class="centered">
+  <div class="flex">
+    <div class="centered">
+      <form action="/select-number-of-report" method="post">
         <label>
-          <select name="month">
-            <% const months = [1,2,3,4,5,6,7,8,9,10,11,12] %>
-            <% months.forEach(month => { %>
-              <option value="<%= month %>"><%= month %></option>
-            <% }) %>
+          <select name="pagination">
+            <option value="1" default selected>1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
           </select>
         </label>
-        <input type="submit" value="month/page" class="btn">
         <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+        <input type="submit" value="report/day" class="btn">
+        <!-- later : consider lines -->
       </form>
 
-      <div class="centered">
-
-        <form action="/select-number-of-report" method="post">
-          <label>
-            <select name="pagination">
-              <option value="1" default selected>1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-            </select>
-          </label>
-          <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
-          <input type="submit" value="report/day" class="btn">
-          <!-- later : consider lines -->
-        </form>
-  
         <section class="pagination">
           <% if (currentPage !== 1 && previousPage !== 1) { %>
               <a href="?page=1">1</a>
@@ -45,54 +30,90 @@
           <% if (lastPage !== currentPage && lastPage !== nextPage) { %>
               <a href="?page=<%= lastPage %>"><%= lastPage %></a>
           <% } %>
-          
-      </section>
-      </div>
-      
+        </section>
     </div>
-
-      <div class="grid">
-        <% reports.forEach(report => { %>
-          <div class="grid-item" style="text-align:start;">
-            <h3 style="text-align:center;">date : <%= report.date %></h3>
-            <h5 style="text-align:center;">employee's id : <%= report.userId %></h5>
-            <ul>
-              <li>
-                <ul style="text-align:start;">report at :
-                  <% const unique = [...new Set(report.workplaces.map(item => item.workplace))] %>
-                  <% unique.forEach(place => { %>
-                    <li style="margin-left: 1rem;"><%= place %></li>
-                  <% }) %>
-                </ul>
-              </li>
-              <li>registered hour leave / day : <%= report.dayLeaveHours.period %> h</li>
-              <li>start at : <%= report.startTime %> h</li>
-              <li>finish at : <%= report.finishTime %> h</li>
-              <li>over time : <%= report.overTime %> h</li>
-              <li>total : <%= report.totalWorkingTime %> h for today's sessions</li>
-              <li>total : <%= report.totalSummaryTime %> h of working</li>
-            </ul>
-            <form action="/delete-report/:<%= report._id %>" method="post" style="text-align:center;">
-              <button class="btn" type="submit">delete old reports</button>
-              <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
-            </form>
-            <form action="/disable-changes/:<%= report._id %>" method="post" style="text-align:center;">
-              <button class="btn" type="submit">disable-changes</button>
-              <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
-            </form>
+    
+    <div>
+      <form method="post" action="/select-month" class="centered">
+        <label>
+          <select name="month">
+            <% const months = [1,2,3,4,5,6,7,8,9,10,11,12] %>
+            <% months.forEach(month => { %>
+              <option value="<%= month %>"><%= month %></option>
             <% }) %>
-            <h3 style="text-align:center;"> salary/month : <%= reports.at(-1).salary %> $ </h3> <!-- get salary data of latest rp -->
-            <!-- later : take salary once each monthly page -->
-          </div>
+          </select>
+        </label>
+        <input type="submit" value="month/page" class="btn">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+      </form>
 
-          <% if (!isManager) { %>
-            <h3>contact to manager :</h3>
-            <p>123@gmail.com ; id : 627c644af847400f53e77fe0 </p>
-          <% } %>
-      
-    <% } else { %> 
-      <h1>No found report</h1> 
+      <% if (rpOfSelectedMonth && rpOfSelectedMonth.length > 0) { %>
+        <% console.log(rpOfSelectedMonth)%>
+        <h3 style="text-align:center;"> 
+          salary/month : <%= rpOfSelectedMonth.at(-1).salary %> $ 
+        </h3>  
+      <% } %>
+    </div>
+    <!-- current rp structure : 1 day - 1rp - 1 total salary get from all rp before
+    => salary of the last rp / month = this month salary 
+        to know which month to render ->
+        1. get data from post req
+        2. re render this page with this data, but it'll cause needing to pass all other data
+        => idea : have mode for each case  
+        ko lol cung cha giam may = =
+        => de phan hien thi thanh part chung vay
+        ko on=)
+        
+        * https://stackoverflow.com/a/68446944
+        truyen vao ss cho ham post xong xu ly o ham get
+    -->
+
+    <% if (isManager) { %>
+      <form action="/delete-report" method="post" style="text-align:center;">
+        <button class="btn" type="submit">delete old reports</button>
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+      </form>
+      <form action="/disable-changes" method="post" style="text-align:center;">
+        <button class="btn" type="submit">disable-changes</button>
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+      </form>
     <% } %>
+  </div>
+
+      <% if (reports.length > 0) { %>
+        <div class="grid">
+          <% reports.forEach(report => { %>
+            <div class="grid-item" style="text-align:start;">
+              <h3 style="text-align:center;">date : <%= report.date %></h3>
+              <h5 style="text-align:center;">employee's id : <%= report.userId %></h5>
+              <ul>
+                <li>
+                  <ul style="text-align:start;">report at :
+                    <% const unique = [...new Set(report.workplaces.map(item => item.workplace))] %>
+                    <% unique.forEach(place => { %>
+                      <li style="margin-left: 1rem;"><%= place %></li>
+                    <% }) %>
+                  </ul>
+                </li>
+                <li>registered hour leave / day : <%= report.dayLeaveHours.period %> h</li>
+                <li>start at : <%= report.startTime %> h</li>
+                <li>finish at : <%= report.finishTime %> h</li>
+                <li>over time : <%= report.overTime %> h</li>
+                <li>total : <%= report.totalWorkingTime %> h for today's sessions</li>
+                <li>total : <%= report.totalSummaryTime %> h of working</li>
+              </ul>
+              
+            </div>
+          <% }) %>
+  
+            <% if (!isManager) { %>
+              <h3>contact to manager :</h3>
+              <p>123@gmail.com ; id : 627c644af847400f53e77fe0 </p>
+            <% } %>    
+        
+      <% } else { %> 
+        <h1>No found report</h1> 
+      <% } %>
   
 </main>
 

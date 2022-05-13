@@ -42,46 +42,87 @@ exports.getAllReports = (req, res, next) => {
 // }
 
 
-
-exports.postNumberOfReport = (req, res, next) => {
-    // find 
-}
-
 // delete data from previous days
 exports.deleteOldReports = (req, res, next) => {
-    const now = new Date();
-    Report.find()
-        .then(reports => {
-            console.log(reports, 111);
-            if (!reports) return next(new Error('no found Report'))
-            // update new reports with only data of now
-            const updatedReports = reports.find(report => {
-                return report.date.toLocaleDateString() === now.toLocaleDateString();
-            });
-            console.log(updatedReports, 222);
-            reports = updatedReports;
-            return reports.save();
+    const now = new Date().toISOString().split('T')[0].toString();
 
-            // later : delete() with config date lt today
-        })
-        .then(() => res.redirect('/reports/:reportId'))
-        .catch(err => next(err))
+    Report.deleteMany({ date: { $ne: now}, userId: {$ne: mongoose.Types.ObjectId('627c644af847400f53e77fe0')}})
+    .then(() => res.redirect('back'))
+
+    // Report.find(
+    //     {
+    //         userId: {
+    //             $ne: mongoose.Types.ObjectId('627c644af847400f53e77fe0')
+    //         }
+    //     }
+    // )
+    //     .then(reports => {
+    //         console.log(reports, 111);
+    //         if (!reports) return next(new Error('no found Report'))
+    //         // update new reports with only data of today
+    //         const updatedReports = reports.filter(report => {
+    //             const rpDay = report.date.toString() 
+    //             const today = now.toISOString().split('T')[0].toString()
+    //             console.log(rpDay, 'rpDay');
+    //             console.log(today, 'today');
+    //             return rpDay !== today
+    //         });
+    //         console.log(updatedReports, 222);
+    //         // reports = updatedReports;
+    //         // console.log(reports, 'reports bf then');
+    //         // return reports.save();
+
+    //         // later : delete() with config date lt today
+    //     })
+    //     .then((reports) => {
+    //         console.log(reports, 'reports at then');
+    //         res.redirect('back')
+    //     })
+    //     .catch(err => next(err))
+
 };
 
 // toggle actions check in-out & register leave
 exports.postDisableChanges = (req, res, next) => {
-    const reportId = req.params.reportId
-    Report.findById(reportId)
-        .then(report => {
-            report.editMode = !report.editMode
-            return report.save()
+    Report.find(
+        {
+            userId: {
+                $ne: mongoose.Types.ObjectId('627c644af847400f53e77fe0')
+            }
+        }
+    )
+        .then(reports => {
+            console.log(reports, 3732638619);
+            // reports.forEach(report => {
+            //     report.editMode = !report.editMode
+            // })
+            // return reports.save()
+
+            return reports.forEach(report => {
+                return Report.findById(report._id)
+                    .then(rp => {
+                        rp.editMode = !rp.editMode
+                        return rp.save()
+                    })
+                    .catch(err => next(err))
+            })
+
+            // ra la chi dc save for only one
+
+            // return Report.find().then(reports => {
+            //     reports.map(report => {
+            //         report.editMode = !report.editMode
+            //         return report.editMode
+            //     })
+            //     return reports.save()
+            // })
         })
+        .then(() => res.redirect('back'))
         .catch(err => next(err))
 }
 
 // get health-declaration as pdf doc
 exports.getDeclaration = (req, res, next) => {
-    const userId = req.user._id
     User.find(
         {
             _id: {

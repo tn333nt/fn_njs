@@ -21,7 +21,7 @@ exports.getAttendance = (req, res, next) => {
                 // const rpDay = report.reportId.date.toUTCString().split(' 2022 ')[0].split(' ')[1] 
                 // const today = new Date().toUTCString().split(' 2022 ')[0].split(' ')[1]-1 // =))))
                 const rpDay = report.reportId.date
-                const today = new Date().toISOString().split('T')[0] 
+                const today = new Date().toISOString().split('T')[0]
                 console.log(rpDay, 'rpDay');
                 console.log(today, 'today');
                 return rpDay.toString() === today.toString()
@@ -53,7 +53,7 @@ exports.postCheckIn = (req, res, next) => {
     console.log(start, 'start');
 
     const today = now.toISOString().split('T')[0].toString()
-    
+
 
     return Report.find({ userId: req.user._id })
         .then(reports => {
@@ -72,10 +72,10 @@ exports.postCheckIn = (req, res, next) => {
             console.log(updatedReports);
 
             if (updatedReports.length <= 0) {
-                const rp = new Report({ 
-                    date: today, 
-                    startTime: start, 
-                    userId: req.user._id, 
+                const rp = new Report({
+                    date: today,
+                    startTime: start,
+                    userId: req.user._id,
                     workplaces: [{ workplace: workplace }],
                     workingSessions: [{
                         checkin: start,
@@ -86,42 +86,42 @@ exports.postCheckIn = (req, res, next) => {
                 console.log(rp, 'rp');
                 return rp.save()
             } else {
-            return Report.findOne({ 
-                _id: reports[0]._id,
-                date: today
-             })
-             .then(report => {
-                console.log(report, 'report 1');
+                return Report.findOne({
+                    _id: reports[0]._id,
+                    date: today
+                })
+                    .then(report => {
+                        console.log(report, 'report 1');
 
-                if (report.startTime === 0) {
-                    report.startTime = start
-                    report.date = now
-                    report.userId = req.user._id
-                    report.workplaces = [{ workplace: workplace }]
-                    report.workingSessions = [{
-                        checkin: start,
-                        workplace: workplace,
-                    }]
-                    // add workplace & time if start day is matched
-                } else {
-                    report.workplaces.push({ workplace: workplace })
-                    report.workingSessions.push({
-                        checkin: start,
-                        workplace: workplace,
+                        if (report.startTime === 0) {
+                            report.startTime = start
+                            report.date = now
+                            report.userId = req.user._id
+                            report.workplaces = [{ workplace: workplace }]
+                            report.workingSessions = [{
+                                checkin: start,
+                                workplace: workplace,
+                            }]
+                            // add workplace & time if start day is matched
+                        } else {
+                            report.workplaces.push({ workplace: workplace })
+                            report.workingSessions.push({
+                                checkin: start,
+                                workplace: workplace,
+                            })
+                        }
+
+                        console.log('report 2', report);
+                        report.workMode = true
+                        console.log('report 3', report);
+
+                        console.log('report 4 from postCheckIn', report);
+
+                        // reports = updatedReports
+                        return report.save()
+
                     })
-                }
-
-                console.log('report 2', report);
-                report.workMode = true
-                console.log('report 3', report);
-
-                console.log('report 4 from postCheckIn', report);
-
-                // reports = updatedReports
-                return report.save()
-                
-            })
-        }
+            }
 
 
             // console.log(reports,123123)
@@ -198,10 +198,10 @@ exports.postCheckOut = (req, res, next) => {
     })
         .then(reports => {
             console.log(reports, 'reports');
-            return Report.findOne({ 
+            return Report.findOne({
                 _id: reports._id,
                 date: now.toISOString().split('T')[0].toString()
-             })
+            })
                 .then(report => {
                     // console.log(report, 'report');
 
@@ -212,7 +212,7 @@ exports.postCheckOut = (req, res, next) => {
                     // bc once checkin -> have the data
 
                     report.workingSessions.at(-1).checkout = finish
-                    report.workingSessions.at(-1).diffTime = finish - +report.workingSessions.at(-1).checkin
+                    report.workingSessions.at(-1).diffTime = (finish - +report.workingSessions.at(-1).checkin).toFixed(2)
 
                     report.finishTime = finish
 
@@ -232,9 +232,9 @@ exports.postCheckOut = (req, res, next) => {
 
                     console.log(itemsDiffTime, 'itemsDiffTime', 124786);
                     itemsDiffTime.forEach(item => {
-                        console.log( item, ' item', 123);
+                        console.log(item, ' item', 123);
                         // console.log(typeof report.totalWorkingTime, 'report.totalWorkingTime', 123);
-                        return report.totalWorkingTime += +item
+                        return report.totalWorkingTime = (+report.totalWorkingTime + +item).toFixed(2)
                     })
 
                     console.log(itemsDiffTime, 'itemsDiffTime after add item');
@@ -251,15 +251,15 @@ exports.postCheckOut = (req, res, next) => {
                 .then(report => {
                     // console.log(report, 'block then 2');
 
-                    report.overTime = +report.totalWorkingTime > 8 ? +report.totalWorkingTime - 8 : 0
+                    report.overTime = +report.totalWorkingTime > 8 ? (+report.totalWorkingTime - 8).toFixed(2) : 0
 
                     // console.log(report, 'after tt wT');
 
-                    report.totalSummaryTime = +report.totalWorkingTime + +report.dayLeaveHours.period
+                    report.totalSummaryTime = (+report.totalWorkingTime + +report.dayLeaveHours.period).toFixed(2)
 
                     // console.log(report, 'after tt sum T');
 
-                    report.underTime = +report.totalSummaryTime < 8 ? 8 - +report.totalSummaryTime : 0
+                    report.underTime = +report.totalSummaryTime < 8 ? (8 - +report.totalSummaryTime).toFixed(2) : 0
 
                     // console.log(report, 'after tt uT');
 
@@ -358,32 +358,40 @@ exports.postCheckOut = (req, res, next) => {
 // get & request daily rp 
 
 exports.postSelectedMonth = (req, res, next) => {
-    // find & post (to rp-details) in db if any month val of dt === month from req
-    const month = req.params.month
+    const month = req.body.month 
 
     Report.find({ userId: req.user._id })
         .then(reports => {
-            const matchedReports = reports.filter(report => +report.date.getMonth() === +month)
-            return matchedReports
+            const rpOfSelectedMonth = reports.filter(report => +report.date.split('-')[1] === +month)
+            return rpOfSelectedMonth // get all rp of this selected month
         })
-        .then(reports => {
-            // return res.redirect('/report-details')
-            if (!reports) {
-                return res.redirect('back');
-            }
-            return res.render('employee/report-details', {
-                title: 'report',
-                path: '/report-details',
-                reports: reports
-            });
+        .then(rpOfSelectedMonth => {
+            req.session.rpOfSelectedMonth = rpOfSelectedMonth
+
+            return req.session.save(() => {
+                res.redirect('/report-details');
+            })
         })
         .catch(err => next(err))
 }
 
+exports.postNumberOfReport = (req, res, next) => {
+    const pagination = req.body.pagination
+
+    req.session.pagination = pagination
+
+    return req.session.save(() => {
+        res.redirect('/report-details');
+    })
+
+}
+
 exports.getReportDetails = (req, res, next) => {
-    console.log(req.params.userId, 2476120906)
-    const userId = req.params.userId ? req.params.userId : req.user._id
-    const ReportsPerPage = +req.body.pagination || 1
+    const rpOfSelectedMonth = req.session.rpOfSelectedMonth
+
+    const userId = req.params.userId || req.user._id
+
+    const ReportsPerPage = +req.session.pagination || 1
     const page = +req.query.page || 1
     let totalReports
 
@@ -405,7 +413,8 @@ exports.getReportDetails = (req, res, next) => {
                 nextPage: page + 1,
                 previousPage: page - 1,
                 currentPage: page,
-                lastPage: Math.ceil(totalReports / ReportsPerPage)
+                lastPage: Math.ceil(totalReports / ReportsPerPage),
+                rpOfSelectedMonth: rpOfSelectedMonth
             });
         })
         .catch(err => next(err))

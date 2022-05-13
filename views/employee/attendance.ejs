@@ -25,7 +25,9 @@
         <label for="workplace-other">other</label>
       </div>
     </div>
+    <% if (report && report.editMode && !report.workMode) { %> 
       <button type="submit" class="btn">start working</button>
+    <% } %> 
 <!-- later : reset old logic : hide this btn if being on work -->
       <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
     <h3>
@@ -48,22 +50,24 @@
         <button type="submit" class="btn">finish</button>
         <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
       </form>
-  <% } else { %>
-  <div class="grid">
-    <% report.workingSessions.forEach(session => { %>
-    <div class="grid-item">
-      <p>checkin : <%= session.checkin %></p>
-      <p>checkout : <%= session.checkout %></p>
-      <p>workplace : <%= session.workplace %></p>
-    </div>
-    <% }) %>
-  </div>
-  <% } %> <% } %>
+    <% } else { %>
+      <div class="grid">
+        <% report.workingSessions.forEach(session => { %>
+        <div class="grid-item">
+          <p>checkin : <%= session.checkin %></p>
+          <p>checkout : <%= session.checkout %></p>
+          <p>workplace : <%= session.workplace %></p>
+        </div>
+        <% }) %>
+      </div>
+    <% } %> 
+      <form action="/register-leave" >
+        <button type="submit" class="btn">register leave</button>
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+      </form>
+  
+  <% } %>
 
-  <form action="/register-leave" >
-    <button type="submit" class="btn">register leave</button>
-    <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
-  </form>
 </main>
 
 <%- include('../includes/foot')%>

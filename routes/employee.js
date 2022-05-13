@@ -11,6 +11,7 @@ router.get('/report-details/:userId', confirmAuth, employeeController.getReportD
 router.get('/report-details', confirmAuth, employeeController.getReportDetails); 
 
 router.post('/select-month', confirmAuth, employeeController.postSelectedMonth); 
+router.post('/select-number-of-report', confirmAuth, employeeController.postNumberOfReport); 
 
 router.post('/check-in',  confirmAuth, employeeController.postCheckIn);
 router.post('/check-out', confirmAuth, employeeController.postCheckOut);

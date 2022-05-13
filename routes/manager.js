@@ -8,11 +8,9 @@ const router = express.Router();
 
 router.get('/reports', confirmAuth, confirmManager, managerController.getAllReports);
 
-router.post('/select-number-of-report', confirmAuth, confirmManager, managerController.postNumberOfReport); // needed?
+router.post('/delete-report', confirmAuth, confirmManager, managerController.deleteOldReports);
 
-router.post('/delete-report/:reportId', confirmAuth, confirmManager, managerController.deleteOldReports);
-
-router.post('/disable-changes/:reportId', confirmAuth, confirmManager, managerController.postDisableChanges);
+router.post('/disable-changes', confirmAuth, confirmManager, managerController.postDisableChanges);
 
 router.get('/get-declaration', confirmAuth, confirmManager, managerController.getDeclaration);
 
