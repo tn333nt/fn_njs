@@ -5,53 +5,53 @@ const Schema = mongoose.Schema;
 const Report = require('./report')
 
 const userSchema = new Schema({
-    email: { type: String, required: true },
-    password: { type: String, required: true },
-    image: Schema.Types.Mixed,
-    annualLeave: { type: Number, default: 12 }, // ref each year
-    managerId: Schema.Types.ObjectId,
-    health: {
-        timeRegister: Date,
-        temperature: Number,
-        vaccination: {
-            turn1: { type: String, date: Date },
-            turn2: { type: String, date: Date }
-        },
-        isPositive: Boolean
+  email: { type: String, required: true },
+  password: { type: String, required: true },
+  image: Schema.Types.Mixed,
+  annualLeave: { type: Number, default: 12 }, // ref each year
+  managerId: Schema.Types.ObjectId,
+  health: {
+    timeRegister: Date,
+    temperature: Number,
+    vaccination: {
+      turn1: { type1: String, date1: Date },
+      turn2: { type2: String, date2: Date }
     },
-    // reports: [
-    //     {
-    //         reportId: {
-    //             type: Schema.Types.ObjectId,
-    //             ref: 'Report'
-    //         }
-    //     }
-    // ],
-    reports: {
-        report: [
-          {
-            reportId: {
-              type: Schema.Types.ObjectId,
-              ref: 'Report',
-              required: true
-            }
-          }
-        ]
-    }
-    // ,
-    // reports: [
-    //     {
-    //         report: {
-    //             reportId: [
-    //                 {
-    //                     type: Schema.Types.ObjectId,
-    //                     ref: 'Report',
-    //                     required: true
-    //                 }
-    //             ]
-    //         }
-    //     }
-    // ]
+    isPositive: Boolean
+  },
+  // reports: [
+  //     {
+  //         reportId: {
+  //             type: Schema.Types.ObjectId,
+  //             ref: 'Report'
+  //         }
+  //     }
+  // ],
+  reports: {
+    report: [
+      {
+        reportId: {
+          type: Schema.Types.ObjectId,
+          ref: 'Report',
+          required: true
+        }
+      }
+    ]
+  }
+  // ,
+  // reports: [
+  //     {
+  //         report: {
+  //             reportId: [
+  //                 {
+  //                     type: Schema.Types.ObjectId,
+  //                     ref: 'Report',
+  //                     required: true
+  //                 }
+  //             ]
+  //         }
+  //     }
+  // ]
 
 });
 
@@ -71,7 +71,7 @@ const userSchema = new Schema({
 //         return report.startTime.toLocaleDateString() === now.toLocaleTimeString() 
 //     }) // to let it return arr
 
-  
+
 //     // add new daily rp 
 //     if (updatedReports.length <= 0) {
 //         updatedReports.push({
@@ -88,7 +88,7 @@ const userSchema = new Schema({
 //                 }
 //             ]
 //         })
-  
+
 //         // updatedReports[0].startTime = start
 //         // updatedReports[0].date = new Date()
 //         // updatedReports[0].userId = this._id
@@ -117,8 +117,10 @@ const userSchema = new Schema({
 
 
 userSchema.methods.updateAnnualLeave = function (report) {
-    this.annualLeave -= report.dayLeaveHours.period
-    return this.save();
+  const time = +report.dayLeaveHours.period/24
+
+  this.annualLeave = (+this.annualLeave - +time).toFixed(2)
+  return this.save();
 };
 
 module.exports = mongoose.model('User', userSchema);

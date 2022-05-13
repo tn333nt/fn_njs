@@ -36,20 +36,20 @@
   line-height: var(--line-height)
 }
 
-.form-item {
-  width: 6rem;
+.form-radio {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
+  gap: var(--line-height);
 }
 
-/* .form-item label,
+.form-item label,
 .form-item input,
 .form-item textarea {
   display: block;
   width: 100%;
   margin-bottom: var(--line-height);
-} */
+}
 
 .form-item input,
 .form-item textarea {

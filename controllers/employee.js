@@ -358,7 +358,7 @@ exports.postCheckOut = (req, res, next) => {
 // get & request daily rp 
 
 exports.postSelectedMonth = (req, res, next) => {
-    const month = req.body.month 
+    const month = req.body.month
 
     Report.find({ userId: req.user._id })
         .then(reports => {
@@ -423,29 +423,45 @@ exports.getReportDetails = (req, res, next) => {
 
 
 exports.postRegisterLeave = (req, res, next) => {
-    const reportId = req.params.reportId
-    const period = req.body.period;
     const reason = req.body.reason;
+    const dayRegister = req.body.dayRegister
+    const hourRegister = req.body.hourRegister
+    const userId = req.user._id
 
-    req.user
-        .populate('reports.reportId')
-        .then(user => {
-            // 1. add leave hour for dayReport
-            const reports = user.reports
-            return reports.findById(reportId)
-                .then(report => {
-                    report.dayLeaveHours = {
-                        period: period,
-                        reason: reason,
-                    }
-                    return report.save()
-                })
+    console.log(reason, 'reason');
+    console.log(dayRegister, 'dayRegister');
+    console.log(hourRegister, 'hourRegister');
+    console.log(userId, 'userId');
+
+    // 1. add leave hour for dayReport
+    Report.findOne({
+        date: dayRegister,
+        userId: userId,
+    })
+        .then(report => {
+            report.dayLeaveHours = {
+                period: hourRegister,
+                reason: reason,
+            }
+            return report.save()
         })
         // 2. update aL
         .then(report => req.user.updateAnnualLeave(report))
         .then(() => res.redirect('back'))
         .catch(err => next(err))
 };
+
+exports.getRegisterLeave = (req, res, next) => {
+    const userId = req.user._id
+    User.findById(userId)
+        .then(user => {
+            res.render('employee/register-leave', {
+                title: 'register-leave',
+                path: '/register-leave',
+                user: user
+            })
+        })
+}
 
 
 // up , store & serve file
@@ -507,24 +523,30 @@ exports.postHealthDeclaration = (req, res, next) => {
     const isPositive = req.body.isPositive;
     // validate later
 
-    User.findById(req.user._id)
+    const userId = req.user._id
+    console.log(userId, 'userId');
+    console.log(temperature, 'temperature');
+    console.log(injectionType2, 'injectionType2');
+
+    User.findById(userId)
         .then(user => {
+            console.log(user, 'user bf');
             user.health = {
                 timeRegister: timeRegister,
                 temperature: temperature,
                 vaccination: {
                     turn1: {
-                        type: injectionType1,
-                        date: injectionDate1
+                        type1: injectionType1,
+                        date1: injectionDate1
                     },
                     turn2: {
-                        type: injectionType2,
-                        date: injectionDate2
+                        type2: injectionType2,
+                        date2: injectionDate2
                     }
                 },
                 isPositive: isPositive
             }
-            console.log(user);
+            console.log(user, 'user at');
             return user.save()
         })
         .then(() => res.redirect('back'))

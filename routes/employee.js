@@ -17,6 +17,7 @@ router.post('/check-in',  confirmAuth, employeeController.postCheckIn);
 router.post('/check-out', confirmAuth, employeeController.postCheckOut);
 
 router.post('/register-leave', confirmAuth, employeeController.postRegisterLeave);
+router.get('/register-leave', confirmAuth, employeeController.getRegisterLeave);
 
 router.get('/profile', confirmAuth, employeeController.getProfile);
 router.post('/profile', confirmAuth, employeeController.postProfile);

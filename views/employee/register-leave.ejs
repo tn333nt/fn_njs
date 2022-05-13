@@ -1,6 +1,7 @@
-<%- include('includes/head.ejs') %> <%- include('includes/nav.ejs') %>
+<%- include('../includes/head') %> <%- include('../includes/nav') %>
 <main>
-    <form action="/attendance" method="post" class="form-container">
+  <h3> remaining leave = <%= user.annualLeave %> h</h3>
+    <form action="/register-leave" method="post" class="form-container">
         <h1>register leave</h1>
         <div class="form-item">
           <label for="dayRegister">dayRegister</label>
@@ -14,9 +15,9 @@
             <label for="reason">reason</label>
             <textarea name="reason" id="reason" cols="30" rows="10"></textarea>
         </div>
-        <input type="submit" value="register" />
+        <input type="submit" value="register" class="btn"/>
         <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
       </form>
 </main>
 
-<%- include('includes/foot.ejs') %>
+<%- include('../includes/foot') %>
