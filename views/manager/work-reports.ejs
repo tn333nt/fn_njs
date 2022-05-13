@@ -1,16 +1,20 @@
-<%- include('../includes/head.ejs')%> <%- include('../includes/mav.ejs')%>
+<%- include('../includes/head')%> <%- include('../includes/nav')%>
 
 <main>
   <div class="grid">
-    <%= users && users.map(user => { %>
+    <% console.log(employees, 'employees v'); %>
+    <% console.log(reports, 'reports v'); %>
+
+    <% employees && employees.map(employee => { %>
     <div class="grid-item">
-      <a class="image" href="/reports/:<%= user.reports.reportId %>">
-        <img src="<%= user.image %>" alt="<%= user.name %>" />
+      <a class="image" href="/reports/:<%= employee.reports.report.reportId %>">
+        <img src="<%= employee.image %>" alt="<%= employee._id %>" />
       </a>
-      <p><%= user.name %></p>
+      <p><%= employee.email %></p>
     </div>
     <% }) %>
   </div>
+
 </main>
 
-<%- include('../includes/foot.ejs')%>
+<%- include('../includes/foot')%>

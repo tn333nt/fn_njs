@@ -6,16 +6,15 @@
   <div class="image">
     <img src="/<%= user.image %>" alt="<%= user._id %>" />
   </div>
-  <% if (isAuth && !isManager) { %>
-    <% console.log(isAuth, isManager, 'cf profile') %>
+  <% if (isAuth) { %>
   <form
     action="/profile"
     method="post"
     enctype="multipart/form-data"
   >
     <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
-    <input type="file" name="image" value="change apperance" />
-    <input type="submit" value="confirm" />
+    <input type="file" name="image" value="change apperance" class="btn" />
+    <button class="btn" type="submit">confirm</button>
     <% if (errMsg) { %>
     <div class="message message-error"><%= errMsg %></div>
     <% } %>

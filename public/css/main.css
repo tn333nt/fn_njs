@@ -11,7 +11,7 @@
 
 body {
   font-family: "Sofia Pro", sans-serif;
-  background: var(--main)
+  background: var(--main);
 }
 
 main {
@@ -32,6 +32,7 @@ main {
   text-align: center;
   margin: 10px;
   padding: 30px;
+  line-height: var(--line-height);
 }
 
 .grid-item p {
@@ -47,7 +48,8 @@ main {
 }
 
 .image img {
-  height: 100%;
+  height: fit-content;
+  width: fit-content;
 }
 
 .nav-container {
@@ -104,6 +106,7 @@ main {
   background: var(--light);
   border-radius: 3px;
   cursor: pointer;
+  margin: 0.25rem;
 }
 
 .btn:hover,
@@ -129,7 +132,7 @@ main {
 
 .pagination {
   text-align: center;
-  margin-top: var(--line-height);
+  margin: var(--line-height);
 }
 
 .pagination a {

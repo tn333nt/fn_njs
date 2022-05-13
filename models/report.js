@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const reportSchema = new Schema({
-    date: { type: Date, required: true },
+    date: { type: Schema.Types.Mixed, required: true },
     workplaces: [
         {
             workplace: String
@@ -11,7 +11,7 @@ const reportSchema = new Schema({
     ],
     startTime: { type: Number, required: true, default: 0 },
     finishTime: Number,
-    totalWorkingTime: Number,
+    totalWorkingTime: { type: Number, default: 0 },
     overTime: Number,
     underTime: Number,
     dayLeaveHours: { // ref each day

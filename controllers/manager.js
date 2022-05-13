@@ -9,24 +9,38 @@ const Report = require('../models/report');
 
 
 exports.getAllReports = (req, res, next) => {
-    req.user
-        .populate('reports.reportId')
-        .then(user => {
-            const reports = user.reports
+    // console.log(122131);
+    console.log(req.user._id);
+    User.find()
+        .populate('reports.report.reportId')
+        .then(users => {
+            // console.log(users, 'users');
+            const employees = users.filter(report => {
+                return report.email !== '123@gmail.com'
+            })
+            const reports = employees.map(emp => {
+                console.log(emp.reports.report, 2143);
+                return emp.reports.report
+            })
+            // console.log(reports, 'reports');
+            console.log(employees, 'employees');
             res.render('manager/work-reports', {
                 title: 'reports',
                 path: '/reports',
-                reports: reports
+                reports: reports,
+                employees: employees
             });
         })
         .catch(err => next(err))
 }
 
-
 exports.getReportDetails = (req, res, next) => {
+    console.log(req.user._id);
     const ReportsPerPage = +req.body.pagination || 1
     const page = +req.query.page || 1
     let totalReports
+
+    console.log(1213);
 
     Report.find()
         .countDocuments()
@@ -62,11 +76,13 @@ exports.deleteOldReports = (req, res, next) => {
     const now = new Date();
     Report.find()
         .then(reports => {
+            console.log(reports, 111);
             if (!reports) return next(new Error('no found Report'))
             // update new reports with only data of now
             const updatedReports = reports.find(report => {
-                return report.date === now;
+                return report.date.toLocaleDateString() === now.toLocaleDateString();
             });
+            console.log(updatedReports, 222);
             reports = updatedReports;
             return reports.save();
 

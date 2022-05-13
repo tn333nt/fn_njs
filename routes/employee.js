@@ -12,14 +12,14 @@ router.get('/reports/:reportId', confirmAuth, employeeController.getReportDetail
 router.post('/select-month', confirmAuth, employeeController.postSelectedMonth); 
 
 router.post('/check-in',  confirmAuth, employeeController.postCheckIn);
-router.post('/check-out/:reportId', confirmAuth, employeeController.postCheckOut);
+router.post('/check-out', confirmAuth, employeeController.postCheckOut);
 
-router.post('/register-leave/:userId', confirmAuth, employeeController.postRegisterLeave);
+router.post('/register-leave', confirmAuth, employeeController.postRegisterLeave);
 
 router.get('/profile', confirmAuth, employeeController.getProfile);
 router.post('/profile', confirmAuth, employeeController.postProfile);
 
 router.get('/health-declaration', confirmAuth, employeeController.getHealthDeclaration);
-router.post('/health-declaration/:userId', confirmAuth, employeeController.postHealthDeclaration);
+router.post('/health-declaration', confirmAuth, employeeController.postHealthDeclaration);
 
 module.exports = router;

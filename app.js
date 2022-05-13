@@ -25,10 +25,11 @@ app.set('view engine', 'ejs');
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')))
+app.use('/images',express.static(path.join(__dirname, 'images')));
 app.use(multer({
   storage: multer.diskStorage({
     destination: (req, file, cb) => {
-      cb(null, 'public/images')
+      cb(null, 'images')
     },
     filename: (req, file, cb) => {
       cb(null, new Date().toISOString().replace(/:/g, '-') + '-' + file.originalname)
