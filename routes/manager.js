@@ -7,8 +7,6 @@ const confirmManager = require('../middlewares/confirm').confirmManager
 const router = express.Router();
 
 router.get('/reports', confirmAuth, confirmManager, managerController.getAllReports);
-router.get('/reports/:reportId', confirmAuth, confirmManager, managerController.getReportDetails); 
-router.post('/reports', confirmAuth, confirmManager, managerController.postReportDetails); 
 
 router.post('/select-number-of-report', confirmAuth, confirmManager, managerController.postNumberOfReport); // needed?
 

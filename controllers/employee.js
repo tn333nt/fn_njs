@@ -381,20 +381,39 @@ exports.postSelectedMonth = (req, res, next) => {
 }
 
 exports.getReportDetails = (req, res, next) => {
-    console.log(132);
-    Report.find({ userId: req.user._id })
+    console.log(req.params.userId, 2476120906)
+    const userId = req.params.userId ? req.params.userId : req.user._id
+    const ReportsPerPage = +req.body.pagination || 1
+    const page = +req.query.page || 1
+    let totalReports
+
+    console.log(userId);
+
+    Report.find({ userId: new mongoose.Types.ObjectId(userId) })
+        .countDocuments()
+        .then(countReports => {
+            totalReports = countReports
+            return Report.find()
+                .skip((page - 1) * ReportsPerPage)
+                .limit(ReportsPerPage)
+        })
         .then(reports => {
-            if (!reports) {
-                return res.redirect('back');
-            }
             return res.render('employee/report-details', {
                 title: 'report',
                 path: '/report-details',
-                reports: reports
+                reports: reports,
+                hasNextPage: ReportsPerPage * page < totalReports,
+                hasPreviousPage: page > 1,
+                nextPage: page + 1,
+                previousPage: page - 1,
+                currentPage: page,
+                lastPage: Math.ceil(totalReports / ReportsPerPage)
             });
         })
         .catch(err => next(err))
 }
+
+
 
 exports.postRegisterLeave = (req, res, next) => {
     const reportId = req.params.reportId

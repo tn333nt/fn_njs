@@ -14,9 +14,9 @@ exports.getAllReports = (req, res, next) => {
     User.find()
         .populate('reports.report.reportId')
         .then(users => {
-            // console.log(users, 'users');
-            const employees = users.filter(report => {
-                return report.email !== '123@gmail.com'
+            console.log(users, 'users');
+            const employees = users.filter(user => {
+                return user.email !== '123@gmail.com'
             })
             const reports = employees.map(emp => {
                 console.log(emp.reports.report, 2143);
@@ -34,37 +34,13 @@ exports.getAllReports = (req, res, next) => {
         .catch(err => next(err))
 }
 
-exports.getReportDetails = (req, res, next) => {
-    console.log(req.user._id);
-    const ReportsPerPage = +req.body.pagination || 1
-    const page = +req.query.page || 1
-    let totalReports
+// exports.postReportDetails = (req, res, next) => {
+//     const employeeId = req.body.employeeId
+//     Report.findById(employeeId)
+//     .then(() => res.redirect(`/reports/${employeeId}`))
+//     .catch(err => next(err))
+// }
 
-    console.log(1213);
-
-    Report.find()
-        .countDocuments()
-        .then(countReports => {
-            totalReports = countReports
-            return Report.find()
-                .skip((page - 1) * ReportsPerPage)
-                .limit(ReportsPerPage)
-        })
-        .then(reports => {
-            return res.render('manager/report-details', {
-                title: 'report',
-                path: '/report-details',
-                reports: reports,
-                hasNextPage: ReportsPerPage * page < totalReports,
-                hasPreviousPage: page > 1,
-                nextPage: page + 1,
-                previousPage: page - 1,
-                currentPage: page,
-                lastPage: Math.ceil(totalReports / ReportsPerPage)
-            });
-        })
-        .catch(err => next(err))
-}
 
 
 exports.postNumberOfReport = (req, res, next) => {

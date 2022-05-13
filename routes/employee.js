@@ -7,7 +7,7 @@ const router = express.Router();
 
 router.get('/attendance', confirmAuth, employeeController.getAttendance);
 
-router.get('/reports/:reportId', confirmAuth, employeeController.getReportDetails); 
+router.get('/reports/:userId', confirmAuth, employeeController.getReportDetails); 
 
 router.post('/select-month', confirmAuth, employeeController.postSelectedMonth); 
 
