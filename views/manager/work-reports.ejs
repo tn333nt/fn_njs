@@ -7,7 +7,8 @@
 
     <% employees && employees.map(employee => { %>
     <div class="grid-item">
-      <a class="image" href="/reports/:<%= employee.reports.report[0].reportId.userId %>">
+      <h3><%= employee._id %></h3>
+      <a class="image" href="/report-details/<%= employee.reports.report[0].reportId.userId %>">
         <% console.log(employee.reports.report[0].reportId.userId)%>
         <img src="<%= employee.image %>" alt="<%= employee._id %>" />
       </a>

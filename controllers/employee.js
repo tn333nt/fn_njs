@@ -387,13 +387,11 @@ exports.getReportDetails = (req, res, next) => {
     const page = +req.query.page || 1
     let totalReports
 
-    console.log(userId);
-
-    Report.find({ userId: new mongoose.Types.ObjectId(userId) })
+    Report.find({ userId: userId })
         .countDocuments()
         .then(countReports => {
             totalReports = countReports
-            return Report.find()
+            return Report.find({ userId: userId })
                 .skip((page - 1) * ReportsPerPage)
                 .limit(ReportsPerPage)
         })

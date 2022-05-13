@@ -12,6 +12,7 @@
 body {
   font-family: "Sofia Pro", sans-serif;
   background: var(--main);
+  line-height: var(--line-height)
 }
 
 main {
@@ -23,7 +24,7 @@ main {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
-  align-items: stretch;
+  align-items: center;
 }
 
 .grid-item {
@@ -45,10 +46,11 @@ main {
 
 .image {
   height: 20rem;
+  margin-bottom: 1rem;
 }
 
 .image img {
-  height: fit-content;
+  height: 100%;
   width: fit-content;
 }
 
