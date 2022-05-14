@@ -54,19 +54,6 @@
         </h3>  
       <% } %>
     </div>
-    <!-- current rp structure : 1 day - 1rp - 1 total salary get from all rp before
-    => salary of the last rp / month = this month salary 
-        to know which month to render ->
-        1. get data from post req
-        2. re render this page with this data, but it'll cause needing to pass all other data
-        => idea : have mode for each case  
-        ko lol cung cha giam may = =
-        => de phan hien thi thanh part chung vay
-        ko on=)
-        
-        * https://stackoverflow.com/a/68446944
-        truyen vao ss cho ham post xong xu ly o ham get
-    -->
 
     <% if (isManager) { %>
       <div>
@@ -86,10 +73,8 @@
           <!-- later : check if emp's rps r disabled -> inform -->
       </div>
     <% } %>
-
     
   </div>
-
       <% if (reports.length > 0) { %>
         <div class="grid">
           <% reports.forEach(report => { %>

@@ -10,8 +10,8 @@ router.get('/reports', confirmAuth, confirmManager, managerController.getAllRepo
 
 router.post('/delete-report', confirmAuth, confirmManager, managerController.deleteOldReports);
 
-router.post('/disable-changes', confirmAuth, confirmManager, managerController.postDisableChanges);
+router.post('/disable-changes', confirmAuth, confirmManager, managerController.postToggleChanges);
 
-router.get('/get-declaration', confirmAuth, confirmManager, managerController.getDeclaration);
+router.get('/get-declaration', confirmAuth, confirmManager, managerController.getPdfDeclaration);
 
 module.exports = router;

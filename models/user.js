@@ -38,82 +38,7 @@ const userSchema = new Schema({
       }
     ]
   }
-  // ,
-  // reports: [
-  //     {
-  //         report: {
-  //             reportId: [
-  //                 {
-  //                     type: Schema.Types.ObjectId,
-  //                     ref: 'Report',
-  //                     required: true
-  //                 }
-  //             ]
-  //         }
-  //     }
-  // ]
-
 });
-
-
-// // 1. 
-// userSchema.methods.postCheckIn = function(workplace) {
-//   const now = new Date()
-
-//   // convert time into decimal number
-//   const timeArr = now.toLocaleTimeString().replace(/:/g, '-').split('-');
-//   const start = (+timeArr[0] + +timeArr[1] / 60).toFixed(2)
-
-//   return Report.findById(this._id)
-//   .then(reports => {
-//     const updatedReports = reports.filter(report => {
-//         console.log('...', report.startTime);
-//         return report.startTime.toLocaleDateString() === now.toLocaleTimeString() 
-//     }) // to let it return arr
-
-
-//     // add new daily rp 
-//     if (updatedReports.length <= 0) {
-//         updatedReports.push({
-//             userId: this._id,
-//             date: new Date(),
-//             startTime: start,
-//             workplaces: [
-//                 { workplace: workplace }
-//             ],
-//             workingSessions: [
-//                 {
-//                     checkin: start,
-//                     workplace: workplace,
-//                 }
-//             ]
-//         })
-
-//         // updatedReports[0].startTime = start
-//         // updatedReports[0].date = new Date()
-//         // updatedReports[0].userId = this._id
-//         // updatedReports[0].workplaces = [{ workplace: workplace }]
-//         // updatedReports[0].workingSessions = [{
-//         //     checkin: start,
-//         //     workplace: workplace,
-//         // }]
-//         // add workplace & time if start day is matched
-//     } else {
-//         updatedReports[0].workplaces.push({ workplace: workplace })
-//         updatedReports[0].workingSessions.push({
-//             checkin: start,
-//             workplace: workplace,
-//         })
-//     }
-//     // 3. change work mode
-//     reports[0].workMode = true
-//     reports = updatedReports
-//     return reports.save();
-//   })
-// };
-
-// userSchema.methods.postCheckOut = function(userId) {
-// };
 
 
 userSchema.methods.updateAnnualLeave = function (report) {
@@ -124,19 +49,12 @@ userSchema.methods.updateAnnualLeave = function (report) {
 };
 
 userSchema.methods.addUserReport = function (report) {
-
   this.reports.report.push({reportId : report})
   return this.save();
 };
 
 userSchema.methods.updateUserReport = function (report) {
-
-  // how to find exactly which rp to update
-  // maybe
-  // thuong thi da tim rp cho hn va add vao r
-  // thi no se push vao cuoi
-  // va update thi chi update cho rp hn thoi
-  // =>  can update cai lastest rp la dc
+  // update latest report
   this.reports.report.at(-1).reportId = report
   return this.save();
 };

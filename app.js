@@ -17,13 +17,12 @@ const mgURI = 'mongodb+srv://test:bJYVI29LEAjl147U@cluster0.ti4jx.mongodb.net/co
 const port = 3001
 const app = express();
 
-const csrfProtection = csrf({
-  cookie: false,
-});
+const csrfProtection = csrf();
 
 app.set('view engine', 'ejs');
 
 app.use(bodyParser.urlencoded({ extended: true }));
+
 app.use(express.static(path.join(__dirname, 'public')))
 app.use('/images',express.static(path.join(__dirname, 'images')));
 app.use(multer({
@@ -36,11 +35,7 @@ app.use(multer({
     }
   }),
   fileFilter: (req, file, cb) => {
-    const types = [
-      'image/png', 
-      'image/jpeg', 
-      'image/jpg'
-    ]
+    const types = [ 'image/png', 'image/jpeg', 'image/jpg' ]
     types.find(type => type === file.mimetype) ? cb(null, true) : cb(null, false)
   }
 })

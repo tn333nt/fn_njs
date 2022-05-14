@@ -7,9 +7,7 @@ const router = express.Router();
 
 router.get('/login', authController.getLogin);
 router.post(
-    '/login',
-    body('email').isEmail().normalizeEmail()
-    , body('password').isAlphanumeric().trim()
+    '/login'
     , [
         body('email')
             .isEmail()
@@ -19,6 +17,12 @@ router.post(
             .isAlphanumeric()
             .isLength({ min: 3 })
             .trim()
+            .custom((value, {req}) => {
+                if (value === req.body.password) {
+                    return true
+                }
+                throw new Error('unmatched password')
+            })
     ]
     , authController.postLogin
 );
