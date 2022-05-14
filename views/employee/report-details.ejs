@@ -69,15 +69,25 @@
     -->
 
     <% if (isManager) { %>
-      <form action="/delete-report" method="post" style="text-align:center;">
-        <button class="btn" type="submit">delete old reports</button>
-        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
-      </form>
-      <form action="/disable-changes" method="post" style="text-align:center;">
-        <button class="btn" type="submit">disable-changes</button>
-        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
-      </form>
+      <div>
+        <form action="/delete-report" method="post" style="text-align:center;">
+          <button class="btn" type="submit">delete old reports</button>
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+        </form>
+        <h6> check in emp's account :D</h6>
+          <!-- later : check if emp's rps r deleted -> inform -->
+      </div>
+      <div>
+        <form action="/disable-changes" method="post" style="text-align:center;">
+          <button class="btn" type="submit">disable-changes</button>
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+        </form>
+        <h6> check in emp's account :D</h6>
+          <!-- later : check if emp's rps r disabled -> inform -->
+      </div>
     <% } %>
+
+    
   </div>
 
       <% if (reports.length > 0) { %>
@@ -102,7 +112,12 @@
                 <li>total : <%= report.totalWorkingTime %> h for today's sessions</li>
                 <li>total : <%= report.totalSummaryTime %> h of working</li>
               </ul>
-              
+              <ul>(cho de check) 
+                <li>eM <%= report.editMode %> </li>
+                <li>wM <%= report.workMode %> </li>
+                <li>uT <%= report.underTime %> </li>
+                <li>s <%= report.salary %> </li>
+              </ul>
             </div>
           <% }) %>
         </div>

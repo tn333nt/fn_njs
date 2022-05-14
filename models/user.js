@@ -123,4 +123,22 @@ userSchema.methods.updateAnnualLeave = function (report) {
   return this.save();
 };
 
+userSchema.methods.addUserReport = function (report) {
+
+  this.reports.report.push({reportId : report})
+  return this.save();
+};
+
+userSchema.methods.updateUserReport = function (report) {
+
+  // how to find exactly which rp to update
+  // maybe
+  // thuong thi da tim rp cho hn va add vao r
+  // thi no se push vao cuoi
+  // va update thi chi update cho rp hn thoi
+  // =>  can update cai lastest rp la dc
+  this.reports.report.at(-1).reportId = report
+  return this.save();
+};
+
 module.exports = mongoose.model('User', userSchema);

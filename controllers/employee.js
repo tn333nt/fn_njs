@@ -8,32 +8,58 @@ const deleteFile = require('../middlewares/deleteFile')
 // get & check attendance
 
 exports.getAttendance = (req, res, next) => {
-    console.log(123, req.user);
-    console.log(1423523, req.user.reports.report);
+    // console.log(123, req.user);
+    // console.log(1423523, req.user.reports.report);
+
+    const today = new Date().toISOString().split('T')[0]
+
     req.user
-        .populate('reports.report.reportId')
+        .populate('reports.report.reportId') // hinh nhu no chi populate co ngay dautien //
         .then(user => {
             console.log(user.reports.report, 'user.reports.report haajka');
-            const report = user.reports.report.find(report => {
-                // sao no lay co cai rp dau tien thoi thi phai ?
-                // checkin thi tao ra 1 rp moi vs date today r ma nhi ?
-                // temp get day only
-                // const rpDay = report.reportId.date.toUTCString().split(' 2022 ')[0].split(' ')[1] 
-                // const today = new Date().toUTCString().split(' 2022 ')[0].split(' ')[1]-1 // =))))
+            let report = user.reports.report.find(report => {
                 const rpDay = report.reportId.date
-                const today = new Date().toISOString().split('T')[0]
                 console.log(rpDay, 'rpDay');
                 console.log(today, 'today');
                 return rpDay.toString() === today.toString()
             })
-            console.log('report from page after post checkin' + report) // sao hqua vua chay dc hn da undefined r?=))
-            // console.log(report.reportId, 'report from page after post checkin123abc')
-            res.render('employee/attendance', {
-                title: 'attendance',
-                path: '/attendance',
-                user: user,
-                report: report?.reportId
-            })
+
+            console.log('report from page after post checkin' + report)
+
+            if (!report) {
+                // always create the default one for updating & add new to userRp
+                report = new Report({
+                    date: today,
+                    startTime: 0,
+                    userId: user._id,
+                    workMode: false
+                })
+                console.log(report, 'report');
+                return report.save()
+                    .then(report => {
+                        console.log(report, 11111111111111);
+                        req.user.addUserReport(report) // ok :D
+                    })
+                    .then(() => {
+                        return res.render('employee/attendance', {
+                            title: 'attendance',
+                            path: '/attendance',
+                            user: user,
+                            report: report // chay roai :D
+                        })
+                            .catch(err => next(err))
+                    })
+            } else {
+                res.render('employee/attendance', {
+                    title: 'attendance',
+                    path: '/attendance',
+                    user: user,
+                    report: report?.reportId
+                })
+            }
+
+            console.log(report, 546563261);
+
         })
         .catch(err => next(err))
 }
@@ -52,76 +78,54 @@ exports.postCheckIn = (req, res, next) => {
     const start = (+timeArr[0] + +timeArr[1] / 60).toFixed(2)
     console.log(start, 'start');
 
-    const today = now.toISOString().split('T')[0].toString()
+    const today = now.toISOString().split('T')[0]
 
+    console.log(today, 56565655656);
 
-    return Report.find({ userId: req.user._id })
+    Report.find({ userId: req.user._id })
         .then(reports => {
-            console.log(reports);
-            // find if there is today's report
-            const updatedReports = reports.filter(report => {
-                console.log('...', report.startTime);
-                console.log('---', report.date);
-                const rpDay = report.date
-                const today = new Date().toISOString().split('T')[0]
-                console.log(rpDay, 'rpDay');
-                console.log(today, 'today');
-                return rpDay === today
-            }) // to let it return arr
+            console.log(reports, 123213213213);
+            // find exactly rp of this user for today
+            const rp = reports.find(report => report.date === today)
 
-            console.log(updatedReports);
+            console.log(rp, 'adasa');
 
-            if (updatedReports.length <= 0) {
-                const rp = new Report({
-                    date: today,
-                    startTime: start,
-                    userId: req.user._id,
-                    workplaces: [{ workplace: workplace }],
-                    workingSessions: [{
-                        checkin: start,
-                        workplace: workplace,
-                    }],
-                    workMode: true
+            return Report.findById(rp._id)
+                .then(report => {
+                    console.log(report, 'report 1');
+
+                    if (report.startTime === 0) {
+                        report.startTime = start
+                        report.date = today
+                        report.userId = req.user._id
+                        report.workplaces = [{ workplace: workplace }]
+                        report.workingSessions = [{
+                            checkin: start,
+                            workplace: workplace,
+                        }]
+                        // add workplace & time if start day is matched
+                    } else {
+                        report.workplaces.push({ workplace: workplace })
+                        report.workingSessions.push({
+                            checkin: start,
+                            workplace: workplace,
+                        })
+                    }
+
+                    console.log('report 2', report);
+                    report.workMode = true
+                    console.log('report 3', report);
+
+                    console.log('report 4 from postCheckIn', report);
+
+                    // reports = updatedReports
+                    return report.save()
+                        .then(report => {
+                            console.log(report, 88888888);
+                            req.user.updateUserReport(report)
+                        })
+
                 })
-                console.log(rp, 'rp');
-                return rp.save()
-            } else {
-                return Report.findOne({
-                    _id: reports[0]._id,
-                    date: today
-                })
-                    .then(report => {
-                        console.log(report, 'report 1');
-
-                        if (report.startTime === 0) {
-                            report.startTime = start
-                            report.date = now
-                            report.userId = req.user._id
-                            report.workplaces = [{ workplace: workplace }]
-                            report.workingSessions = [{
-                                checkin: start,
-                                workplace: workplace,
-                            }]
-                            // add workplace & time if start day is matched
-                        } else {
-                            report.workplaces.push({ workplace: workplace })
-                            report.workingSessions.push({
-                                checkin: start,
-                                workplace: workplace,
-                            })
-                        }
-
-                        console.log('report 2', report);
-                        report.workMode = true
-                        console.log('report 3', report);
-
-                        console.log('report 4 from postCheckIn', report);
-
-                        // reports = updatedReports
-                        return report.save()
-
-                    })
-            }
 
 
             // console.log(reports,123123)
@@ -181,7 +185,9 @@ exports.postCheckIn = (req, res, next) => {
 // h dang loi r, ti nho if time pm -> h + 11
 
 exports.postCheckOut = (req, res, next) => {
+    console.log(28425);
     const now = new Date()
+    const today = now.toISOString().split('T')[0]
 
     const time = `${now.getHours()}-${now.getMinutes()}`
     console.log(time, 'time');
@@ -192,21 +198,21 @@ exports.postCheckOut = (req, res, next) => {
     console.log(finish, 'finish');
 
 
-    return Report.findOne({
+    return Report.find({
         userId: req.user._id,
         workMode: true
     })
         .then(reports => {
             console.log(reports, 'reports');
             return Report.findOne({
-                _id: reports._id,
-                date: now.toISOString().split('T')[0].toString()
+                _id: reports[0]._id,
+                date: today
             })
                 .then(report => {
                     // console.log(report, 'report');
 
                     // const rp = reports[0]
-                    if (report.date !== now.toISOString().split('T')[0].toString()) return next(new Error('over day'))
+                    if (report.date !== today) return next(new Error('over day'))
 
                     // first time checkout or not -> still have to update all remaining
                     // bc once checkin -> have the data
@@ -218,7 +224,6 @@ exports.postCheckOut = (req, res, next) => {
 
                     console.log(report, 'after finish', 4347643634374);
 
-                    report.workMode = false
                     return report.save()
                 })
                 .then(report => {
@@ -256,6 +261,7 @@ exports.postCheckOut = (req, res, next) => {
                     // console.log(report, 'after tt wT');
 
                     report.totalSummaryTime = (+report.totalWorkingTime + +report.dayLeaveHours.period).toFixed(2)
+                    console.log(report.totalSummaryTime, 'report.totalSummaryTime');
 
                     // console.log(report, 'after tt sum T');
 
@@ -285,9 +291,14 @@ exports.postCheckOut = (req, res, next) => {
                             // console.log(sumUnderTime, 'sumUnderTime');
                             report.salary = +(3000000 + ((+sumOverTime - +sumUnderTime) / 8) * 200000).toFixed(0)
 
+                            report.workMode = false
                             console.log(report, 'after update salary');
 
                             return report.save()
+                                .then(report => {
+                                    console.log(report, 88888888);
+                                    req.user.updateUserReport(report)
+                                })
                         })
 
                 })
@@ -443,6 +454,7 @@ exports.postRegisterLeave = (req, res, next) => {
                 period: hourRegister,
                 reason: reason,
             }
+            report.totalSummaryTime = (+report.totalWorkingTime + +report.dayLeaveHours.period).toFixed(2)
             return report.save()
         })
         // 2. update aL
