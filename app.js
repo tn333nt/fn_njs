@@ -14,7 +14,7 @@ const authRoutes = require('./routes/auth');
 const passData = require('./middlewares/passData');
 
 const mgURI = 'mongodb+srv://test:bJYVI29LEAjl147U@cluster0.ti4jx.mongodb.net/company'
-const port = 3001
+const port = process.env.PORT || 3001
 const app = express();
 
 const csrfProtection = csrf();

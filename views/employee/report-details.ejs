@@ -47,10 +47,10 @@
         <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
       </form>
 
-      <% if (rpOfSelectedMonth && rpOfSelectedMonth.length > 0) { %>
-        <% console.log(rpOfSelectedMonth)%>
+      <% if (reportsOfSelectedMonth && reportsOfSelectedMonth.length > 0) { %>
+        <% console.log(reportsOfSelectedMonth)%>
         <h3 style="text-align:center;"> 
-          salary/month : <%= rpOfSelectedMonth.at(-1).salary %> $ 
+          salary/month : <%= reportsOfSelectedMonth.at(-1).salary %> $ 
         </h3>  
       <% } %>
     </div>
