@@ -45,9 +45,7 @@ exports.postLogin = (req, res, next) => {
                                 res.redirect('/attendance');
                             })
                         }
-                        console.log('no matched');
-                        console.log(errors.array(), 'errors.array()')
-
+                        
                         return res.status(422)
                             .render('auth/login', {
                                 path: '/login',
@@ -81,5 +79,5 @@ exports.postLogin = (req, res, next) => {
 }
 
 exports.postLogout = (req, res, next) => {
-    req.session.destroy(() => res.redirect('/'))
+    req.session.destroy(() => res.redirect('/login'))
 }

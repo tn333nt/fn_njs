@@ -1,50 +1,137 @@
-<nav class="nav-container">
-  <ul class="nav-top nav-list">
-      <% if (isAuth) { %>
-      <form action="/logout" method="post">
-        <button
-          class="btn <%= path === '/logout' ? 'active' : ''%>"
-          type="submit"
+<nav>
+  <input type="checkbox" hidden class="open-nav" id="open-nav-toggle">
+
+  <label for="open-nav-toggle" class="nav-toggle fa-2x">
+    <i class="fa-solid fa-bars"></i>
+  </label>
+
+  <label for="open-nav-toggle" class="overlay"></label>
+
+  <div class="nav-pc">
+    <ul class="nav-list">
+      <% if (isManager) { %>
+      <li class="nav-item">
+        <a class="<%= path === '/reports' ? 'active' : ''%>" href="/reports"
+          >reports</a
         >
-          Logout
-        </button>
-        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-      </form>
-      <% } else { %>
-        <li class="nav-item">
-          <a class="<%= path === '/login' ? 'active' : ''%>" href="/login">login</a>
-        </li>
+      </li>
       <% } %>
-  </ul>
-  <ul class="nav-bottom nav-list">
-    <% if (isManager) { %>
-    <li class="nav-item">
-      <a class="<%= path === '/reports' ? 'active' : ''%>" href="/reports"
-        >work-reports</a
-      >
-    </li>
-    <% } %>
-    <li class="nav-item">
-      <a class="<%= path === '/report-details' ? 'active' : ''%>" href="/report-details"
-        >report-details</a
-      >
-    </li>
-    <li class="nav-item">
-      <a class="<%= path === '/attendance' ? 'active' : ''%>" href="/attendance"
-        >attendance</a
-      >
-    </li>
-    <li class="nav-item">
-      <a class="<%= path === '/profile' ? 'active' : ''%>" href="/profile"
-        >profile</a
-      >
-    </li>
-    <li class="nav-item">
-      <a
-        class="<%= path === '/health-declaration' ? 'active' : ''%>"
-        href="/health-declaration"
-        >health-declaration</a
-      >
-    </li>
-  </ul>
+      <li class="nav-item">
+        <a class="<%= path === '/attendance' ? 'active' : ''%>" href="/attendance"
+          >attendance</a
+        >
+      </li>
+      <li class="nav-item">
+        <a
+          class="<%= path === '/report-details' ? 'active' : ''%>"
+          href="/report-details"
+          >report-details</a
+        >
+      </li>
+      <li class="nav-item">
+        <a class="<%= path === '/profile' ? 'active' : ''%>" href="/profile"
+          >profile</a
+        >
+      </li>
+      <li class="nav-item">
+        <a
+          class="<%= path === '/health-declaration' ? 'active' : ''%>"
+          href="/health-declaration"
+          >health-declaration</a
+        >
+      </li>
+    </ul>
+  
+    <ul class="nav-list">
+      <% if (isAuth) { %>
+      <li class="nav-item">
+        <form action="/logout" method="post">
+          <button
+            style="box-shadow: none"
+            class="btn <%= path === '/logout' ? 'active' : ''%>"
+            type="submit"
+          >
+            <i class="fa-solid fa-right-from-bracket"></i>
+          </button>
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+        </form>
+      </li>
+      <% } else { %>
+      <li class="nav-item">
+        <a class="<%= path === '/login' ? 'active' : ''%>" href="/login">login</a>
+      </li>
+      <% } %>
+    </ul>
+  </div>
+
+  <div class="nav-mobile">
+    <div class="nav-mobile-title">
+      <label for="open-nav-toggle" class="close">
+        <i class="fa-solid fa-xmark"></i>
+      </label>
+
+      <div>
+        <% if (isAuth) { %>
+          <form action="/logout" method="post">
+            <button
+              style="box-shadow: none"
+              class="btn <%= path === '/logout' ? 'active' : ''%>"
+              type="submit"
+            >
+              Logout
+            </button>
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+          </form>
+          <% } else { %>
+          <form action="/login">
+            <button
+              style="box-shadow: none"
+              class="btn <%= path === '/login' ? 'active' : ''%>"
+              type="submit"
+            >
+              Login
+            </button>
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+          </form>
+        <% } %>
+      </div>
+    </div>
+    <hr>
+
+    <ul class="nav-mobile-list">
+      <li class="nav-mobile-item">
+        <a class="<%= path === '/attendance' ? 'active' : ''%>" href="/attendance"
+          >attendance</a
+        >
+      </li>
+      <% if (isManager) { %>
+      <li class="nav-mobile-item">
+        <a class="<%= path === '/reports' ? 'active' : ''%>" href="/reports"
+          >work-reports</a
+        >
+      </li>
+      <% } %>
+      <li class="nav-mobile-item">
+        <a
+          class="<%= path === '/report-details' ? 'active' : ''%>"
+          href="/report-details"
+          >report-details</a
+        >
+      </li>
+      <li class="nav-mobile-item">
+        <a class="<%= path === '/profile' ? 'active' : ''%>" href="/profile"
+          >profile</a
+        >
+      </li>
+      <li class="nav-mobile-item">
+        <a
+          class="<%= path === '/health-declaration' ? 'active' : ''%>"
+          href="/health-declaration"
+          >health-declaration</a
+        >
+      </li>
+    </ul>
+    
+  </div>
+  
 </nav>

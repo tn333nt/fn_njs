@@ -4,7 +4,7 @@
   <% if (!isManager) { %>
     <form action="/health-declaration" method="POST" class="form-container">
       <h1>register information about :</h1>
-      <h3>temperature</h3>
+      <h3 class="centered highlight-text">temperature</h3>
       <div class="form-item">
         <input
         type="number"
@@ -16,19 +16,19 @@
         /><br />
         <input type="datetime-local" name="timeRegister" />
       </div>
-      <h3>vaccination</h3>
+      <h3 class="centered highlight-text">vaccination</h3>
       <div class="form-item">
         <label> injection-1 
           <input type="text" name="injectionType1" /><br />
           <input type="datetime-local" name="injectionDate1" />
         </label>
 
-        <label
+        <label style="margin-top:1rem;"
           >injection-2 <input type="text" name="injectionType2" /><br />
           <input type="datetime-local" name="injectionDate2" />
         </label>
       </div>
-      <h3>testing result</h3>
+      <h3 class="centered highlight-text">testing result</h3>
       <div class="form-radio">
         <label
           >is positive
@@ -40,7 +40,7 @@
         </label>
       </div>
 
-      <input class="btn" type="submit" value="register" />
+      <input class="form-btn" type="submit" value="register" />
       <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
     </form>
 
@@ -48,11 +48,18 @@
     <div class="grid">
       <% users && users.forEach(user => { %>
       <div class="grid-item">
-        <p>user: <%= user.email %></p>
-        <p>timeRegister: <%= user.health.timeRegister %></p>
-        <p>temperature: <%= user.health.temperature %> (celsius)</p>
-        <p>...</p>
-        <p>isPositive: <%= user.health.isPositive %></p>
+        <p style="text-decoration:underline;">user : <%= user.email %></p>
+        <p>register at : <%= user.health.timeRegister.toLocaleString() %></p>
+        <p>temperature : <%= user.health.temperature %> (celsius)</p>
+        <ul>vaccination :
+          <li>turn 1 : 
+            <span style="color:var(--dark)"><%= user.health.vaccination.turn1.type1 %></span> 
+            in <%= user.health.vaccination.turn1.date1.toLocaleDateString() %></li>
+          <li>turn 2 : 
+            <span style="color:var(--dark)"><%= user.health.vaccination.turn2.type2%></span> 
+            in <%= user.health.vaccination.turn2.date2.toLocaleDateString()  %></li>
+        </ul>        
+        <p>be positive: <%= user.health.isPositive %></p>
       </div>
       <% }) %>
     </div>

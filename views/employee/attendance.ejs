@@ -36,9 +36,11 @@
     </h3>
   </form>
 
+
   <% if (report && report.editMode) { %> 
+
     <% if (report.workMode) { %>
-      <div class="grid">
+      <div class="flex">
         <% report.workingSessions.forEach(session => { %>
           <div class="grid-item">
             <p>checkin : <%= session.checkin %> h</p>
@@ -46,27 +48,70 @@
           </div>
         <% }) %>
       </div>
-      <!-- later : render old checkout & current checkin -->
       <form action="/check-out" class="centered" method="post">
         <button type="submit" class="btn">finish</button>
         <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
       </form>
     <% } else { %>
-      <div class="grid">
+      <div class="flex">
         <% report.workingSessions.forEach(session => { %>
         <div class="grid-item">
           <p>checkin : <%= session.checkin %></p>
           <p>checkout : <%= session.checkout %></p>
+          <p>total working : <%= session.totalWorking %>h</p>
           <p>workplace : <%= session.workplace %></p>
         </div>
         <% }) %>
       </div>
     <% } %> 
-      <form action="/register-leave" >
-        <button type="submit" class="btn">register leave</button>
-        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
-      </form>
+
   <% } %>
+
+  <input type="checkbox" hidden class="open-form" id="open-form-toggle">
+
+  <label for="open-form-toggle" class="overlay"></label>
+
+  <label class="btn" for="open-form-toggle"> register leave </label>
+
+  <h3> remaining leave = <%= user.annualLeave %> h</h3>
+  
+  <div style="display: flex; justify-content: center;">
+    <div class="pop-up">
+      <div class="form-title">
+        <h1>register leave</h1>
+        <span>
+          <label for="open-form-toggle" class="fa-2x close" style="color: var(--dark)">
+            <i class="fa-solid fa-xmark"></i>
+          </label>
+        </span>
+      </div>
+      <hr>
+      <form action="/register-leave" method="post" class="form-container">
+        <div class="form-item">
+          <label for="dayRegister">dayRegister</label>
+          <input type="date" name="dayRegister" id="dayRegister"/>
+        </div>
+        <div class="form-item">
+          <label for="hourRegister">hourRegister</label>
+          <div style="display:flex; gap: 1rem;">
+            <input type="range" min="0" max="8" name="hourRegister" id="hourRegister" 
+              oninput="amount.value=hourRegister.value"/>                                                    
+            <span style="color:var(--highlight-text)">
+              <output name="amount" id="amount" for="hourRegister">4</output>
+            </span>
+          </div>
+        </div>
+        <div class="form-item">
+            <label for="reason">reason</label>
+            <textarea name="reason" id="reason" cols="30" rows="10"></textarea>
+        </div>
+  
+        <input type="submit" value="register" class="form-btn"/>
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+  
+      </form>
+    </div>
+  </div>
 
 </main>
 

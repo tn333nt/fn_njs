@@ -1,5 +1,6 @@
-<%- include('../includes/head.ejs') %> <%- include('../includes/nav.ejs')
-%>
+<%- include('../includes/head.ejs') %>
+
+<header> login </header>
 
 <main>
   <% if (errMsg) { %>
@@ -26,7 +27,7 @@
         value="<%= oldInput.password %>"
       />
     </div>
-    <button class="btn" type="submit">Login</button>
+    <button class="form-btn" type="submit">Login</button>
     <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
   </form>
 
@@ -37,7 +38,6 @@
     </ul>
     <ul>employee accounts : 
       <li> xmen@funix.com </li>
-      <li> abc@funix.com </li>
     </ul>
   </div>
 </main>

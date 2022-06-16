@@ -18,6 +18,10 @@ exports.getAttendance = (req, res, next) => {
 
             if (!report) {
                 // always create the default one for updating & add new to userRp
+                // nhỡ đăng nhập nhưng ko làm việc thì sao ?
+                // later : remove all no data rp at the end of the day
+                // vs cả gen new ở đây chỉ để lấy mấy cái mode để toggle chỗ btn thôi
+                // đổi logic chỗ render btn đi là đc mà
                 report = new Report({
                     date: today,
                     startTime: 0,
@@ -199,17 +203,6 @@ exports.postRegisterLeave = (req, res, next) => {
         .catch(err => next(err))
 };
 
-exports.getRegisterLeave = (req, res, next) => {
-    const userId = req.user._id
-    User.findById(userId)
-        .then(user => {
-            res.render('employee/register-leave', {
-                title: 'register-leave',
-                path: '/register-leave',
-                user: user
-            })
-        })
-}
 
 // get & request daily rp 
 
@@ -217,7 +210,7 @@ exports.getReportDetails = (req, res, next) => {
     const userId = req.params.userId || req.user._id
 
     const reportsOfSelectedMonth = req.session.reportsOfSelectedMonth
-    const reportsPerPage = +req.session.pagination || 1
+    const reportsPerPage = +req.session.pagination || 3
 
     const page = +req.query.page || 1
     let totalReports
@@ -280,8 +273,11 @@ exports.postNumberOfReport = (req, res, next) => {
 // up , store & serve file
 
 exports.postProfile = (req, res, next) => {
+    console.log(123);
     const userId = req.user._id
     const imgFile = req.file;
+
+    console.log(imgFile, 123456);
 
     if (!imgFile) {
         return res.status(422).render('employee/profile', {
@@ -295,7 +291,12 @@ exports.postProfile = (req, res, next) => {
             if (!imgFile) {
                 res.redirect('back')
             }
-            user.image ? deleteFile.deleteFile(user.image) : null
+            // user.image ? deleteFile.deleteFile(user.image) : null
+            if (user.image) {
+                console.log(user.image, 'user.image');
+                console.log(imgFile, 'imgFile');
+                deleteFile.deleteFile(user.image)
+            }
             return user.save();
         })
         .then(user => {

@@ -1,64 +1,128 @@
-:root {
-  --dark: #3085d6;
-  --light: rgb(248, 253, 255);
-  --warning: #dc3545;
-  --line-height: 1.5rem;
+.open-form:checked ~ div > .pop-up {
+  display: block;
 }
 
-.form-background {
-  background-color: rgba(129, 129, 129, 0.349);
-  position: fixed;
-  top: 0;
-  height: 100%;
-  width: 100%;
+.open-form:checked ~ .overlay {
+  display: block;
 }
 
-.form-popUp {
-  background-color: var(--light);
+.pop-up {
+  display: none;
+  background-color: var(--item-background);
   position: absolute;
-  padding: 30px 40px;
+  width: 50%;
   line-height: var(--line-height);
-  top: 50%;
-  transform: translate(-50%, -50%);
-  left: 50%;
-}
-
-.form-title button {
-  float: right;
+  top: 3rem;
+  height: fit-content;
 }
 
 .form-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
   padding: var(--line-height);
-  line-height: var(--line-height)
+  line-height: var(--line-height);
+  text-align: center;
 }
+
+.form-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--highlight-text);
+  letter-spacing: 0.1em;
+  font-size: x-large;
+  margin: 0 1rem;
+}
+
+.form-item {
+  width: 100%;
+  margin-bottom: var(--line-height);
+}
+
+.form-btn {
+  font: inherit;
+  color: var(--main);
+  font-size: 1.2rem;
+  
+  border: 3px solid var(--dark);
+  border-radius: 9px;
+  background: linear-gradient(to right, var(--dark), var(--highlight-text));
+  box-shadow: var(--shadow);
+
+  width: 55%;
+  margin: 1rem;
+  padding: 0.5rem 1rem;
+}
+
+.form-btn:hover,
+.form-btn:active {
+  background: linear-gradient(to left, var(--dark), var(--highlight-text));
+  cursor: pointer;
+}
+
+.form-item label {
+  display: block;
+  text-align: center;
+  margin-bottom: 9px;
+}
+
+.pop-up input[type="text"],
+.pop-up input[type="range"],
+.pop-up input[type="date"],
+.pop-up textarea {
+  display: block;
+  font: inherit;
+  margin: auto;
+  width: 100%;
+  padding: 15px var(--line-height);
+  border: 1px solid var(--light);
+  border-radius: 1rem;
+  background: var(--main);
+}
+
 
 .form-radio {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: var(--line-height);
-}
-
-.form-item label,
-.form-item input,
-.form-item textarea {
-  display: block;
-  width: 100%;
   margin-bottom: var(--line-height);
 }
 
-.form-item input,
-.form-item textarea {
-  border: 1px solid var(--light);
-  font: inherit;
-  border-radius: 2px;
+.form-radio > * {
+  cursor: pointer;
 }
 
-.form-item input:focus,
-.form-item textarea:focus {
-  outline-color: var(--dark);
+.form-radio > *:hover {
+  color: var(--light)
+}
+
+@media (max-width: 1023px) {
+  .pop-up {
+    width: 80%;
+  }
+  .form-container {
+    padding: 0.9rem;
+  }
+  .form-title h1,
+  hr {
+    display: none;
+  }
+}
+
+@media (max-width: 821px) {
+  input[type="text"],
+  input[type="number"],
+  input[type="file"],
+  input[type="email"],
+  input[type="password"],
+  input[type="datetime-local"],
+  textarea {
+    width: 80%;
+    padding: 9px var(--line-height);
+    border: 1px solid var(--light);
+    border-radius: 0.3rem;
+  }
+  .form-btn {
+    width: 100%;
+    margin : 0 auto;
+  }
 }

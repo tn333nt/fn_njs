@@ -1,19 +1,35 @@
 <%- include('../includes/head')%> <%- include('../includes/nav')%>
-
+<% console.log(employees[1].reports.report[0],'employees'); %>
 <main>
   <div class="grid">
-    <% employees && employees.map(employee => { %>
-    <div class="grid-item">
-      <h3><%= employee._id %></h3>
-      <a class="image" href="/report-details/<%= employee.reports.report[0].reportId.userId %>">
-        <% console.log(employee.reports.report[0].reportId.userId)%>
-        <img src="<%= employee.image %>" alt="<%= employee._id %>" />
-      </a>
-      <p><%= employee.email %></p>
-    </div>
-    <% }) %>
-  </div>
 
+    <% employees && employees.map(employee => { %>
+      <div class="grid-item">
+
+        <h3><%= employee._id %></h3>
+        <a class="image" href="/report-details/<%= employee.reports.report[0].reportId.userId %>">
+          <img src="<%= employee.image %>" alt="<%= employee._id %>" />
+        </a>
+        <p><%= employee.email %></p>
+
+        <div class="flex">
+          <form action="/delete-report" method="post" style="text-align:center;">
+            <button class="btn" type="submit">delete old reports</button>
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+          </form>
+            <!-- later : check if emp's rps r deleted -> inform -->
+
+          <form action="/disable-changes" method="post" style="text-align:center;">
+            <button class="btn" type="submit">disable-changes</button>
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+          </form>
+            <!-- later : check if emp's rps r disabled -> inform -->
+        </div>
+
+      </div>
+    <% }) %>
+
+  </div>
 </main>
 
 <%- include('../includes/foot')%>

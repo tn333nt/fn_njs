@@ -16,6 +16,7 @@ exports.getAllReports = (req, res, next) => {
             const employees = users.filter(user => {
                 return user.email !== managerEmail
             })
+            console.log(employees,'employees');
             const reports = employees.map(employee => employee.reports.report)
             res.render('manager/work-reports', {
                 title: 'reports',
@@ -78,11 +79,13 @@ exports.getPdfDeclaration = (req, res, next) => {
             pdfDoc.fontSize(33).text('health-declaration', { underline: true })
             users.forEach(user => {
                 pdfDoc.fontSize(18).text(`
-                timeRegister: ${user.email},
-                timeRegister: ${user.health.timeRegister},
-                temperature: ${user.health.temperature} (celsius),
-                ...
-                isPositive: ${user.health.isPositive}
+                employee's email : ${user.email},
+                timeRegister : ${user.health.timeRegister},
+                temperature : ${user.health.temperature} (celsius),
+                vaccination :
+                    - turn 1 : ${user.health.vaccination.turn1.type1} in ${user.health.vaccination.turn1.date1}
+                    - turn 2 : ${user.health.vaccination.turn2.type2} in ${user.health.vaccination.turn2.date2}
+                be positive : ${user.health.isPositive}
                 `)
             })
 

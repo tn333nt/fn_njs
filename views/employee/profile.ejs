@@ -1,8 +1,17 @@
 <%- include('../includes/head.ejs')%> <%- include('../includes/nav.ejs')%>
 
-<main class="centered">
+<main class="centered highlight-text">
   <h1>name : xxx</h1>
   <hr />
+  <ul class="none-bullet">
+    <li>id : <%= user._id %></li>
+    <li>doB : xxx</li>
+    <li>salaryScale : 1</li>
+    <li>startDate : xxx </li>
+    <li>annualLeave : xxx</li>
+    <li>overTime : xxx</li>
+  </ul>
+  <!-- turn into dynamic info later -->
   <div class="image">
     <img src="/<%= user.image %>" alt="<%= user._id %>" />
   </div>
@@ -13,22 +22,15 @@
     enctype="multipart/form-data"
   >
     <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
-    <input type="file" name="image" value="change apperance" class="btn" />
-    <button class="btn" type="submit">confirm</button>
+    <div class="flex">
+      <input type="file" name="image" value="change apperance" class="btn" />
+      <button class="btn" type="submit">confirm</button>
+    </div>
     <% if (errMsg) { %>
     <div class="message message-error"><%= errMsg %></div>
     <% } %>
   </form>
   <% } %>
-  <ul class="none-bullet">
-    <li>id : <%= user._id %></li>
-    <li>doB : xxx</li>
-    <li>salaryScale : xxx</li>
-    <li>startDate : 1 </li>
-    <li>annualLeave : xxx</li>
-    <li>overTime : xxx</li>
-  </ul>
-  <!-- turn into dynamic info later -->
 </main>
 
 <%- include('../includes/foot.ejs')%>
