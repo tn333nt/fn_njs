@@ -10,18 +10,17 @@ const Report = require('../models/report');
 
 exports.getAllReports = (req, res, next) => {
     const managerEmail = '123@gmail.com'
+
     User.find()
         .populate('reports.report.reportId')
         .then(users => {
             const employees = users.filter(user => {
                 return user.email !== managerEmail
             })
-            console.log(employees,'employees');
-            const reports = employees.map(employee => employee.reports.report)
+
             res.render('manager/work-reports', {
                 title: 'reports',
                 path: '/reports',
-                reports: reports,
                 employees: employees
             });
         })
@@ -31,33 +30,66 @@ exports.getAllReports = (req, res, next) => {
 // delete data from previous days
 exports.deleteOldReports = (req, res, next) => {
     const now = new Date().toISOString().split('T')[0].toString();
-    const managerId = mongoose.Types.ObjectId('627c644af847400f53e77fe0')
+    const userId = req.params.userId
 
     Report.deleteMany({
         date: { $ne: now },
-        userId: { $ne: managerId }
+        userId: userId
     })
         .then(() => res.redirect('back'))
 };
 
+// change editMode of rp -> of user
 exports.postToggleChanges = (req, res, next) => {
-    const managerId = mongoose.Types.ObjectId('627c644af847400f53e77fe0')
+    const userId = req.params.userId
 
-    Report.find({ userId: { $ne: managerId } })
-        .then(reports => {
-            return reports.forEach(report => {
-                return Report.findById(report._id)
-                    .then(rp => {
-                        rp.editMode = !rp.editMode
-                        return rp.save()
-                    })
-                    .catch(err => next(err))
-            })
+    User.findById(userId)
+        .then(user => {
+            user.editMode = !user.editMode
+            return user.save()
+                .catch(err => next(err))
         })
         .then(() => res.redirect('back'))
         .catch(err => next(err))
 }
 
+
+exports.getReportDetails = (req, res, next) => {
+    const userId = req.params.userId
+    
+    const reportsOfSelectedMonth = req.session.reportsOfSelectedMonth
+    const reportsPerPage = +req.session.pagination || 3
+
+    const page = +req.query.page || 1
+    let totalReports
+
+    Report.find({ userId: userId })
+        .countDocuments()
+        .then(countReports => {
+            totalReports = countReports
+            return Report.find({ userId: userId })
+                .skip((page - 1) * reportsPerPage)
+                .limit(reportsPerPage)
+        })
+        .then(reports => {
+            return res.render('employee/report-details', {
+                title: 'report',
+                path: '/reports',
+                reports: reports,
+                userId: userId,
+                hasNextPage: reportsPerPage * page < totalReports,
+                hasPreviousPage: page > 1,
+                nextPage: page + 1,
+                previousPage: page - 1,
+                currentPage: page,
+                lastPage: Math.ceil(totalReports / reportsPerPage),
+                reportsOfSelectedMonth: reportsOfSelectedMonth
+            });
+        })
+        .catch(err => next(err))
+}
+
+//
 exports.getPdfDeclaration = (req, res, next) => {
     const managerId = mongoose.Types.ObjectId('627c644af847400f53e77fe0')
 

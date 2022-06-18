@@ -140,11 +140,6 @@ textarea:focus {
   margin-right: var(--line-height);
 }
 
-.flex {
-  display: flex;
-  justify-content: space-between;
-}
-
 .image {
   margin-bottom: var(--line-height);
 }
@@ -193,7 +188,7 @@ textarea:focus {
   border-radius: 3px;
   background: var(--item-background);
 
-  margin: 0.25rem;
+  margin: 0.5rem;
   padding: 0.25rem 1rem;
 }
 
@@ -229,7 +224,7 @@ textarea:focus {
 .message-error {
   border-color: var(--warning);
   color: var(--warning);
-  background: var(--main);
+  background: var(--item-background);
 }
 
 /* pagination */

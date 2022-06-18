@@ -37,7 +37,8 @@ const userSchema = new Schema({
         }
       }
     ]
-  }
+  },
+  editMode: { type: Boolean, default: true }
 });
 
 

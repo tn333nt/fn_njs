@@ -2,140 +2,95 @@
 
 <main>
   <h2 class="centered highlight-text" style="margin-bottom: 1.8rem;">
-    employee's id : <%= reports[0].userId %>
+      employee's id : <%= userId %>
   </h2>
 
-  <div>
-      <form method="post" action="/select-month" class="flex-data">
-        <h3>check monthly salary info</h3>
-
-        <div>
-
-          <select name="month" value="<%= reportsOfSelectedMonth %>">
-            <% const months = [1,2,3,4,5,6,7,8,9,10,11,12] %>
-            <% months.forEach(month => { %>
-              <option value="<%= month %>"><%= month %></option>
-            <% }) %>
-          </select>
-          <input type="submit" value="month/page" class="btn">
+  <% if (reports.length > 0) { %>
+    <div>
+      <!-- inform here if editMode is F -->
+        <form method="post" action="/select-month" class="flex-data">
+          <h3>check monthly salary info</h3>
 
           <div>
-            <% if (reportsOfSelectedMonth && reportsOfSelectedMonth.length > 0) { %>
-                <h3> salary/month : <%= reportsOfSelectedMonth.at(-1).salary %> $ </h3> 
-            <% } else { %>
-              no data for salary of this month
-            <% } %>
+
+            <select name="month" value="<%= reportsOfSelectedMonth %>">
+              <% const months = [1,2,3,4,5,6,7,8,9,10,11,12] %>
+              <% months.forEach(month => { %>
+                <option value="<%= month %>"><%= month %></option>
+              <% }) %>
+            </select>
+            <input type="submit" value="month/page" class="btn">
+
+            <div>
+              <% if (reportsOfSelectedMonth && reportsOfSelectedMonth.length > 0) { %>
+                  <h3> salary/month : <%= reportsOfSelectedMonth.at(-1).salary %> $ </h3> 
+              <% } else { %>
+                no data for salary of this month
+              <% } %>
+            </div>
+
+          </div>
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+        </form>
+
+        <div class="flex-data"> 
+
+          <div>
+            <form action="/select-number-of-report" method="post" >
+              <select name="pagination">  
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3" default selected>3</option>
+              </select>
+              <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+              <input type="submit" value="select view mode" class="btn">
+            </form>
           </div>
 
+          <section class="pagination">
+            <% if (currentPage !== 1 && previousPage !== 1) { %>
+                <a href="?page=1">1</a>
+            <% } %>
+            <% if (hasPreviousPage) { %>
+                <a href="?page=<%= previousPage %>"><%= previousPage %></a>
+            <% } %>
+            <a href="?page=<%= currentPage %>" class="active"><%= currentPage %></a>
+            <% if (hasNextPage) { %>
+                <a href="?page=<%= nextPage %>"><%= nextPage %></a>
+            <% } %>
+            <% if (lastPage !== currentPage && lastPage !== nextPage) { %>
+                <a href="?page=<%= lastPage %>"><%= lastPage %></a>
+            <% } %>
+          </section>
+
         </div>
-        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
-      </form>
+    </div>
 
-      <div class="flex-data"> 
-
-        <div>
-          <form action="/select-number-of-report" method="post" >
-            <select name="pagination">  
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3" default selected>3</option>
-            </select>
-            <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
-            <input type="submit" value="select view mode" class="btn">
-          </form>
-        </div>
-
-        <section class="pagination">
-          <% if (currentPage !== 1 && previousPage !== 1) { %>
-              <a href="?page=1">1</a>
-          <% } %>
-          <% if (hasPreviousPage) { %>
-              <a href="?page=<%= previousPage %>"><%= previousPage %></a>
-          <% } %>
-          <a href="?page=<%= currentPage %>" class="active"><%= currentPage %></a>
-          <% if (hasNextPage) { %>
-              <a href="?page=<%= nextPage %>"><%= nextPage %></a>
-          <% } %>
-          <% if (lastPage !== currentPage && lastPage !== nextPage) { %>
-              <a href="?page=<%= lastPage %>"><%= lastPage %></a>
-          <% } %>
-        </section>
-        
-      </div>
-  </div>
-
-  <% if (reports.length > 0) { %>
-    <% if (reportsOfSelectedMonth && reportsOfSelectedMonth.length > 0) { %>
-
-      <div class="grid centered">
-      <% reportsOfSelectedMonth.forEach(report => { %>
-        <div class="grid-item" style="text-align:left;">
-          <h3 style="text-align:center;">date : <%= report.date %></h3>
-
-          <ul>
-            <% const unique = [...new Set(report.workplaces.map(item => item.workplace))] %>
-            <% if (unique.length > 0) { %> 
-              <li>
-                <ul>report at :
-                <% unique.forEach(place => { %>
-                  <li style="margin-left: 1rem;"><%= place %></li>
-                <% }) %>
-                </ul>
-              </li>
-            <% } %>
-
-            <% if (report.dayLeaveHours.period > 0) { %> 
-              <li>registered hour leave / day : 
-                <%= report.dayLeaveHours.period %> h
-              </li>
-            <% } %>
-
-            <% if (report.startTime > 0) { %> 
-              <li>start at : 
-                <%= report.startTime %> h
-              </li>
-            <% } else { %>
-              <p style="margin: 1.5rem"> no data for today report</p>
-            <% } %>
-
-            <% if (report.finishTime > 0) { %> 
-              <li>finish at : 
-                <%= report.finishTime %> h
-              </li>
-            <% } %>
-
-            <% if (report.overTime > 0) { %> 
-              <li>over time : 
-                <%= report.overTime %> h
-              </li>
-            <% } %>
-
-            <% if (report.totalWorkingTime > 0) { %> 
-              <li>total : 
-                <%= report.totalWorkingTime %> h for today's sessions
-              </li>
-            <% } %>
-
-            <% if (report.totalSummaryTime > 0) { %> 
-              <li>total : 
-                <%= report.totalSummaryTime %> h of working
-              </li>
-            <% } %>
-
-          </ul>
-        </div>
-      <% }) %>
-      </div>
-
-    <% } else { %> 
-      <!-- hinh nhu ejs ko ho tro else if ? -->
-       
-      <div class="grid">
+    <div class="grid">
       <% reports.forEach(report => { %>
         <div class="grid-item" style="text-align:left;">
           <h3 style="text-align:center;">date : <%= report.date %></h3>
-
           <ul>
+
+            <% const startArr = report.startTime.split('.') %>
+            <% const finishArr = report.finishTime.split('.') %>
+            <% const start = `${startArr[0]}:${(startArr[1]*600).toFixed(0)}` %>
+            <% const finish = `${finishArr[0]}:${(finishArr[1]*600).toFixed(0)}` %>
+
+            <% if (report.startTime > 0) { %> 
+              <li>start day at : 
+                <%= start %> h
+              </li>
+            <% } else { %>
+              <p style="margin: 1.5rem"> no data for today report</p>
+            <% } %>
+
+            <% if (report.finishTime > 0) { %> 
+              <li>finish day at : 
+                <%= finish %> h
+              </li>
+            <% } %>
+
             <% const unique = [...new Set(report.workplaces.map(item => item.workplace))] %>
             <% if (unique.length > 0) { %> 
               <li>
@@ -150,20 +105,6 @@
             <% if (report.dayLeaveHours.period > 0) { %> 
               <li>registered hour leave / day : 
                 <%= report.dayLeaveHours.period %> h
-              </li>
-            <% } %>
-
-            <% if (report.startTime > 0) { %> 
-              <li>start at : 
-                <%= report.startTime %> h
-              </li>
-            <% } else { %>
-              <p style="margin: 1.5rem"> no data for today report</p>
-            <% } %>
-
-            <% if (report.finishTime > 0) { %> 
-              <li>finish at : 
-                <%= report.finishTime %> h
               </li>
             <% } %>
 
@@ -184,20 +125,18 @@
                 <%= report.totalSummaryTime %> h of working
               </li>
             <% } %>
-
           </ul>
         </div>
       <% }) %>
-      </div>
+    </div>
 
-    <% } %>
   <% } else {%>
     <h3>no found report</h3>
   <% } %>
   
       <div>
         <% if (!isManager) { %>
-          <h3>contact to manager :</h3>
+          <h3 style="margin-top:3rem;">contact to manager :</h3>
           <p>123@gmail.com ; id : 627c644af847400f53e77fe0 </p>
         <% } %> 
       </div> 

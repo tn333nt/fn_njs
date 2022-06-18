@@ -11,44 +11,19 @@ exports.getAttendance = (req, res, next) => {
     req.user
         .populate('reports.report.reportId')
         .then(user => {
-            let report = user.reports.report.find(report => {
-                const rpDay = report.reportId.date
-                return rpDay.toString() === today.toString()
+            const report = user.reports.report.find(report => {
+                if (report.reportId) {
+                    const rpDay = report.reportId.date
+                    return rpDay.toString() === today.toString()
+                }
             })
 
-            if (!report) {
-                // always create the default one for updating & add new to userRp
-                // nhỡ đăng nhập nhưng ko làm việc thì sao ?
-                // later : remove all no data rp at the end of the day
-                // vs cả gen new ở đây chỉ để lấy mấy cái mode để toggle chỗ btn thôi
-                // đổi logic chỗ render btn đi là đc mà
-                report = new Report({
-                    date: today,
-                    startTime: 0,
-                    userId: user._id,
-                    workMode: false
-                })
-                return report.save()
-                    .then(report => {
-                        req.user.addUserReport(report)
-                    })
-                    .then(() => {
-                        return res.render('employee/attendance', {
-                            title: 'attendance',
-                            path: '/attendance',
-                            user: user,
-                            report: report
-                        })
-                            .catch(err => next(err))
-                    })
-            } else {
-                res.render('employee/attendance', {
-                    title: 'attendance',
-                    path: '/attendance',
-                    user: user,
-                    report: report?.reportId
-                })
-            }
+            res.render('employee/attendance', {
+                title: 'attendance',
+                path: '/attendance',
+                user: user,
+                report: report?.reportId
+            })
         })
         .catch(err => next(err))
 }
@@ -56,53 +31,71 @@ exports.getAttendance = (req, res, next) => {
 exports.postCheckIn = (req, res, next) => {
     const now = new Date()
     const workplace = req.body.workplace
-    
+    const userId = req.user._id
+
     // convert time into decimal number
     const time = `${now.getHours()}-${now.getMinutes()}`
     const timeArr = time.split('-');
     const start = (+timeArr[0] + +timeArr[1] / 60).toFixed(2)
-    
+
     const today = now.toISOString().split('T')[0]
 
-    Report.find({ userId: req.user._id })
+    Report.find({ userId: userId })
         .then(reports => {
-            // find exactly rp of this user for today
+            // find exact rp of this user for today
             const rp = reports.find(report => report.date === today)
 
-            return Report.findById(rp._id)
-                .then(report => {
-                    if (report.startTime === 0) {
-                        report.startTime = start
-                        report.date = today
-                        report.userId = req.user._id
-                        report.workplaces = [{ workplace: workplace }]
-                        report.workingSessions = [{
-                            checkin: start,
-                            workplace: workplace,
-                        }]
-                    } else {
+            if (!rp) {
+                const report = new Report({
+                    date: today,
+                    userId: userId,
+                    workMode: true,
+                    startTime: start,
+                    workplaces: [{ workplace: workplace }],
+                    workingSessions: [{
+                        checkin: start,
+                        workplace: workplace,
+                    }]
+                })
+                console.log(report, 2);
+
+                return report.save()
+                    .then(report => {
+                        req.user.addUserReport(report)
+                    })
+                    .catch(err => next(err))
+
+            } else {
+
+                return Report.findById(rp._id)
+                    .then(report => {
+
                         report.workplaces.push({ workplace: workplace })
                         report.workingSessions.push({
                             checkin: start,
                             workplace: workplace,
                         })
-                    }
+                        report.workMode = true
 
-                    report.workMode = true
+                        return report.save()
+                            .then(report => {
+                                console.log(report, 3);
+                                req.user.updateUserReport(report)
+                            })
+                    })
 
-                    return report.save()
-                        .then(report => {
-                            req.user.updateUserReport(report)
-                        })
-                })
+            }
+
         })
         .then(() => res.redirect('/attendance'))
         .catch(err => next(err))
 
 }
 
-
+// update the latest one
 exports.postCheckOut = (req, res, next) => {
+    const userId = req.user._id
+
     const now = new Date()
     const today = now.toISOString().split('T')[0]
 
@@ -110,71 +103,148 @@ exports.postCheckOut = (req, res, next) => {
     const timeArr = time.split('-');
     const finish = (+timeArr[0] + +timeArr[1] / 60).toFixed(2)
 
-    return Report.find({
-        userId: req.user._id,
+    return Report.findOne({
+        userId: userId,
         workMode: true
     })
-        .then(reports => {
-            // find working today rp of found user
-            return Report.findOne({
-                _id: reports[0]._id,
-                date: today
-            })
-                .then(report => {
-                    if (report.date !== today) return next(new Error('over day'))
-
-                    report.workingSessions.at(-1).checkout = finish
-                    report.workingSessions.at(-1).diffTime = (finish - +report.workingSessions.at(-1).checkin).toFixed(2)
-
-                    report.finishTime = finish
-
-                    return report.save()
+        .then(report => {
+            console.log(report.date, 11);
+            console.log(today, 12);
+            console.log(report.workingSessions.length, 13);
+            if (report.workingSessions.length <= 1 && report.date !== today) {
+                console.log(1);
+                return Report.deleteOne({
+                    userId: userId,
+                    workMode: true
                 })
-                .then(report => {
-                    // take sum of diffTime of each session
-                    const itemsDiffTime = []
 
-                    report.workingSessions.forEach(session => {
-                        itemsDiffTime.push(+session.diffTime)
+            } else if (report.workingSessions.length > 1 && report.date !== today) {
+                console.log(2);
+                report.workingSessions.at(-1).remove((err, result) => {
+                    if (err) {
+                        console.log(err)
+                    } else {
+                        console.log("Result :", result)
+                    }
+                })
+                report.workMode = false
+
+                return report.save()
+                    .then(report => {
+                        req.user.updateUserReport(report)
                     })
 
-                    itemsDiffTime.forEach(item => {
-                        return report.totalWorkingTime = (+report.totalWorkingTime + +item).toFixed(2)
-                    })
+            } else {
+                console.log(3);
+                report.workingSessions.at(-1).checkout = +finish
+                report.workingSessions.at(-1).diffTime = (+finish - +report.workingSessions.at(-1).checkin).toFixed(2)
 
-                    return report.save()
+                report.finishTime = +finish
+
+                // take sum of diffTime of each session
+                let itemsDiffTime = 0
+                report.workingSessions.forEach(session => {
+                    itemsDiffTime = +itemsDiffTime + +session.diffTime
                 })
-                .then(report => {
-                    report.overTime = +report.totalWorkingTime > 8 ? (+report.totalWorkingTime - 8).toFixed(2) : 0
 
-                    report.totalSummaryTime = (+report.totalWorkingTime + +report.dayLeaveHours.period).toFixed(2)
+                report.totalWorkingTime = +itemsDiffTime.toFixed(2)
 
-                    report.underTime = +report.totalSummaryTime < 8 ? (8 - +report.totalSummaryTime).toFixed(2) : 0
+                report.overTime = +report.totalWorkingTime > 8 ? (+report.totalWorkingTime - 8).toFixed(2) : 0
 
-                    return report.save()
-                })
-                .then(report => {
-                    // loop through all reports & get the whole result
-                    // later : ensure that it's for each month
-                    return Report.find({ userId: req.user._id })
-                        .then(reports => {
-                            let sumOverTime = 0
-                            let sumUnderTime = 0
-                            reports.map(report => {
-                                sumOverTime += +report.overTime
-                                sumUnderTime += +report.underTime
-                            })
-                            report.salary = +(3000000 + ((+sumOverTime - +sumUnderTime) / 8) * 200000).toFixed(0)
+                report.totalSummaryTime = (+report.totalWorkingTime + +report.dayLeaveHours.period).toFixed(2)
 
-                            report.workMode = false
+                report.underTime = +report.totalSummaryTime < 8 ? (8 - +report.totalSummaryTime).toFixed(2) : 0
 
-                            return report.save()
-                                .then(report => {
-                                    req.user.updateUserReport(report)
-                                })
+                // loop through all reports & get the whole result
+                return Report.find({ userId: userId })
+                    .then(reports => {
+                        // get total over & under h of this month
+                        let sumOverTime = 0
+                        let sumUnderTime = 0
+                        reports.map(rp => {
+                            if (+rp.date.split('-')[1] === +today.split('-')[1]) {
+                                if (rp.overTime) {
+                                    sumOverTime += +rp.overTime
+                                } else if (rp.underTime) {
+                                    sumUnderTime += +rp.underTime
+                                }
+                            }
                         })
-                })
+
+                        const salary = 3000000 + ((+sumOverTime - +sumUnderTime) / 8) * 200000
+
+                        report.salary = +salary.toFixed(0)
+                        report.workMode = false
+
+                        return report.save()
+                            .then(report => {
+                                req.user.updateUserReport(report)
+                            })
+                    })
+
+            }
+
+            // return report.save()
         })
+        // .then(report => {
+        //     // take sum of diffTime of each session
+        //     let itemsDiffTime = 0
+        //     report.workingSessions.forEach(session => {
+        //         itemsDiffTime = +itemsDiffTime + +session.diffTime
+        //         console.log(itemsDiffTime, 1);
+        //         console.log(+session.diffTime, 2);
+
+        //     })
+        //     console.log(itemsDiffTime, 3);
+
+        //     report.totalWorkingTime = +itemsDiffTime.toFixed(2)
+        //     console.log(report.totalWorkingTime, 4);
+
+        //     return report.save()
+        // })
+        // .then(report => {
+        //     report.overTime = +report.totalWorkingTime > 8 ? (+report.totalWorkingTime - 8).toFixed(2) : 0
+
+        //     report.totalSummaryTime = (+report.totalWorkingTime + +report.dayLeaveHours.period).toFixed(2)
+
+        //     report.underTime = +report.totalSummaryTime < 8 ? (8 - +report.totalSummaryTime).toFixed(2) : 0
+
+        //     console.log(report.overTime, 'overTime');
+        //     console.log(report.totalSummaryTime, 'totalSummaryTime');
+        //     console.log(report.underTime, 'underTime');
+        //     return report.save()
+        // })
+        // .then(report => {
+        //     // loop through all reports & get the whole result
+        //     return Report.find({ userId: userId })
+        //         .then(reports => {
+        //             // get total over & under h of this month
+        //             let sumOverTime = 0
+        //             let sumUnderTime = 0
+        //             reports.map(rp => {
+        //                 if (+rp.date.split('-')[1] === +today.split('-')[1]) {
+        //                     if (rp.overTime) {
+        //                         sumOverTime += +rp.overTime
+        //                     } else if (rp.underTime) {
+        //                         sumUnderTime += +rp.underTime
+        //                     }
+        //                 }
+        //             })
+        //             console.log(sumOverTime, 'sumOverTime');
+        //             console.log(sumUnderTime, 'sumUnderTime');
+
+        //             const salary = 3000000 + ((+sumOverTime - +sumUnderTime) / 8) * 200000
+        //             console.log(salary, 'salary');
+
+        //             report.salary = +salary.toFixed(0)
+        //             report.workMode = false
+
+        //             return report.save()
+        //                 .then(report => {
+        //                     req.user.updateUserReport(report)
+        //                 })
+        //         })
+        // })
         .then(() => res.redirect('/attendance'))
         .catch(err => next(err))
 }
@@ -207,7 +277,7 @@ exports.postRegisterLeave = (req, res, next) => {
 // get & request daily rp 
 
 exports.getReportDetails = (req, res, next) => {
-    const userId = req.params.userId || req.user._id
+    const userId = req.user._id
 
     const reportsOfSelectedMonth = req.session.reportsOfSelectedMonth
     const reportsPerPage = +req.session.pagination || 3
@@ -228,6 +298,7 @@ exports.getReportDetails = (req, res, next) => {
                 title: 'report',
                 path: '/report-details',
                 reports: reports,
+                userId: userId,
                 hasNextPage: reportsPerPage * page < totalReports,
                 hasPreviousPage: page > 1,
                 nextPage: page + 1,
@@ -240,6 +311,7 @@ exports.getReportDetails = (req, res, next) => {
         .catch(err => next(err))
 }
 
+// append salary value for each day => take the latest for the whole month
 exports.postSelectedMonth = (req, res, next) => {
     const userId = req.user._id
     const month = req.body.month
@@ -248,7 +320,7 @@ exports.postSelectedMonth = (req, res, next) => {
         .then(reports => {
             // get all rp of this selected month
             const reportsOfSelectedMonth = reports.filter(report => +report.date.split('-')[1] === +month)
-            return reportsOfSelectedMonth 
+            return reportsOfSelectedMonth
         })
         .then(reportsOfSelectedMonth => {
             req.session.reportsOfSelectedMonth = reportsOfSelectedMonth

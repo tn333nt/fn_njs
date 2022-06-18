@@ -33,7 +33,6 @@ const reportSchema = new Schema({
             diffTime: Number
         }
     ],
-    editMode: { type: Boolean, default: true },
     workMode: { type: Boolean, default: false }
 });
 

@@ -25,53 +25,58 @@
         <label for="workplace-other">other</label>
       </div>
     </div>
-    <% console.log(report) %> 
 
-    <% if (report && report.editMode && !report.workMode) { %> 
-      <button type="submit" class="btn">start working</button>
+    <% if (user.editMode) { %> 
+      <% if (report && !report.workMode || !report) { %> 
+        <button type="submit" class="btn">start working</button>
+      <% } %> 
+    <% } else { %> 
+      <div class="message message-error">contact to manager to enable your work</div>
     <% } %> 
-      <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
     <h3>
       working status : <% if (report && report.workMode) { %>on<% } else { %>off<% } %>
     </h3>
   </form>
 
 
-  <% if (report && report.editMode) { %> 
+  <% if (report) { %> 
+    <% if (user.editMode) { %> 
 
-    <% if (report.workMode) { %>
-      <div class="flex">
-        <% report.workingSessions.forEach(session => { %>
+      <% if (report.workMode) { %>
+        <div class="<% if (report.workingSessions.length > 1) { %>flex<% } else { %>centered<% } %>">
+          <% report.workingSessions.forEach(session => { %>
+            <div class="grid-item">
+              <p>checkin : <%= session.checkin %> h</p>
+              <p>workplace : <%= session.workplace %></p>
+            </div>
+          <% }) %>
+        </div>
+        <form action="/check-out" class="centered" method="post">
+          <button type="submit" class="btn">finish</button>
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+        </form>
+      <% } else { %>
+        <div class="<% if (report.workingSessions.length > 1) { %>flex<% } else { %>centered<% } %>">
+          <% report.workingSessions.forEach(session => { %>
           <div class="grid-item">
-            <p>checkin : <%= session.checkin %> h</p>
+            <p>checkin : <%= session.checkin %></p>
+            <p>checkout : <%= session.checkout %></p>
+            <p>total working : <%= session.diffTime %>h</p>
             <p>workplace : <%= session.workplace %></p>
           </div>
-        <% }) %>
-      </div>
-      <form action="/check-out" class="centered" method="post">
-        <button type="submit" class="btn">finish</button>
-        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
-      </form>
-    <% } else { %>
-      <div class="flex">
-        <% report.workingSessions.forEach(session => { %>
-        <div class="grid-item">
-          <p>checkin : <%= session.checkin %></p>
-          <p>checkout : <%= session.checkout %></p>
-          <p>total working : <%= session.totalWorking %>h</p>
-          <p>workplace : <%= session.workplace %></p>
+          <% }) %>
         </div>
-        <% }) %>
-      </div>
-    <% } %> 
+      <% } %> 
 
+    <% } %>
   <% } %>
 
   <input type="checkbox" hidden class="open-form" id="open-form-toggle">
 
   <label for="open-form-toggle" class="overlay"></label>
 
-  <label class="btn" for="open-form-toggle"> register leave </label>
+  <label class="btn" for="open-form-toggle" style="margin-top:9rem;"> register leave </label>
 
   <h3> remaining leave = <%= user.annualLeave %> h</h3>
   
